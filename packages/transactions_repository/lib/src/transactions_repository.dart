@@ -1,4 +1,3 @@
-import 'dart:indexed_db';
 import 'package:transactions_api/src/models/transaction.dart';
 import 'package:transactions_api/transactions_api.dart';
 

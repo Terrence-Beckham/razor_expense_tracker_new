@@ -26,6 +26,7 @@ dependencies:
   logger: ^2.2.0
   material_symbols_icons: ^4.2719.3
   url_launcher: ^6.2.6
+  path_provider: any
 
 
 

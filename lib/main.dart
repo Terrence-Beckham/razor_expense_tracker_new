@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:local_storage_transactions_api/local_storage_transactions_api.dart';
+import 'package:transactions_api/transactions_api.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:transactions_repository/transactions_repository.dart';
+import 'bootstrap.dart';
+void main() async{
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(
+    [TransactionSchema, TransactionCategorySchema],
+    directory: dir.path,
+  );
+  final transactionsApi = LocalStorageTransactionsApi(
+   isarDb: isar 
+  );
 
-void main() {
-  runApp(const MyApp());
+  bootstrap(transactionsApi: transactionsApi);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  const MyApp({ super.key, required this.transactionsRepository});
+final TransactionsRepository transactionsRepository;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
