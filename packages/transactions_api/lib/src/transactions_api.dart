@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:transactions_api/src/models/pie_chart_data.dart';
 import 'package:transactions_api/src/models/transaction.dart';
 import 'package:transactions_api/src/models/transaction_category.dart';

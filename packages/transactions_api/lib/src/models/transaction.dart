@@ -1,6 +1,4 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:isar/isar.dart';
-import 'package:isar_generator/isar_generator.dart';
 import 'package:transactions_api/src/models/transaction_category.dart';
 
 part 'transaction.g.dart';

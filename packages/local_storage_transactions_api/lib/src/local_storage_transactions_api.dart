@@ -19,11 +19,13 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   ///Initialize both stream controllers.
   Future<void> init() async {
-    final transactions = _isarDb.transactions as List<Transaction>;
+    final transactions =
+        await _isarDb.transactions.where().findAll();
+
     _transactionStreamController.add(transactions);
 
     final transactionCategories =
-        _isarDb.transactionCategorys as List<TransactionCategory>;
+       await _isarDb.transactionCategorys.where().findAll();
     _transactionCategoryStreamController.add(transactionCategories);
   }
 

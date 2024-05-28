@@ -4,8 +4,8 @@ import 'package:transactions_api/transactions_api.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-import 'bootstrap.dart';
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
     [TransactionSchema, TransactionCategorySchema],
@@ -15,7 +15,10 @@ void main() async{
    isarDb: isar 
   );
 
-  bootstrap(transactionsApi: transactionsApi);
+  final transactionRepository = TransactionsRepository(
+    transactionsApi: transactionsApi,
+  );
+runApp(MyApp(transactionsRepository: transactionRepository));
 }
 
 class MyApp extends StatelessWidget {

@@ -9,6 +9,7 @@ dependencies:
   analyzer: ^5.13.0
   isar: any
   isar_generator: any
+  isar_flutter_libs: any
 dev_dependencies:
   build_runner: ^2.2.0
   equatable: 2.0.3
