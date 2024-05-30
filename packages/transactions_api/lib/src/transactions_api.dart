@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:isar/isar.dart';
 import 'package:transactions_api/src/models/pie_chart_data.dart';
 import 'package:transactions_api/src/models/transaction.dart';
 import 'package:transactions_api/src/models/transaction_category.dart';
@@ -27,7 +28,7 @@ abstract class TransactionsApi {
   /// If no `transaction` with the given id exists, a
   /// [TransactionNotFoundException] error is
   /// thrown.
-  Future<void> deleteTransaction(String id);
+  Future<void> deleteTransaction(Id id);
 
 
 

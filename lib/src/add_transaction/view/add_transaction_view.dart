@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
@@ -33,16 +34,16 @@ class AddTransactionView extends StatefulWidget {
 class _AddTransactionViewState extends State<AddTransactionView> {
   final Logger _logger = Logger();
 
-  // var tempExpense = Expense(
-  //   timestamp: DateTime.now(),
-  //   amount: 0,
-  //   category: TransactionCategory(),
-  //   dateOfTransaction: DateTime.now(),
-  //   description: '',
-  //   note: '',
-  //   isExpense: false,
-  //   isIncome: false,
-  // );
+  var tempTransaction = Transaction()
+    ..timestamp = DateTime.now()
+    ..amount = 0
+    ..transactionCategory =
+        TransactionCategory() as IsarLink<TransactionCategory>
+    ..dateOfTransaction = DateTime.now()
+    ..description = ''
+    ..note = ''
+    ..isExpense = false
+    ..isIncome = false;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
   bool isIncome = false;
   bool isCategoryExpanded = false;
   bool isCategorySelected = false;
-  var _tempCategory = TransactionCategory();
+  var _tempCategory = TransactionCategory() ;
   final _dateTextController = TextEditingController();
   final _transactionAmountController = TextEditingController();
   bool isDateChoosen = false;
@@ -265,9 +266,12 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                             onPressed: () {
                               setState(() {
                                 _tempCategory = TransactionCategory()
-                                  ..colorName = defaultCategory[index].colorName
-                                  ..name = defaultCategory[index].name
-                                  ..iconName = defaultCategory[index].iconName;
+                                      ..colorName =
+                                          defaultCategory[index].colorName
+                                      ..name = defaultCategory[index].name
+                                      ..iconName =
+                                          defaultCategory[index].value.iconName)
+                                    as IsarLink<TransactionCategory>;
                                 _logger.e(_tempCategory);
                                 isCategorySelected = true;
                               });
@@ -332,25 +336,22 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                 ),
                 onPressed: () {
                   if (isIncome) {
-                    // final newExpense = _.copyWith(
-                    //   timestamp: DateTime.now(),
-                    //   amount: int.parse(_transactionAmountController.text),
-                    //   category: _tempCategory,
-                    //   dateOfTransaction: _tempDate,
-                    //   description: '',
-                    //   note: '',
-                    //   isExpense: false,
-                    //   isIncome: true,
-                    // );
-                    // _logger.d(
-                    // 'This is the temporary Expense object: $newExpense',
-                    // );
-                    // context
+                    final newTransaction = Transaction()
+                      ..timestamp = DateTime.now()
+                      ..amount = int.parse(_transactionAmountController.text)
+                      ..transactionCategory = _tempCategory
+                      ..dateOfTransaction = _tempDate
+                      ..description = ''
+                      ..note = ''
+                      ..isExpense = false
+                      ..isIncome = true;
 
-                    ///Todo Why am I using my Bloc like a Cubit
-                    ///?//
-                    // .read<AddTransactionBloc>()
-                    // .add(AddTransaction());
+                    _logger.d(
+                      'This is the temporary Expense object: $newTransaction',
+                    );
+                    context
+                        .read<AddTransactionBloc>()
+                        .add(AddTransaction(newTransaction));
                     Navigator.of(context).pop();
                   } else {
                     final newTransaction = (
@@ -413,14 +414,14 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
-        hintText: !isCategorySelected ? 'Category' : _tempCategory.name,
+        hintText: !isCategorySelected ? 'Category' : _tempCategory.value?.name,
         prefixIcon: !isCategorySelected
             ? const Icon(
                 Icons.category,
                 color: Colors.white,
               )
             : Icon(
-                myIcons[_tempCategory.iconName],
+                myIcons[_tempCategory.value?.iconName.toString()],
                 color: Colors.white,
               ),
         suffixIcon: IconButton(

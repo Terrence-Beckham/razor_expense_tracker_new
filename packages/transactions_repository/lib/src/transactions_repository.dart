@@ -1,6 +1,6 @@
 import 'package:transactions_api/src/models/transaction.dart';
 import 'package:transactions_api/transactions_api.dart';
-
+import 'package:isar/isar.dart';
 /// {@template transactions_repository}
 /// A repository that handles transaction related requests.
 /// {@endtemplate}
@@ -32,5 +32,5 @@ class TransactionsRepository {
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error
   /// thrown.
-  Future<void> deleteTransaction(String id) => _transactionsApi.deleteTransaction(id);
+  Future<void> deleteTransaction(Id id) => _transactionsApi.deleteTransaction(id);
 }
