@@ -1,22 +1,22 @@
-import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:razor_expense_tracker/l10n/l10n.dart';
+import 'package:razor_expense_tracker_new/src/transactions_overview/view/transaction_overview.dart';
+import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../home/view/home_page.dart';
 
 class App extends StatelessWidget {
   const App({
-    required ExpenseRepository expenseRepository,
+    required TransactionsRepository transactionsRepository,
     super.key,
-  }) : _expenseRepository = expenseRepository;
+  }) : _transactionsRepository = transactionsRepository;
 
-  final ExpenseRepository _expenseRepository;
+  final TransactionsRepository _transactionsRepository;
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
-      value: _expenseRepository,
+      value: _transactionsRepository,
       child: const AppView(),
     );
   }
@@ -44,8 +44,8 @@ class AppView extends StatelessWidget {
           color: Theme.of(context).colorScheme.onTertiary,
         ),
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      // localizationsDelegates: AppLocalizations.localizationsDelegates,
+      // supportedLocales: AppLocalizations.supportedLocales,
       home: const HomePage(),
     );
   }

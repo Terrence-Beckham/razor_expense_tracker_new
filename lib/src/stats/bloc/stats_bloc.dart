@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:expense_api/expense_api.dart';
-import 'package:expense_repository/expense_repository.dart';
+import 'package:transactions_api/transactions_api.dart';
+import 'package:transactions_repository/transactions_repository.dart';
 import 'package:logger/logger.dart';
 
 part 'stats_event.dart';
 part 'stats_state.dart';
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> {
-  StatsBloc(this._expenseRepository)
+  StatsBloc(this._transactionsRepository)
       : _logger = Logger(),
         super(const StatsState()) {
     on<StatsInitialEvent>(_subscribeToExpenseData);
@@ -19,16 +19,17 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     on<DisplayExpensePieChartStats>(_displayExpensePieChart);
   }
 
-  final ExpenseRepository _expenseRepository;
+  final TransactionsRepository  _transactionsRepository;
   final Logger _logger;
 
   List<TransactionCategory> calculateCategories(
-    List<Expense> expense,
+    List<Transaction> transaction,
   ) {
     final transactionCategories = <TransactionCategory>[];
-    for (final element in expense) {
+    for (final element in transaction) {
       // _logger.d(element.category.name);
-      transactionCategories.add(element.category);
+      ///Todo I'm using Isar LInks here, so I have to figure out how here.
+      // transactionCategories.add(element.transactionCategory);
     }
     return transactionCategories.toSet().toList();
     _logger.d('This is a set of all of the categories $transactionCategories');
@@ -42,7 +43,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     Emitter<StatsState> emit,
   ) async {
     await emit.forEach<List<PieChartDataObject>>(
-      _expenseRepository.getExpensesByCategory(),
+      _transactionsRepository.getTransactionsByCategory(),
       onData: (expenseCategoryTotals) {
         // _logger.d('These are the category totals  : $categoryTotals');
         return state.copyWith(
@@ -62,7 +63,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     Emitter<StatsState> emit,
   ) async {
     await emit.forEach<List<PieChartDataObject>>(
-      _expenseRepository.getIncomeByCategory(),
+      _transactionsRepository.getIncomeByCategory(),
       onData: (incomeCategoryTotals) {
         // _logger.d('These are the category totals  : $categoryTotals');
         return state.copyWith(
@@ -82,7 +83,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     Emitter<StatsState> emit,
   ) {
     emit(state.copyWith(
-      showExpenses: () =>  false,
+      showTransactions: () =>  false,
       status: () => StatsStatus.success,
     ),);
     _logger
@@ -96,7 +97,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   ) {
     {
       emit(state.copyWith(
-        showExpenses: () => true,
+        showTransactions: () => true,
         status: () => StatsStatus.success,
       ),);
     }

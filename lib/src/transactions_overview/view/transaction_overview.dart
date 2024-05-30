@@ -1,25 +1,25 @@
-import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:razor_expense_tracker/src/expense_overview/bloc/expense_overview_bloc.dart';
-import 'package:razor_expense_tracker/src/widgets/konstants.dart';
+import 'package:transactions_repository/transactions_repository.dart';
+import '../../widgets/konstants.dart';
+import '../bloc/transactions_overview_bloc.dart';
 
-class ExpenseOverviewPage extends StatelessWidget {
-  const ExpenseOverviewPage({super.key});
+class TransactionsOverviewPage extends StatelessWidget {
+  const TransactionsOverviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ExpenseOverviewBloc(
-        context.read<ExpenseRepository>(),
+      create: (_) => TransactionsOverviewBloc(
+        context.read<TransactionsRepository>(),
       )..add(const InitialDataEvent()),
-      child: const ExpenseOverviewView(),
+      child: const TransactionsOverviewView(),
     );
   }
 }
 
-class ExpenseOverviewView extends StatelessWidget {
-  const ExpenseOverviewView({super.key});
+class TransactionsOverviewView extends StatelessWidget {
+  const TransactionsOverviewView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +31,19 @@ class ExpenseOverviewView extends StatelessWidget {
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
         ),
-        body: BlocBuilder<ExpenseOverviewBloc, ExpenseOverviewState>(
+        body: BlocBuilder<TransactionsOverviewBloc, TransactionsOverviewState>(
           builder: (context, state) {
             switch (state.status) {
-              case ExpenseOverviewStatus.initial:
+              case TransactionsOverviewStatus.initial:
                 return const Center(child: Text('Initial View'));
 
-              case ExpenseOverviewStatus.loading:
+              case TransactionsOverviewStatus.loading:
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              case ExpenseOverviewStatus.success:
+              case TransactionsOverviewStatus.success:
                 return const ExpenseOverviewSuccessView();
-              case ExpenseOverviewStatus.failure:
+              case TransactionsOverviewStatus.failure:
                 return const Center(
                   child: Text('Somethig went wrong'),
                 );
@@ -62,7 +62,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExpenseOverviewBloc, ExpenseOverviewState>(
+    return BlocBuilder<TransactionsOverviewBloc, TransactionsOverviewState>(
       builder: (context, state) {
         return Column(
           children: [
@@ -103,9 +103,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         ),
                       ),
 
-                     if (state.expenses.isNotEmpty) Text(
+                     if (state.transactions.isNotEmpty) Text(
                         // r' $1,000.00',
-                       '\$ ${state.expenses.first.amount?? '\$'}'
+                       '\$ ${state.transactions.first.amount?? '\$'}'
                      // '\$'
                        ,
                         style: const TextStyle(
@@ -218,7 +218,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8, right: 8),
                   child: ListView.builder(
                     // shrinkWrap: true,
-                    itemCount: state.expenses.length,
+                    itemCount: state.transactions.length,
                     itemBuilder: (BuildContext context, int index) {
                       // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
                       return SizedBox(
@@ -226,27 +226,27 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         child: Card(
                           child: ListTile(
                             leading: Icon(
-                              myIcons[state.expenses[index].category.iconName],
+                              myIcons[state.transactions[index].transactionCategory.value?.iconName],
                               color: colorMapper[
-                                  state.expenses[index].category.colorName],
+                                  state.transactions[index].transactionCategory.value?.colorName],
                             ),
                             // leading: Icon(
                             // // myIcons(expense.iconname);
                             // Icons.abc , color: Colors.red,
                             // ),
                             title: Text(
-                                state.expenses[index].category.name.toString()),
+                                state.transactions[index].transactionCategory.value!.name.toString()),
                             subtitle: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 4),
                               child: Text(
-                                state.expenses[index].dateOfTransaction
+                                state.transactions[index].dateOfTransaction
                                     .toString()
                                     .substring(0, 10),
                               ),
                             ),
                             trailing: Text(
-                              '\$ ${state.expenses[index].amount}',
-                              style: state.expenses[index].isExpense
+                              '\$ ${state.transactions[index].amount}',
+                              style: state.transactions[index].isExpense
                                   ? const TextStyle(
                                       fontSize: 18,
                                       color: Colors.red,

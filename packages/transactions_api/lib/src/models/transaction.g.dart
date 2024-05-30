@@ -128,17 +128,16 @@ Transaction _transactionDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Transaction(
-    amount: reader.readLong(offsets[0]),
-    dateOfTransaction: reader.readDateTime(offsets[1]),
-    description: reader.readStringOrNull(offsets[2]),
-    isExpense: reader.readBool(offsets[3]),
-    isIncome: reader.readBool(offsets[4]),
-    note: reader.readStringOrNull(offsets[5]),
-    subCategory: reader.readStringOrNull(offsets[6]),
-    timestamp: reader.readDateTime(offsets[7]),
-  );
+  final object = Transaction();
+  object.amount = reader.readLong(offsets[0]);
+  object.dateOfTransaction = reader.readDateTime(offsets[1]);
+  object.description = reader.readStringOrNull(offsets[2]);
   object.id = id;
+  object.isExpense = reader.readBool(offsets[3]);
+  object.isIncome = reader.readBool(offsets[4]);
+  object.note = reader.readStringOrNull(offsets[5]);
+  object.subCategory = reader.readStringOrNull(offsets[6]);
+  object.timestamp = reader.readDateTime(offsets[7]);
   return object;
 }
 

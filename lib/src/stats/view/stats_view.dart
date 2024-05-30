@@ -1,9 +1,9 @@
-import 'package:expense_repository/expense_repository.dart';
+import 'package:transactions_repository/transactions_repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:razor_expense_tracker/src/stats/bloc/stats_bloc.dart';
+import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
 
 import '../../widgets/konstants.dart';
 
@@ -14,7 +14,7 @@ class StatsOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => StatsBloc(
-        context.read<ExpenseRepository>(),
+        context.read<TransactionsRepository>(),
       )
         ..add(
           const StatsInitialEvent(),

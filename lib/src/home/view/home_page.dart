@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:razor_expense_tracker/src/add_transaction/view/add_transaction_view.dart';
-import 'package:razor_expense_tracker/src/expense_overview/view/expense_overview.dart';
-import 'package:razor_expense_tracker/src/home/cubit/home_cubit.dart';
-import 'package:razor_expense_tracker/src/stats/view/stats_view.dart';
+import 'package:razor_expense_tracker_new/src/add_transaction/view/add_transaction_view.dart';
+import 'package:razor_expense_tracker_new/src/home/cubit/home_cubit.dart';
+import 'package:razor_expense_tracker_new/src/stats/view/stats_view.dart';
+
+import '../../transactions_overview/view/transaction_overview.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,7 +28,7 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         body: IndexedStack(
           index: selectedTab.index,
-          children: const [ExpenseOverviewPage(), StatsOverviewPage()],
+          children: const [TransactionsOverviewPage(), StatsOverviewPage()],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
@@ -37,7 +38,7 @@ class HomeView extends StatelessWidget {
             Navigator.of(context).push(MaterialPageRoute<AddTransactionPage>(
                 builder: (context) => const AddTransactionPage()));
           },
-          key: const Key('homeView_addTodo_floatingActionButton'),
+          key: const Key('homeView_addTransaction_floatingActionButton'),
           child: const Icon(Icons.add),
         ),
         bottomNavigationBar: BottomAppBar(
@@ -48,7 +49,7 @@ class HomeView extends StatelessWidget {
             children: [
               _HomeTabButton(
                 groupValue: selectedTab,
-                value: HomeTab.expenses,
+                value: HomeTab.transactions,
                 icon: const Icon(Icons.home),
               ),
               _HomeTabButton(

@@ -37,7 +37,6 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   @override
   Stream<List<Transaction>> getTransactions() {
-    // TODO: implement getTransactions
     throw UnimplementedError();
   }
 

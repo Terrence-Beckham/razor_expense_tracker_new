@@ -1,4 +1,4 @@
-import 'package:expense_api/expense_api.dart';
+import 'package:transactions_api/transactions_api.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';

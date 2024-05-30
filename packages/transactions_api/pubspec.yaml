@@ -7,9 +7,12 @@ environment:
   sdk: "^3.3.0"
 dependencies:
   analyzer: ^5.13.0
+  font_awesome_flutter: any
   isar: any
-  isar_generator: any
   isar_flutter_libs: any
+  isar_generator: any
+
+
 dev_dependencies:
   build_runner: ^2.2.0
   equatable: 2.0.3

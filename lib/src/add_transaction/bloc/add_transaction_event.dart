@@ -14,10 +14,10 @@ final class Initial extends AddTransactionEvent {
   List<Object> get props => [];
 }
 
-final class AddExpense extends AddTransactionEvent{
-  const AddExpense(this.expense);
+final class AddTransaction extends AddTransactionEvent{
+  const AddTransaction(this.transaction);
 
-  final Expense expense;
+  final Transaction transaction;
   @override
-  List<Object> get props => [expense];
+  List<Object> get props => [transaction];
 }

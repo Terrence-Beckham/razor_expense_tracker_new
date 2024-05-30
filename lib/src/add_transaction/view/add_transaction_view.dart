@@ -1,13 +1,13 @@
-import 'package:expense_api/expense_api.dart';
-import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import 'package:razor_expense_tracker/src/add_transaction/bloc/add_transaction_bloc.dart';
-import 'package:razor_expense_tracker/src/widgets/konstants.dart';
+import 'package:transactions_api/transactions_api.dart';
+import 'package:transactions_repository/transactions_repository.dart';
+
+import '../../widgets/konstants.dart';
+import '../bloc/add_transaction_bloc.dart';
 
 class AddTransactionPage extends StatelessWidget {
   const AddTransactionPage({super.key});
@@ -15,7 +15,7 @@ class AddTransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AddTransactionBloc(context.read<ExpenseRepository>()),
+      create: (_) => AddTransactionBloc(context.read<TransactionsRepository>()),
       child: const AddTransactionView(),
     );
   }
@@ -32,16 +32,17 @@ class AddTransactionView extends StatefulWidget {
 
 class _AddTransactionViewState extends State<AddTransactionView> {
   final Logger _logger = Logger();
-  var tempExpense = Expense(
-    timestamp: DateTime.now(),
-    amount: 0,
-    category: TransactionCategory(),
-    dateOfTransaction: DateTime.now(),
-    description: '',
-    note: '',
-    isExpense: false,
-    isIncome: false,
-  );
+
+  // var tempExpense = Expense(
+  //   timestamp: DateTime.now(),
+  //   amount: 0,
+  //   category: TransactionCategory(),
+  //   dateOfTransaction: DateTime.now(),
+  //   description: '',
+  //   note: '',
+  //   isExpense: false,
+  //   isIncome: false,
+  // );
 
   @override
   Widget build(BuildContext context) {
@@ -96,16 +97,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
   final _transactionAmountController = TextEditingController();
   bool isDateChoosen = false;
   late DateTime _tempDate;
-  final Expense _tempExpense = Expense(
-    timestamp: DateTime.now(),
-    amount: 0,
-    category: TransactionCategory(),
-    dateOfTransaction: DateTime.now(),
-    description: '',
-    note: '',
-    isExpense: true,
-    isIncome: false,
-  );
+  final Transaction _tempTransaction = Transaction();
 
   @override
   void dispose() {
@@ -200,11 +192,11 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                 decoration: InputDecoration(
                   prefixIcon: isExpense
                       ? const Icon(
-                          FontAwesomeIcons.dollarSign,
+                          Symbols.currency_bitcoin,
                           color: Colors.red,
                         )
                       : const Icon(
-                          FontAwesomeIcons.dollarSign,
+                          Symbols.currency_bitcoin,
                           color: Colors.green,
                         ),
                   filled: true,
@@ -340,27 +332,28 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                 ),
                 onPressed: () {
                   if (isIncome) {
-                    final newExpense = _tempExpense.copyWith(
-                      timestamp: DateTime.now(),
-                      amount: int.parse(_transactionAmountController.text),
-                      category: _tempCategory,
-                      dateOfTransaction: _tempDate,
-                      description: '',
-                      note: '',
-                      isExpense: false,
-                      isIncome: true,
-                    );
-                    _logger.d(
-                      'This is the temporary Expense object: $newExpense',
-                    );
-                    context
+                    // final newExpense = _.copyWith(
+                    //   timestamp: DateTime.now(),
+                    //   amount: int.parse(_transactionAmountController.text),
+                    //   category: _tempCategory,
+                    //   dateOfTransaction: _tempDate,
+                    //   description: '',
+                    //   note: '',
+                    //   isExpense: false,
+                    //   isIncome: true,
+                    // );
+                    // _logger.d(
+                    // 'This is the temporary Expense object: $newExpense',
+                    // );
+                    // context
+
                     ///Todo Why am I using my Bloc like a Cubit
                     ///?//
-                        .read<AddTransactionBloc>()
-                        .add(AddExpense(newExpense));
+                    // .read<AddTransactionBloc>()
+                    // .add(AddTransaction());
                     Navigator.of(context).pop();
                   } else {
-                    final newExpense = _tempExpense.copyWith(
+                    final newTransaction = (
                       timestamp: DateTime.now(),
                       amount: int.parse(_transactionAmountController.text),
                       category: _tempCategory,
@@ -372,10 +365,10 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                     );
                     context
                         .read<AddTransactionBloc>()
-                        .add(AddExpense(newExpense));
+                        .add(AddTransaction(newTransaction as Transaction));
                     Navigator.of(context).pop();
                     _logger.d(
-                      'This is the temporary Expense object: $newExpense',
+                      'This is the temporary Expense object: $newTransaction',
                     );
                   }
                 },
@@ -431,7 +424,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                 color: Colors.white,
               ),
         suffixIcon: IconButton(
-          icon: const Icon(FontAwesomeIcons.plus),
+          icon: const Icon(Symbols.add),
           onPressed: () {
             setState(() {
               isCategoryExpanded = !isCategoryExpanded;
@@ -498,7 +491,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                           color: Colors.white,
                           fontSize: 20,
                         ),
-                        suffixIcon: const Icon(FontAwesomeIcons.plus),
+                        suffixIcon: const Icon(Symbols.add),
                         filled: true,
                         fillColor: Theme.of(context).primaryColor,
                         border: OutlineInputBorder(
@@ -710,4 +703,3 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
     );
   }
 }
-
