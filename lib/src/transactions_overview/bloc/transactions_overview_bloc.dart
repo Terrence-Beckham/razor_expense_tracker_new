@@ -28,14 +28,14 @@ class TransactionsOverviewBloc
   ) async {
     state.copyWith(status: ()=> TransactionsOverviewStatus.success);
 
-    // await emit.forEach<List<Transaction>>(
-    //   _transactionsRepository.getTransactions(),
-    //   onData: (transaction) => state.copyWith(
-    //     status: () => TransactionsOverviewStatus.success,
-    //     transactions: () => transaction
-    //         .reversed.toList(),
-    //   ),
-    // );
+    await emit.forEach<List<Transaction>>(
+      _transactionsRepository.getTransactions(),
+      onData: (transaction) => state.copyWith(
+        status: () => TransactionsOverviewStatus.success,
+        transactions: () => transaction
+            .reversed.toList(),
+      ),
+    );
 
     _logger = Logger();
     _logger

@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
 
 import '../../widgets/konstants.dart';
+import '../temp_stats_bloc/temp_stats_bloc.dart';
 
 class StatsOverviewPage extends StatelessWidget {
   const StatsOverviewPage({super.key});
@@ -13,16 +14,23 @@ class StatsOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => StatsBloc(
-        context.read<TransactionsRepository>(),
-      )
-        ..add(
-          const StatsInitialEvent(),
-        )
-        ..add(const LoadIncomeDataEvent()),
-      child: const StatsView(),
+      create: (context) => TempStatsBloc(
+        // context.read<TransactionsRepository>(),
+      ),child: emptyStatsView(),
+          ///Todo readd this code when I figure out how to get the data from the repository
+        // ..add(
+        //   const StatsInitialEvent(),
+        // )
+        // ..add(const LoadIncomeDataEvent()),
     );
   }
+}
+class emptyStatsView extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+return Center(child: Text('No data to display'),);
+  }
+
 }
 
 class StatsView extends StatelessWidget {

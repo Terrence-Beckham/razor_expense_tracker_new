@@ -41,5 +41,17 @@ class Transaction {
 
 
 
-
+  @override
+  String toString() {
+    return 'Transaction{id: $id,'
+        ' amount: $amount,'
+        ' timestamp: $timestamp, '
+        'transactionCategory: $transactionCategory,'
+        ' subCategory: $subCategory,'
+        ' dateOfTransaction: $dateOfTransaction, '
+        'description: $description,'
+        ' note: $note,'
+        ' isExpense: $isExpense,'
+        ' isIncome: $isIncome}';
+  }
 }

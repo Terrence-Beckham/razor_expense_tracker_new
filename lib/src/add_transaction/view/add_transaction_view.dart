@@ -37,8 +37,6 @@ class _AddTransactionViewState extends State<AddTransactionView> {
   var tempTransaction = Transaction()
     ..timestamp = DateTime.now()
     ..amount = 0
-    ..transactionCategory =
-        TransactionCategory() as IsarLink<TransactionCategory>
     ..dateOfTransaction = DateTime.now()
     ..description = ''
     ..note = ''
@@ -270,8 +268,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                                           defaultCategory[index].colorName
                                       ..name = defaultCategory[index].name
                                       ..iconName =
-                                          defaultCategory[index].value.iconName)
-                                    as IsarLink<TransactionCategory>;
+                                          defaultCategory[index].iconName;
                                 _logger.e(_tempCategory);
                                 isCategorySelected = true;
                               });
@@ -339,7 +336,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                     final newTransaction = Transaction()
                       ..timestamp = DateTime.now()
                       ..amount = int.parse(_transactionAmountController.text)
-                      ..transactionCategory = _tempCategory
+                      ..transactionCategory.value =_tempCategory
                       ..dateOfTransaction = _tempDate
                       ..description = ''
                       ..note = ''
@@ -354,19 +351,18 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                         .add(AddTransaction(newTransaction));
                     Navigator.of(context).pop();
                   } else {
-                    final newTransaction = (
-                      timestamp: DateTime.now(),
-                      amount: int.parse(_transactionAmountController.text),
-                      category: _tempCategory,
-                      dateOfTransaction: _tempDate,
-                      description: '',
-                      note: '',
-                      isExpense: true,
-                      isIncome: false,
-                    );
+                    final newTransaction = Transaction()
+                      ..timestamp = DateTime.now()
+                      ..amount = int.parse(_transactionAmountController.text)
+                      ..transactionCategory.value =_tempCategory
+                      ..dateOfTransaction = _tempDate
+                      ..description = ''
+                      ..note = ''
+                      ..isExpense =true
+                      ..isIncome = false;
                     context
                         .read<AddTransactionBloc>()
-                        .add(AddTransaction(newTransaction as Transaction));
+                        .add(AddTransaction(newTransaction ));
                     Navigator.of(context).pop();
                     _logger.d(
                       'This is the temporary Expense object: $newTransaction',
@@ -414,14 +410,14 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
       readOnly: true,
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
-        hintText: !isCategorySelected ? 'Category' : _tempCategory.value?.name,
+        hintText: !isCategorySelected ? 'Category' : _tempCategory.name,
         prefixIcon: !isCategorySelected
             ? const Icon(
                 Icons.category,
                 color: Colors.white,
               )
             : Icon(
-                myIcons[_tempCategory.value?.iconName.toString()],
+                myIcons[_tempCategory.iconName.toString()],
                 color: Colors.white,
               ),
         suffixIcon: IconButton(
