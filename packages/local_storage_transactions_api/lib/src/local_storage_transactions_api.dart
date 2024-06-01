@@ -2,6 +2,8 @@ import 'package:isar/isar.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:transactions_api/transactions_api.dart';
 
+import 'konstants.dart';
+
 /// {@template local_storage_transactions_api}
 /// A Flutter implementation of the TransactionsApi that uses local storage.
 /// {@endtemplate}
@@ -26,6 +28,22 @@ class LocalStorageTransactionsApi extends TransactionsApi {
     final transactionCategories =
         await _isarDb.transactionCategorys.where().findAll();
     _transactionCategoryStreamController.add(transactionCategories);
+    await loadDefaultCategories();
+  }
+
+  ///This method generates a list of categories from the default categories and adds them to the database
+  Future<void> loadDefaultCategories() async {
+    final transactionCategories =
+        await _isarDb.transactionCategorys.where().findAll();
+    if (transactionCategories.isEmpty) {
+      final categories = defaultCategory;
+
+      await _isarDb.writeTxnSync(() async {
+        for (final category in categories) {
+          _isarDb.transactionCategorys.putSync(category);
+        }
+      });
+    }
   }
 
   ///This method deletes a transaction from the database
@@ -39,6 +57,35 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   Stream<List<Transaction>> getTransactions() {
     return _transactionStreamController.asBroadcastStream();
   }
+
+  /// This method returns a [Stream] of all transaction categories
+  @override
+  Stream<List<TransactionCategory>> getTransactionCategories() {
+    return _transactionCategoryStreamController.asBroadcastStream();
+  }
+
+  ///This method saves a transaction to the database
+  @override
+  Future<void> saveTransaction(Transaction transaction) async {
+    await _isarDb.writeTxnSync(() async {
+      _isarDb.transactions.putSync(transaction);
+    });
+    final transactions = await _isarDb.transactions.where().findAll();
+    _transactionStreamController.add(transactions);
+  }
+
+  @override
+  Future<void> close() {
+    _transactionStreamController.close();
+    return _transactionCategoryStreamController.close();
+  }
+
+  @override
+  Stream<List<PieChartDataObject>> getTransactionsByCategory() {
+    // TODO: implement getTransactionsByCategory
+    throw UnimplementedError();
+  }
+}
 
 //   @override
 //   Stream<List<PieChartDataObject>> getTransactionsByCategory() {
@@ -85,26 +132,3 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 //     // Add the new list to the stream controller
 //     _transactionCategoryStreamController.add(updatedUniqueCategories);
 //   }
-
-  ///This method saves a transaction to the database
-  @override
-  Future<void> saveTransaction(Transaction transaction) async {
-    await _isarDb.writeTxnSync(() async {
-      _isarDb.transactions.putSync(transaction);
-    });
-    final transactions = await _isarDb.transactions.where().findAll();
-    _transactionStreamController.add(transactions);
-  }
-
-  @override
-  Future<void> close() {
-    _transactionStreamController.close();
-    return _transactionCategoryStreamController.close();
-  }
-
-  @override
-  Stream<List<PieChartDataObject>> getTransactionsByCategory() {
-    // TODO: implement getTransactionsByCategory
-    throw UnimplementedError();
-  }
-}

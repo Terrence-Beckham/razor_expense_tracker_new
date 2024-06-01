@@ -15,6 +15,10 @@ abstract class TransactionsApi {
 
   /// Provides a [Stream] of all todos.
   Stream<List<Transaction>> getTransactions();
+ ///provides a [Stream] of all categories
+  Stream<List<TransactionCategory>> getTransactionCategories();
+
+
   /// Provides a [Stream] of transactions by category
   Stream<List<PieChartDataObject>> getTransactionsByCategory();
 

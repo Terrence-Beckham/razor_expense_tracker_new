@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
@@ -22,26 +21,10 @@ class AddTransactionPage extends StatelessWidget {
   }
 }
 
-class AddTransactionView extends StatefulWidget {
+class AddTransactionView extends StatelessWidget {
   const AddTransactionView({
     super.key,
   });
-
-  @override
-  State<AddTransactionView> createState() => _AddTransactionViewState();
-}
-
-class _AddTransactionViewState extends State<AddTransactionView> {
-  final Logger _logger = Logger();
-
-  var tempTransaction = Transaction()
-    ..timestamp = DateTime.now()
-    ..amount = 0
-    ..dateOfTransaction = DateTime.now()
-    ..description = ''
-    ..note = ''
-    ..isExpense = false
-    ..isIncome = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +74,11 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
   bool isIncome = false;
   bool isCategoryExpanded = false;
   bool isCategorySelected = false;
-  var _tempCategory = TransactionCategory() ;
+  var _tempCategory = TransactionCategory();
+
   final _dateTextController = TextEditingController();
   final _transactionAmountController = TextEditingController();
-  bool isDateChoosen = false;
+  bool isDateChosen = false;
   late DateTime _tempDate;
   final Transaction _tempTransaction = Transaction();
 
@@ -264,11 +248,9 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                             onPressed: () {
                               setState(() {
                                 _tempCategory = TransactionCategory()
-                                      ..colorName =
-                                          defaultCategory[index].colorName
-                                      ..name = defaultCategory[index].name
-                                      ..iconName =
-                                          defaultCategory[index].iconName;
+                                  ..colorName = defaultCategory[index].colorName
+                                  ..name = defaultCategory[index].name
+                                  ..iconName = defaultCategory[index].iconName;
                                 _logger.e(_tempCategory);
                                 isCategorySelected = true;
                               });
@@ -300,7 +282,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                 readOnly: true,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
-                  hintText: !isDateChoosen ? 'Date' : _dateTextController.text,
+                  hintText: !isDateChosen ? 'Date' : _dateTextController.text,
                   hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
                   prefixIcon: const Icon(
                     Icons.calendar_month,
@@ -336,7 +318,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                     final newTransaction = Transaction()
                       ..timestamp = DateTime.now()
                       ..amount = int.parse(_transactionAmountController.text)
-                      ..transactionCategory.value =_tempCategory
+                      ..transactionCategory.value = _tempCategory
                       ..dateOfTransaction = _tempDate
                       ..description = ''
                       ..note = ''
@@ -354,15 +336,15 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
                     final newTransaction = Transaction()
                       ..timestamp = DateTime.now()
                       ..amount = int.parse(_transactionAmountController.text)
-                      ..transactionCategory.value =_tempCategory
+                      ..transactionCategory.value = _tempCategory
                       ..dateOfTransaction = _tempDate
                       ..description = ''
                       ..note = ''
-                      ..isExpense =true
+                      ..isExpense = true
                       ..isIncome = false;
                     context
                         .read<AddTransactionBloc>()
-                        .add(AddTransaction(newTransaction ));
+                        .add(AddTransaction(newTransaction));
                     Navigator.of(context).pop();
                     _logger.d(
                       'This is the temporary Expense object: $newTransaction',
@@ -397,7 +379,7 @@ class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
       setState(() {
         _dateTextController.text = picked.toString().substring(0, 10);
         _tempDate = picked;
-        isDateChoosen = true;
+        isDateChosen = true;
       });
     }
   }

@@ -42,20 +42,21 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     StatsInitialEvent event,
     Emitter<StatsState> emit,
   ) async {
-    await emit.forEach<List<PieChartDataObject>>(
-      _transactionsRepository.getTransactionsByCategory(),
-      onData: (expenseCategoryTotals) {
-        // _logger.d('These are the category totals  : $categoryTotals');
-        return state.copyWith(
-          status: () => StatsStatus.success,
-          // monthlyExpenses: () => expense.reversed.toList(),
-          expenseCategoryTotals: () => expenseCategoryTotals,
-        );
-      },
-    );
-    return state.copyWith(
-      expenseCategoryTotals: () => [],
-    );
+    return Future.error('error');
+    // await emit.forEach<List<PieChartDataObject>>(
+    //   _transactionsRepository.getTransactionsByCategory(),
+    //   onData: (expenseCategoryTotals) {
+    //     // _logger.d('These are the category totals  : $categoryTotals');
+    //     return state.copyWith(
+    //       status: () => StatsStatus.success,
+    //       // monthlyExpenses: () => expense.reversed.toList(),
+    //       expenseCategoryTotals: () => expenseCategoryTotals,
+    //     );
+    //   },
+    // );
+    // return state.copyWith(
+    //   expenseCategoryTotals: () => [],
+    // );
   }
 
   Future<StatsState> _subscribeToIncomeData(
