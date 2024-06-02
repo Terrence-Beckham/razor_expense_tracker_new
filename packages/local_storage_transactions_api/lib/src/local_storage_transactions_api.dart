@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:transactions_api/transactions_api.dart';
 
@@ -9,11 +10,14 @@ import 'konstants.dart';
 /// {@endtemplate}
 class LocalStorageTransactionsApi extends TransactionsApi {
   /// {@macro local_storage_transactions_api}
-  LocalStorageTransactionsApi({required Isar isarDb}) : _isarDb = isarDb {
+  LocalStorageTransactionsApi({required Isar isarDb})
+      : _isarDb = isarDb,
+        _logger = Logger() {
     init();
   }
 
   final Isar _isarDb;
+  final Logger _logger;
   late final _transactionStreamController =
       BehaviorSubject<List<Transaction>>.seeded(const []);
   late final _transactionCategoryStreamController =
@@ -27,7 +31,6 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
     final transactionCategories =
         await _isarDb.transactionCategorys.where().findAll();
-    _transactionCategoryStreamController.add(transactionCategories);
     await loadDefaultCategories();
   }
 
@@ -35,6 +38,8 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   Future<void> loadDefaultCategories() async {
     final transactionCategories =
         await _isarDb.transactionCategorys.where().findAll();
+    _logger
+        .i('transactionCategories at initialization: $transactionCategories');
     if (transactionCategories.isEmpty) {
       final categories = defaultCategory;
 
@@ -43,7 +48,13 @@ class LocalStorageTransactionsApi extends TransactionsApi {
           _isarDb.transactionCategorys.putSync(category);
         }
       });
+      final transactionCategories =
+          await _isarDb.transactionCategorys.where().findAll();
+      _logger.d(
+          'These are the transaction categories before being added to the stream $transactionCategories');
+      _transactionCategoryStreamController.add(transactionCategories);
     }
+    _transactionCategoryStreamController.add(transactionCategories);
   }
 
   ///This method deletes a transaction from the database
@@ -84,6 +95,27 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   Stream<List<PieChartDataObject>> getTransactionsByCategory() {
     // TODO: implement getTransactionsByCategory
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> saveTransactionToCategory(
+      Transaction transaction, int categoryId) async {
+    ///read the transactionCategory from the Database
+    final transactionCategory =
+        await _isarDb.transactionCategorys.get(categoryId);
+    transactionCategory?.transactions.add(transaction);
+    await _isarDb.writeTxn(() async {
+      await transactionCategory?.transactions.save();
+
+      final transactionCategories =
+          await _isarDb.transactionCategorys.where().findAll();
+      _transactionCategoryStreamController.add(transactionCategories);
+    });
+
+    // linda.teachers.add(biologyTeacher);
+    //
+    // await isar.writeTxn(() async {
+    //   await linda.teachers.save();
   }
 }
 

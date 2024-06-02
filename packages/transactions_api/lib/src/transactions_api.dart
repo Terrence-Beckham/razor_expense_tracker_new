@@ -27,6 +27,8 @@ abstract class TransactionsApi {
   /// If a [Transaction] with the same id already exists, it will be replaced.
   Future<void> saveTransaction(Transaction transaction);
 
+///Saves a [Transaction] to a [TransactionCategory]
+ Future<void> saveTransactionToCategory(Transaction transaction, int categoryId);
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a

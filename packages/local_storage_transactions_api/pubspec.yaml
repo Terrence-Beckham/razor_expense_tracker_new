@@ -21,3 +21,4 @@ dev_dependencies:
   mocktail: ^1.0.3
   very_good_analysis: ^5.1.0
   material_symbols_icons: any
+  logger: ^2.3.0

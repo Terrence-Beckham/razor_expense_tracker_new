@@ -15,7 +15,8 @@ class AddTransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AddTransactionBloc(context.read<TransactionsRepository>()),
+      create: (_) => AddTransactionBloc(context.read<TransactionsRepository>())
+        ..add(Initial()),
       child: const AddTransactionView(),
     );
   }
@@ -37,12 +38,12 @@ class AddTransactionView extends StatelessWidget {
             builder: (context, state) {
               switch (state.status) {
                 case AddTransactionStatus.initial:
-                  return const AddTransactionSuccessView();
+                  return AddTransactionSuccessView();
                 // return const Center(child: Text('Initial Screen'),);
                 case AddTransactionStatus.loading:
                   return const Center(child: CircularProgressIndicator());
                 case AddTransactionStatus.success:
-                  return const AddTransactionSuccessView();
+                  return AddTransactionSuccessView();
                 case AddTransactionStatus.failure:
                   return const Center(
                     child: Text('something went wrong'),
@@ -56,629 +57,674 @@ class AddTransactionView extends StatelessWidget {
   }
 }
 
-class AddTransactionSuccessView extends StatefulWidget {
-  const AddTransactionSuccessView({super.key});
+class AddTransactionSuccessView extends StatelessWidget {
+  AddTransactionSuccessView({super.key});
 
-  @override
-  State<AddTransactionSuccessView> createState() =>
-      _AddTransactionSuccessViewState();
-}
-
-class _AddTransactionSuccessViewState extends State<AddTransactionSuccessView> {
-  final _logger = Logger();
-
-  Icon selectedIcon = const Icon(CupertinoIcons.chevron_forward);
-  Color selectedColor = Colors.blue;
-  String selectedTransactionType = 'expense';
-  bool isExpense = true;
-  bool isIncome = false;
-  bool isCategoryExpanded = false;
-  bool isCategorySelected = false;
-  var _tempCategory = TransactionCategory();
-
-  final _dateTextController = TextEditingController();
-  final _transactionAmountController = TextEditingController();
-  bool isDateChosen = false;
-  late DateTime _tempDate;
-  final Transaction _tempTransaction = Transaction();
-
-  @override
-  void dispose() {
-    super.dispose();
-    _dateTextController.dispose();
-    _transactionAmountController.dispose();
-  }
+  final Logger _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                'Add Transaction',
-                style: TextStyle(
-                  fontSize: 32,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return BlocBuilder<AddTransactionBloc, AddTransactionState>(
+      builder: (context, state) {
+        _logger
+          ..d('The category is expanded: ${state.isCategoryExpanded}')
+          ..d('This is the list of categories ${state.categories}');
+
+        return SingleChildScrollView(
+          child: Column(
             children: [
-              OutlinedButton(
-                onPressed: () {
-                  // Handle button press
-                  setState(() {
-                    isIncome = false;
-                    isExpense = true;
-                    _logger.d('Is Income = $isIncome,  IsExpense: $isExpense');
-                  });
-                },
-                style: isExpense
-                    ? OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.green,
-                          // Border color when button is not pressed
-                          width: 4, // Border width when button is not pressed
-                        ),
-                      )
-                    : OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.white,
-                          // Border color when button is not pressed
-                          width: 4, // Border width when button is not pressed
-                        ),
-                      ),
-                child: const Text('Expense'),
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  // Handle button press
-                  setState(() {
-                    isIncome = true;
-                    isExpense = false;
-                    _logger.d('Is Income = $isIncome,  IsExpense: $isExpense');
-                  });
-                },
-                style: isIncome
-                    ? OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.green,
-                          // Border color when button is not pressed
-                          width: 4, // Border width when button is not pressed
-                        ),
-                      )
-                    : OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.white,
-                          // Border color when button is not pressed
-                          width: 4, // Border width when button is not pressed
-                        ),
-                      ),
-                child: const Text('Income'),
-              ),
-            ],
-          ),
-
-          //Expense Display
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: TextField(
-                controller: _transactionAmountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  prefixIcon: isExpense
-                      ? const Icon(
-                          Symbols.currency_bitcoin,
-                          color: Colors.red,
-                        )
-                      : const Icon(
-                          Symbols.currency_bitcoin,
-                          color: Colors.green,
-                        ),
-                  filled: true,
-                  fillColor: Colors.blueGrey,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(20),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    'Add Transaction',
+                    style: TextStyle(
+                      fontSize: 32,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(
-            height: 24,
-          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ///Button to change the transaction type to Expense
+                  OutlinedButton(
+                    onPressed: () {
+                      context
+                          .read<AddTransactionBloc>()
+                          .add(UpdateIsExpense(true));
+                      context
+                          .read<AddTransactionBloc>()
+                          .add(UpdateIsIncome(false));
+                    },
+                    style: state.isExpense
+                        ? OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.green,
+                              // Border color when button is not pressed
+                              width:
+                                  4, // Border width when button is not pressed
+                            ),
+                          )
+                        :
 
-          //Category DropDown
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: SizedBox(
-              width: double.infinity,
-              child: buildCategoryFormField(),
-            ),
-          ),
-
-          if (isCategoryExpanded)
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blueGrey,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+                        ///Button to change the transaction type to Income
+                        OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.white,
+                              // Border color when button is not pressed
+                              width:
+                                  4, // Border width when button is not pressed
+                            ),
+                          ),
+                    child: const Text('Expense'),
                   ),
-                ),
-                width: double.infinity,
-                height: 300,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 250,
-                      child: GridView.builder(
-                        padding: const EdgeInsets.only(
-                          right: 8,
-                        ),
-                        shrinkWrap: true,
-                        itemCount: defaultCategory.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                        ),
-                        itemBuilder: (context, int index) {
-                          _logger.d(defaultCategory[index]);
-                          return InputChip(
-                            backgroundColor:
-                                colorMapper[defaultCategory[index].colorName],
-                            avatar: Icon(
-                              myIcons[
-                                  defaultCategory[index].iconName.toString()],
+                  OutlinedButton(
+                    onPressed: () {
+                      context
+                          .read<AddTransactionBloc>()
+                          .add(UpdateIsExpense(false));
+                      context
+                          .read<AddTransactionBloc>()
+                          .add(UpdateIsIncome(true));
+
+                      // Handle button pres
+                    },
+                    style: state.isIncome
+                        ? OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.green,
+                              // Border color when button is not pressed
+                              width:
+                                  4, // Border width when button is not pressed
                             ),
-                            label: Text(
-                              defaultCategory[index].name.toString(),
-                              style: const TextStyle(color: Colors.black87),
+                          )
+                        : OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.white,
+                              // Border color when button is not pressed
+                              width:
+                                  4, // Border width when button is not pressed
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _tempCategory = TransactionCategory()
-                                  ..colorName = defaultCategory[index].colorName
-                                  ..name = defaultCategory[index].name
-                                  ..iconName = defaultCategory[index].iconName;
-                                _logger.e(_tempCategory);
-                                isCategorySelected = true;
-                              });
-                            },
+                          ),
+                    child: const Text('Income'),
+                  ),
+                ],
+              ),
+
+              //Expense Display
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: TextField(
+                    // controller: _transactionAmountController,
+                    onChanged: (value) {
+                      context.read<AddTransactionBloc>().add(
+                            UpdateTransactionAmountField(value),
                           );
-                        },
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      prefixIcon: state.isExpense
+                          ? const Icon(
+                              Symbols.currency_bitcoin,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Symbols.currency_bitcoin,
+                              color: Colors.green,
+                            ),
+                      filled: true,
+                      fillColor: Colors.blueGrey,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    ElevatedButton.icon(
-                      onPressed: _showAddNewCategoryPicker,
-                      icon: const Icon(Symbols.add),
-                      label: const Text('Add a New Category'),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            )
-          else
-            Container(),
+              const SizedBox(
+                height: 24,
+              ),
+
+              //Category DropDown
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: TextFormField(
+                    onTap: () => context.read<AddTransactionBloc>().add(
+                        UpdateIsCategoryExpanded(!state.isCategoryExpanded)),
+                    readOnly: true,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                      hintText: !state.isCategorySelected
+                          ? 'Category'
+                          : state.tempCategory.name,
+                      prefixIcon: !state.isCategorySelected
+                          ? const Icon(
+                              Icons.category,
+                              color: Colors.white,
+                            )
+                          : Icon(
+                              myIcons[state.tempCategory.iconName.toString()],
+                              color: Colors.white,
+                            ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Symbols.add),
+                        onPressed: () {
+                          context.read<AddTransactionBloc>().add(
+                              UpdateIsCategoryExpanded(
+                                  !state.isCategoryExpanded));
+                        },
+                        color: Colors.white,
+                      ),
+                      hintStyle:
+                          const TextStyle(color: Colors.white, fontSize: 20),
+                      filled: true,
+                      fillColor: Colors.blueGrey,
+                      border: state.isCategoryExpanded
+                          ? const OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            )
+                          : OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+
+              if (state.isCategoryExpanded)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.blueGrey,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                    ),
+                    width: double.infinity,
+                    height: 300,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 250,
+                          child: GridView.builder(
+                            padding: const EdgeInsets.only(
+                              right: 8,
+                            ),
+                            shrinkWrap: true,
+                            itemCount: state.categories.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                            ),
+                            itemBuilder: (context, int index) {
+                              return InputChip(
+                                backgroundColor: colorMapper[
+                                    state.categories[index].colorName],
+                                avatar: Icon(
+                                  myIcons[state.categories[index].iconName
+                                      .toString()],
+                                ),
+                                label: Text(
+                                  state.categories[index].name.toString(),
+                                  style: const TextStyle(color: Colors.black87),
+                                ),
+                                onPressed: () {
+                                  context.read<AddTransactionBloc>().add(
+                                        UpdateTempCategory(
+                                          state.categories[index],
+                                        ),
+                                      );
+                                  context.read<AddTransactionBloc>().add(
+                                      UpdateIsCategoryExpanded(
+                                          !state.isColorExpanded));
+
+                                  ///Need to set the textfield to the name and icon of the category
+                                  context.read<AddTransactionBloc>().add(
+                                      UpdateIsCategorySelected(
+                                          !state.isCategorySelected));
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        // ElevatedButton.icon(
+                        //   onPressed: _showAddNewCategoryPicker(context),
+                        //   icon: const Icon(Symbols.add),
+                        //   label: const Text('Add a New Category'),
+                        // ),
+                        AddNewCategoryButton(
+                          onPressed: () => _showAddNewCategoryPicker(context),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              else
+                Container(),
 
 //Date FormField and picker
 
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: TextFormField(
-                onTap: () => buildShowDatePicker(context),
-                readOnly: true,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  hintText: !isDateChosen ? 'Date' : _dateTextController.text,
-                  hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
-                  prefixIcon: const Icon(
-                    Icons.calendar_month,
-                    color: Colors.white,
-                  ),
-                  suffixIcon: const Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
-                  filled: true,
-                  fillColor: Colors.blueGrey,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              height: 50,
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
-                    Theme.of(context).colorScheme.onTertiary,
-                  ),
-                ),
-                onPressed: () {
-                  if (isIncome) {
-                    final newTransaction = Transaction()
-                      ..timestamp = DateTime.now()
-                      ..amount = int.parse(_transactionAmountController.text)
-                      ..transactionCategory.value = _tempCategory
-                      ..dateOfTransaction = _tempDate
-                      ..description = ''
-                      ..note = ''
-                      ..isExpense = false
-                      ..isIncome = true;
-
-                    _logger.d(
-                      'This is the temporary Expense object: $newTransaction',
-                    );
-                    context
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: TextFormField(
+                    onChanged: (value) => context
                         .read<AddTransactionBloc>()
-                        .add(AddTransaction(newTransaction));
-                    Navigator.of(context).pop();
-                  } else {
-                    final newTransaction = Transaction()
-                      ..timestamp = DateTime.now()
-                      ..amount = int.parse(_transactionAmountController.text)
-                      ..transactionCategory.value = _tempCategory
-                      ..dateOfTransaction = _tempDate
-                      ..description = ''
-                      ..note = ''
-                      ..isExpense = true
-                      ..isIncome = false;
-                    context
-                        .read<AddTransactionBloc>()
-                        .add(AddTransaction(newTransaction));
-                    Navigator.of(context).pop();
-                    _logger.d(
-                      'This is the temporary Expense object: $newTransaction',
-                    );
-                  }
-                },
-                child: isExpense
-                    ? const Text(
-                        'Save Expense',
-                        style: TextStyle(fontSize: 24),
-                      )
-                    : const Text(
-                        'Save Income',
-                        style: TextStyle(fontSize: 24),
+                        .add(UpdateDateTextField(value)),
+                    onTap: () => buildShowDatePicker(context),
+                    readOnly: true,
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                      hintText: !state.isDateChosen
+                          ? 'Date'
+                          : state.dateTextField.toString(),
+                      hintStyle:
+                          const TextStyle(color: Colors.white, fontSize: 20),
+                      prefixIcon: const Icon(
+                        Icons.calendar_month,
+                        color: Colors.white,
                       ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> buildShowDatePicker(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2024),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-    if (picked != null) {
-      setState(() {
-        _dateTextController.text = picked.toString().substring(0, 10);
-        _tempDate = picked;
-        isDateChosen = true;
-      });
-    }
-  }
-
-  TextFormField buildCategoryFormField() {
-    return TextFormField(
-      onTap: () => setState(() {
-        isCategoryExpanded = !isCategoryExpanded;
-      }),
-      readOnly: true,
-      textAlignVertical: TextAlignVertical.center,
-      decoration: InputDecoration(
-        hintText: !isCategorySelected ? 'Category' : _tempCategory.name,
-        prefixIcon: !isCategorySelected
-            ? const Icon(
-                Icons.category,
-                color: Colors.white,
-              )
-            : Icon(
-                myIcons[_tempCategory.iconName.toString()],
-                color: Colors.white,
-              ),
-        suffixIcon: IconButton(
-          icon: const Icon(Symbols.add),
-          onPressed: () {
-            setState(() {
-              isCategoryExpanded = !isCategoryExpanded;
-            });
-          },
-          color: Colors.white,
-        ),
-        hintStyle: const TextStyle(color: Colors.white, fontSize: 20),
-        filled: true,
-        fillColor: Colors.blueGrey,
-        border: isCategoryExpanded
-            ? const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                      suffixIcon: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      filled: true,
+                      fillColor: Colors.blueGrey,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
                 ),
-              )
-            : OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(20),
               ),
-      ),
-    );
-  }
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).colorScheme.onTertiary,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (state.isIncome) {
+                        final newTransaction = Transaction()
+                          ..timestamp = DateTime.now()
+                          ..amount = int.parse(state.transactionAmount)
+                          ..transactionCategory.value = state.tempCategory
+                          ..dateOfTransaction = state.tempDate
+                          ..description = ''
+                          ..note = ''
+                          ..isExpense = false
+                          ..isIncome = true;
+                        //Add the new transaction to the DB
+                        context
+                            .read<AddTransactionBloc>()
+                            .add(AddTransaction(newTransaction));
+                        context.read<AddTransactionBloc>().add(
+                            SaveTransactionToCategory(
+                                newTransaction, state.tempCategory.id!));
 
-  Future<void> _showAddNewCategoryPicker() {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        var isCategoryExpanded = false;
-        var isColorExpanded = false;
-        return AlertDialog(
-          content: StatefulBuilder(
-            builder: (
-              BuildContext context,
-              void Function(void Function()) setState,
-            ) {
-              return SizedBox(
-                height: double.infinity,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    const TextField(
-                      readOnly: true,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        label: Text(
-                          'Choose a Category',
-                          style: TextStyle(fontSize: 32),
-                        ),
-                        // hintText: 'Choose A Category',
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: const Icon(Symbols.add),
-                        filled: true,
-                        fillColor: Theme.of(context).primaryColor,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(
-                            20,
+                        Navigator.of(context).pop();
+                      } else {
+                        final newTransaction = Transaction()
+                          ..timestamp = DateTime.now()
+                          ..amount = int.parse(state.transactionAmount)
+                          ..transactionCategory.value = state.tempCategory
+                          ..dateOfTransaction = state.tempDate
+                          ..description = ''
+                          ..note = ''
+                          ..isExpense = true
+                          ..isIncome = false;
+
+                        print(
+                          'This is the temporary Expense object: $newTransaction',
+                        );
+                        //Add the new transaction to the DB
+                        context
+                            .read<AddTransactionBloc>()
+                            .add(AddTransaction(newTransaction));
+                        context.read<AddTransactionBloc>().add(
+                            SaveTransactionToCategory(
+                                newTransaction, state.tempCategory.id!));
+
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: state.isExpense
+                        ? const Text(
+                            'Save Expense',
+                            style: TextStyle(fontSize: 24),
+                          )
+                        : const Text(
+                            'Save Income',
+                            style: TextStyle(fontSize: 24),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      onTap: () {
-                        setState(() {
-                          isCategoryExpanded = !isCategoryExpanded;
-                          isColorExpanded = false;
-                        });
-                      },
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Icon',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: selectedIcon,
-                        ),
-                        // suffixIcon: isCategoryExpanded
-                        //     ? const Icon(
-                        //         CupertinoIcons.chevron_down,
-                        //         color: Colors.white,
-                        //       )
-                        //     : const Icon(
-                        //         CupertinoIcons
-                        //             .chevron_forward,
-                        //         color: Colors.white,
-                        //       ),
-                        filled: true,
-                        fillColor: Theme.of(context).primaryColor,
-                        border: isCategoryExpanded
-                            ? const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              )
-                            : OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                      ),
-                    ),
-                    if (isCategoryExpanded)
-                      Container(
-                        height: 200,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: GridView.builder(
-                            itemCount: categoryWidgets.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                            ),
-                            itemBuilder: (context, int i) {
-                              return GestureDetector(
-                                onTap: () => setState(() {
-                                  selectedIcon = categoryWidgets[i];
-                                }),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 8,
-                                      color: selectedIcon == categoryWidgets[i]
-                                          ? Colors.green
-                                          : Colors.blueGrey,
-                                    ),
-                                  ),
-                                  child: categoryWidgets[i],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    else
-                      Container(),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      onTap: () {
-                        setState(() {
-                          isColorExpanded = !isColorExpanded;
-                          isCategoryExpanded = false;
-                        });
-                      },
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Color',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: isColorExpanded
-                            ? const Icon(
-                                CupertinoIcons.chevron_down,
-                                color: Colors.white,
-                              )
-                            : const Icon(
-                                CupertinoIcons.chevron_forward,
-                                color: Colors.white,
-                              ),
-                        filled: true,
-                        fillColor: selectedColor,
-                        border: isColorExpanded
-                            ? const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              )
-                            : OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                      ),
-                    ),
-                    if (isColorExpanded)
-                      SizedBox(
-                        height: 200,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: GridView.builder(
-                            itemCount: colorPickerWidgets.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                            ),
-                            itemBuilder: (context, int i) {
-                              return GestureDetector(
-                                onTap: () => setState(() {
-                                  selectedColor = colorPickerWidgets[i];
-                                }),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 6,
-                                      color:
-                                          selectedColor == colorPickerWidgets[i]
-                                              ? Colors.green
-                                              : Colors.blueGrey,
-                                    ),
-                                  ),
-                                  child: ColoredBox(
-                                    color: colorPickerWidgets[i],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    else
-                      Container(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.onTertiary,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Save New Category',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         );
       },
+    );
+  }
+}
+
+Future<void> buildShowDatePicker(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2024),
+    lastDate: DateTime.now().add(const Duration(days: 365)),
+  );
+  if (picked != null) {
+    context
+        .read<AddTransactionBloc>()
+        .add(UpdateTempDate(picked));
+
+    context
+        .read<AddTransactionBloc>()
+        .add(UpdateDateTextField(picked.toString().substring(0, 10)));
+    context.read<AddTransactionBloc>().add(UpdateIsDateChoosen(true));
+  }
+}
+
+Future<void> _showAddNewCategoryPicker(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return BlocBuilder<AddTransactionBloc, AddTransactionState>(
+        builder: (context, state) {
+          return AlertDialog(
+            content: StatefulBuilder(
+              builder: (
+                BuildContext context,
+                void Function(void Function()) setState,
+              ) {
+                return SizedBox(
+                  height: double.infinity,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      const TextField(
+                        readOnly: true,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          label: Text(
+                            'Choose a Category',
+                            style: TextStyle(fontSize: 32),
+                          ),
+                          // hintText: 'Choose A Category',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        readOnly: true,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          hintText: 'Name',
+                          hintStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          suffixIcon: const Icon(Symbols.add),
+                          filled: true,
+                          fillColor: Theme.of(context).primaryColor,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(
+                              20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        onTap: () {
+                          context.read<AddTransactionBloc>().add(
+                              UpdateIsCategoryExpanded(
+                                  !state.isCategoryExpanded));
+                          context
+                              .read<AddTransactionBloc>()
+                              .add(UpdateIsColorExpanded(false));
+                        },
+                        readOnly: true,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          hintText: 'Icon',
+                          hintStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: state.selectedIcon,
+                          ),
+                          // suffixIcon: isCategoryExpanded
+                          //     ? const Icon(
+                          //         CupertinoIcons.chevron_down,
+                          //         color: Colors.white,
+                          //       )
+                          //     : const Icon(
+                          //         CupertinoIcons
+                          //             .chevron_forward,
+                          //         color: Colors.white,
+                          //       ),
+                          filled: true,
+                          fillColor: Theme.of(context).primaryColor,
+                          border: state.isCategoryExpanded
+                              ? const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                )
+                              : OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                        ),
+                      ),
+                      if (state.isCategoryExpanded)
+                        Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            child: GridView.builder(
+                              itemCount: state.categories.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                              ),
+                              itemBuilder: (context, int i) {
+                                return GestureDetector(
+                                  onTap: () =>
+                                      context.read<AddTransactionBloc>().add(
+                                            UpdateTempCategory(
+                                              state.categories[i],
+                                            ),
+                                          ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 8,
+                                        color: state.selectedIcon ==
+                                                state.categories[i]
+                                            ? Colors.green
+                                            : Colors.blueGrey,
+                                      ),
+                                    ),
+
+                                    ///Todo there is something wrong here.
+                                    child: categoryWidgets[i],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      else
+                        Container(),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextFormField(
+                        onTap: () {
+                          context.read<AddTransactionBloc>().add(
+                              UpdateIsColorExpanded(!state.isColorExpanded));
+                          context
+                              .read<AddTransactionBloc>()
+                              .add(UpdateIsCategoryExpanded(false));
+                        },
+                        readOnly: true,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          hintText: 'Color',
+                          hintStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          suffixIcon: state.isColorExpanded
+                              ? const Icon(
+                                  CupertinoIcons.chevron_down,
+                                  color: Colors.white,
+                                )
+                              : const Icon(
+                                  CupertinoIcons.chevron_forward,
+                                  color: Colors.white,
+                                ),
+                          filled: true,
+                          fillColor: state.selectedColor,
+                          border: state.isColorExpanded
+                              ? const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  ),
+                                )
+                              : OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                        ),
+                      ),
+                      if (state.isColorExpanded)
+                        SizedBox(
+                          height: 200,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            child: GridView.builder(
+                              itemCount: colorPickerWidgets.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                              ),
+                              itemBuilder: (context, int i) {
+                                return GestureDetector(
+                                  onTap: () =>
+                                      context.read<AddTransactionBloc>().add(
+                                            UpdateSelectedColor(
+                                              colorPickerWidgets[i],
+                                            ),
+                                          ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 6,
+                                        color: state.selectedColor ==
+                                                colorPickerWidgets[i]
+                                            ? Colors.green
+                                            : Colors.blueGrey,
+                                      ),
+                                    ),
+                                    child: ColoredBox(
+                                      color: colorPickerWidgets[i],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      else
+                        Container(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.onTertiary,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Save New Category',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+class AddNewCategoryButton extends StatelessWidget {
+  final Function onPressed;
+
+  AddNewCategoryButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () => onPressed(),
+      icon: const Icon(Symbols.add),
+      label: const Text('Add a New Category'),
     );
   }
 }

@@ -11,6 +11,7 @@ dependencies:
   isar: any
   isar_flutter_libs: any
   isar_generator: any
+  logger: ^2.3.0
 
 
 dev_dependencies:

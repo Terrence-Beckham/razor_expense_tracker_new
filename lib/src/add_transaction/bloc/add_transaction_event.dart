@@ -80,6 +80,16 @@ final class UpdateIsCategoryExpanded extends AddTransactionEvent {
   @override
   List<Object> get props => [isCategoryExpanded];
 }
+
+///This class updates the isColorExpanded field in the AddTransactionState class
+final class UpdateIsColorExpanded extends AddTransactionEvent {
+  const UpdateIsColorExpanded(this.isColorExpanded);
+
+  final bool isColorExpanded;
+
+  @override
+  List<Object> get props => [isColorExpanded];
+}
 /// This class updates the isCategorySelected field in the AddTransactionState class
 final class UpdateIsCategorySelected extends AddTransactionEvent {
   const UpdateIsCategorySelected(this.isCategorySelected);
@@ -99,13 +109,13 @@ final class UpdateTempCategory extends AddTransactionEvent {
   List<Object> get props => [category];
 }
 /// This class updates the dateTextController field in the AddTransactionState class
-final class UpdateDateTextController extends AddTransactionEvent {
-  const UpdateDateTextController(this.dateTextController);
+final class UpdateDateTextField extends AddTransactionEvent {
+  const UpdateDateTextField(this.dateTextValue);
 
-  final String dateTextController;
+  final String dateTextValue;
 
   @override
-  List<Object> get props => [dateTextController];
+  List<Object> get props => [dateTextValue];
 }
 /// This class updates the transactionAmountController field in the AddTransactionState class
 final class UpdateTransactionAmountField extends AddTransactionEvent {
@@ -129,7 +139,7 @@ final class UpdateIsDateChoosen extends AddTransactionEvent {
 final class UpdateTempDate extends AddTransactionEvent {
   const UpdateTempDate(this.tempDate);
 
-  final String tempDate;
+  final DateTime tempDate;
 
   @override
   List<Object> get props => [tempDate];
@@ -163,4 +173,15 @@ final class UpdateCategories extends AddTransactionEvent {
 
   @override
   List<Object> get props => [categories];
+}
+
+///Save Transaction to TransactionCategory
+final class SaveTransactionToCategory extends AddTransactionEvent {
+  const SaveTransactionToCategory(this.transaction, this.categoryId);
+
+  final Transaction transaction;
+  final int categoryId;
+
+  @override
+  List<Object> get props => [transaction, categoryId];
 }

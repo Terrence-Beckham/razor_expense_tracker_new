@@ -30,6 +30,11 @@ class TransactionsRepository {
   Future<void> saveTransaction(Transaction transaction) =>
       _transactionsApi.saveTransaction(transaction);
 
+  ///Saves a [Transaction] to a [TransactionCategory]
+  Future<void> saveTransactionToCategory(
+          Transaction transaction, int categoryId,) =>
+      _transactionsApi.saveTransactionToCategory(transaction, categoryId);
+
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error

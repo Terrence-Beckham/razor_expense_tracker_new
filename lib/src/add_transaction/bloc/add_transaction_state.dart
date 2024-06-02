@@ -11,15 +11,17 @@ class AddTransactionState extends Equatable {
   final bool isExpense;
   final bool isIncome;
   final bool isCategoryExpanded;
+  final bool  isColorExpanded;
   final bool isCategorySelected;
   final TransactionCategory tempCategory;
   final String dateTextField;
-  final String transactionAmountController;
-  final bool isDateChoosen;
+  final String transactionAmount;
+  final bool isDateChosen;
   final DateTime tempDate;
   final Transaction tempTransaction;
 
   AddTransactionState({
+    required this.isColorExpanded,
     required this.tempDate,
     required this.categories,
     required this.status,
@@ -30,10 +32,10 @@ class AddTransactionState extends Equatable {
     required this.isIncome,
     required this.isCategoryExpanded,
     required this.isCategorySelected,
-    required this.isDateChoosen,
+    required this.isDateChosen,
     required this.tempCategory,
     required this.dateTextField,
-    required this.transactionAmountController,
+    required this.transactionAmount,
     required this.tempTransaction,
   });
 
@@ -48,13 +50,15 @@ class AddTransactionState extends Equatable {
     bool Function()? isCategoryExpanded,
     bool Function()? isCategorySelected,
     TransactionCategory Function()? tempCategory,
-    String Function()? dateTextController,
+    String Function()? dateTextField,
     String Function()? transactionAmountController,
     bool Function()? isDateChoosen,
+    bool Function()? isColorExpanded,
     DateTime Function()? tempDate,
     Transaction Function()? tempTransaction,
   }) {
     return AddTransactionState(
+      isColorExpanded: isColorExpanded != null ? isColorExpanded() : this.isColorExpanded,
       status: status != null ? status() : this.status,
       categories: categories != null ? categories() : this.categories,
       selectedIcon: selectedIcon != null ? selectedIcon() : this.selectedIcon,
@@ -65,9 +69,9 @@ class AddTransactionState extends Equatable {
       isCategoryExpanded: isCategoryExpanded != null ? isCategoryExpanded() : this.isCategoryExpanded,
       isCategorySelected: isCategorySelected != null ? isCategorySelected() : this.isCategorySelected,
       tempCategory: tempCategory != null ? tempCategory() : this.tempCategory,
-      dateTextField: dateTextController != null ? dateTextController() : this.dateTextField,
-      transactionAmountController: transactionAmountController != null ? transactionAmountController() : this.transactionAmountController,
-      isDateChoosen: isDateChoosen != null ? isDateChoosen() : this.isDateChoosen,
+      dateTextField: dateTextField != null ? dateTextField() : this.dateTextField,
+      transactionAmount: transactionAmountController != null ? transactionAmountController() : this.transactionAmount,
+      isDateChosen: isDateChoosen != null ? isDateChoosen() : this.isDateChosen,
       tempDate: tempDate != null ? tempDate() : this.tempDate,
       tempTransaction: tempTransaction != null ? tempTransaction() : this.tempTransaction,
     );
@@ -76,6 +80,7 @@ class AddTransactionState extends Equatable {
   AddTransactionState.empty()
       : status = AddTransactionStatus.initial,
         categories = [],
+        isColorExpanded = false,
         selectedIcon = Icon(Icons.category),
         selectedColor = Colors.red,
         selectedTransactionType = "income",
@@ -85,8 +90,8 @@ class AddTransactionState extends Equatable {
         isCategorySelected = false,
         tempCategory = TransactionCategory(),
         dateTextField = 'Choose Date',
-        transactionAmountController ='0',
-        isDateChoosen = false,
+        transactionAmount ='0',
+        isDateChosen = false,
         tempDate = DateTime.now(),
         tempTransaction = Transaction();
 
@@ -103,8 +108,8 @@ class AddTransactionState extends Equatable {
         isCategorySelected,
         tempCategory,
         dateTextField,
-        transactionAmountController,
-        isDateChoosen,
+        transactionAmount,
+        isDateChosen,
         tempDate,
         tempTransaction,
       ];
