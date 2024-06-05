@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:logger/logger.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-import 'package:logger/logger.dart';
 
 part 'stats_event.dart';
 part 'stats_state.dart';
@@ -13,13 +13,13 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   StatsBloc(this._transactionsRepository)
       : _logger = Logger(),
         super(const StatsState()) {
-    on<StatsInitialEvent>(_subscribeToExpenseData);
-    on<LoadIncomeDataEvent>(_subscribeToIncomeData);
+    on<SubscribedToCategoryAmountsEvent>(_subscribeToCategoryAmounts);
     on<DisplayIncomePieChartStats>(_displayIncomePieChart);
     on<DisplayExpensePieChartStats>(_displayExpensePieChart);
+    // on<CalculateAmountsPerCategory>(_CalculateAmountsPerCategory);
   }
 
-  final TransactionsRepository  _transactionsRepository;
+  final TransactionsRepository _transactionsRepository;
   final Logger _logger;
 
   List<TransactionCategory> calculateCategories(
@@ -38,55 +38,100 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 // Future<List<Expense>> getAllExpenses()async{
 //
 // }
-  Future<StatsState> _subscribeToExpenseData(
-    StatsInitialEvent event,
-    Emitter<StatsState> emit,
-  ) async {
-    return Future.error('error');
-    // await emit.forEach<List<PieChartDataObject>>(
-    //   _transactionsRepository.getTransactionsByCategory(),
-    //   onData: (expenseCategoryTotals) {
-    //     // _logger.d('These are the category totals  : $categoryTotals');
-    //     return state.copyWith(
-    //       status: () => StatsStatus.success,
-    //       // monthlyExpenses: () => expense.reversed.toList(),
-    //       expenseCategoryTotals: () => expenseCategoryTotals,
-    //     );
-    //   },
-    // );
-    // return state.copyWith(
-    //   expenseCategoryTotals: () => [],
-    // );
-  }
+//   Future<StatsState> _subscribeToExpenseData(
+//     StatsInitialEvent event,
+//     Emitter<StatsState> emit,
+//   ) async {final incomes = _transactionsRepository.getIncomeByCategory();
+//     _logger.d('These are the IcomeByCategory $incomes');
+//     await emit.forEach<List<PieChartDataObject>>(
+//       _transactionsRepository.getIncomeByCategory(),
+//       onData: (expenseCategoryTotals) {
+//         // _logger.d('These are the category totals  : $categoryTotals');
+//         return state.copyWith(
+//           status: () => StatsStatus.success,
+//           // monthlyExpenses: () => expense.reversed.toList(),
+//           expenseCategoryTotals: () => expenseCategoryTotals,
+//         );
+//       },
+//     );
+//     return state.copyWith(
+//       expenseCategoryTotals: () => [],
+//     );
+//   }
 
-  Future<StatsState> _subscribeToIncomeData(
-    LoadIncomeDataEvent event,
+  FutureOr<void> _subscribeToCategoryAmounts(
+    SubscribedToCategoryAmountsEvent event,
     Emitter<StatsState> emit,
   ) async {
-    await emit.forEach<List<PieChartDataObject>>(
-      _transactionsRepository.getIncomeByCategory(),
-      onData: (incomeCategoryTotals) {
-        // _logger.d('These are the category totals  : $categoryTotals');
+    emit(
+      state.copyWith(
+        status: () => StatsStatus.loading,
+      ),
+    );
+    await emit.forEach<List<TransactionCategory>>(
+      _transactionsRepository.getCategories(),
+      onData: (transactionCategories) {
+        final categories =loadCategoryAmounts(transactionCategories);
+        // final categories = transactionCategories;
+
+       // final uniqueCategories = loadCategoryAmounts(categories);
+        _logger.i(
+            'These are the category totals in the stream  : ${transactionCategories}');
         return state.copyWith(
           status: () => StatsStatus.success,
           // monthlyExpenses: () => expense.reversed.toList(),
-          incomeCategoryTotals: () => incomeCategoryTotals,
+          transactionCategories: () => categories,
         );
       },
     );
-    return state.copyWith(
-      incomeCategoryTotals: () => [],
-    );
+  }
+
+  ///This method calculates the total amount of expenses by category
+  List<TransactionCategory> loadCategoryAmounts(
+      List<TransactionCategory> categories) {
+    _logger.d('these are the categories in loadCategory $categories');
+
+    final categoriesWithExpenses = <TransactionCategory>[];
+    final uniqueCategories = <TransactionCategory>[];
+    for (final category in categories) {
+      // _logger.d('These are the expenses in the for loop ${category.transactions}');
+      if (category.transactions.isNotEmpty) {
+        categoriesWithExpenses.add(category);
+        _logger.e(
+          'These are the categories with expenses $categoriesWithExpenses',
+        );
+      }
+    }
+    for (final category in categoriesWithExpenses) {
+      final total = category.transactions.fold(
+        0,
+        (previousValue, element) => previousValue + element.amount,
+      );
+      _logger.i('This is the numnber of transactions per ${category.name}:  ${category.transactions.length}');
+      category.amount = total;
+      _logger.e(
+          'This is the total amount for the categories that have expenses ${category.name} $total');
+      uniqueCategories.add(category);
+
+      // final uniqueCategories = categories.toSet().toList();
+
+      _logger
+          .e('These are the categories with expenses $categoriesWithExpenses');
+      return uniqueCategories;
+    }
+    return uniqueCategories;
   }
 
   FutureOr<void> _displayIncomePieChart(
     DisplayIncomePieChartStats event,
     Emitter<StatsState> emit,
   ) {
-    emit(state.copyWith(
-      showTransactions: () =>  false,
-      status: () => StatsStatus.success,
-    ),);
+    emit(
+      state.copyWith(
+        showTransactions: () => false,
+        status: () => StatsStatus.success,
+      ),
+    );
     _logger
       ..d('display Income Pie chart should be true')
       ..d('${state.showExpenses}');
@@ -97,10 +142,12 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     Emitter<StatsState> emit,
   ) {
     {
-      emit(state.copyWith(
-        showTransactions: () => true,
-        status: () => StatsStatus.success,
-      ),);
+      emit(
+        state.copyWith(
+          showTransactions: () => true,
+          status: () => StatsStatus.success,
+        ),
+      );
     }
   }
 }

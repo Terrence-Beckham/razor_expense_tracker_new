@@ -26,7 +26,7 @@ class TransactionsOverviewBloc
     InitialDataEvent event,
     Emitter<TransactionsOverviewState> emit,
   ) async {
-    state.copyWith(status: ()=> TransactionsOverviewStatus.success);
+    state.copyWith(status: ()=> TransactionsOverviewStatus.loading);
 
     await emit.forEach<List<Transaction>>(
       _transactionsRepository.getTransactions(),

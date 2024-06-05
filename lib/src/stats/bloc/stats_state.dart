@@ -8,6 +8,7 @@ final class StatsState extends Equatable {
     this.monthlyTransactions = const [],
     this.incomeCategoryTotals = const [],
     this.expenseCategoryTotals = const [],
+    this.transactionCategories = const [],
     this.showExpenses = true,
   });
 
@@ -15,6 +16,7 @@ final class StatsState extends Equatable {
   final StatsStatus status;
   final List<PieChartDataObject> expenseCategoryTotals;
   final List<PieChartDataObject> incomeCategoryTotals;
+  final List<TransactionCategory> transactionCategories;
   final bool showExpenses;
 
   StatsState copyWith({
@@ -22,12 +24,18 @@ final class StatsState extends Equatable {
     StatsStatus Function()? status,
     List<PieChartDataObject> Function()? incomeCategoryTotals,
     List<PieChartDataObject> Function()? expenseCategoryTotals,
+    List<TransactionCategory> Function()? transactionCategories,
     bool Function()? showTransactions,
   }) {
     return StatsState(
-      showExpenses: showTransactions != null ? showTransactions() : this.showExpenses,
-      monthlyTransactions:
-          monthlyTransactions != null ? monthlyTransactions() : this.monthlyTransactions,
+      showExpenses:
+          showTransactions != null ? showTransactions() : this.showExpenses,
+      transactionCategories: transactionCategories != null
+          ? transactionCategories()
+          : this.transactionCategories,
+      monthlyTransactions: monthlyTransactions != null
+          ? monthlyTransactions()
+          : this.monthlyTransactions,
       status: status != null ? status() : this.status,
       incomeCategoryTotals: incomeCategoryTotals != null
           ? incomeCategoryTotals()
@@ -44,6 +52,7 @@ final class StatsState extends Equatable {
         status,
         incomeCategoryTotals,
         expenseCategoryTotals,
-        showExpenses
-      ,];
+        showExpenses,
+        transactionCategories,
+      ];
 }

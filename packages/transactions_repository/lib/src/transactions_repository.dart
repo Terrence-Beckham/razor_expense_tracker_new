@@ -12,17 +12,19 @@ class TransactionsRepository {
 
   final TransactionsApi _transactionsApi;
 
+
   /// Provides a [Stream] of all transactions.
   Stream<List<Transaction>> getTransactions() =>
       _transactionsApi.getTransactions();
 
   ///provides a [Stream] of all categories
-  Stream<List<TransactionCategory>> getTransactionCategories() =>
-      _transactionsApi.getTransactionCategories();
+  Stream<List<TransactionCategory>> getCategories() =>
+      _transactionsApi.getCategories();
 
-  ///Provides of [Stream] of all income per [TransactionCategory]
-  Stream<List<PieChartDataObject>> getIncomeByCategory() =>
-      _transactionsApi.getTransactionsByCategory();
+  ///Calculates the total amount of expenses by category
+  ///and adds them to the stream
+  Stream<List<TransactionCategory>> subscribeToCategoryAmounts() =>
+      _transactionsApi.subscribeToCategoryAmounts();
 
   /// Saves a [Transaction].
   ///
@@ -31,8 +33,8 @@ class TransactionsRepository {
       _transactionsApi.saveTransaction(transaction);
 
   ///Saves a [Transaction] to a [TransactionCategory]
-  Future<void> saveTransactionToCategory(
-          Transaction transaction, int categoryId,) =>
+  Future<void> saveTransactionToCategory(Transaction transaction,
+      int categoryId,) =>
       _transactionsApi.saveTransactionToCategory(transaction, categoryId);
 
   /// Deletes the `transaction` with the given id.
@@ -41,4 +43,8 @@ class TransactionsRepository {
   /// thrown.
   Future<void> deleteTransaction(Id id) =>
       _transactionsApi.deleteTransaction(id);
+
+
 }
+
+

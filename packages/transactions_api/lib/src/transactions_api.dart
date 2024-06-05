@@ -15,29 +15,29 @@ abstract class TransactionsApi {
 
   /// Provides a [Stream] of all todos.
   Stream<List<Transaction>> getTransactions();
- ///provides a [Stream] of all categories
-  Stream<List<TransactionCategory>> getTransactionCategories();
+
+  ///provides a [Stream] of all categories
+  Stream<List<TransactionCategory>> getCategories();
 
 
-  /// Provides a [Stream] of transactions by category
-  Stream<List<PieChartDataObject>> getTransactionsByCategory();
+  ///Add a stream of transactions by category
+  Stream<List<TransactionCategory>> subscribeToCategoryAmounts();
 
   /// Saves a [transaction].
   ///
   /// If a [Transaction] with the same id already exists, it will be replaced.
   Future<void> saveTransaction(Transaction transaction);
 
-///Saves a [Transaction] to a [TransactionCategory]
- Future<void> saveTransactionToCategory(Transaction transaction, int categoryId);
+  ///Saves a [Transaction] to a [TransactionCategory]
+  Future<void> saveTransactionToCategory(
+      Transaction transaction, int categoryId);
+
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a
   /// [TransactionNotFoundException] error is
   /// thrown.
   Future<void> deleteTransaction(Id id);
-
-
-
 
   /// Closes the client and frees up any resources.
   Future<void> close();

@@ -1,12 +1,11 @@
-import 'package:transactions_repository/transactions_repository.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
+import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../widgets/konstants.dart';
-import '../temp_stats_bloc/temp_stats_bloc.dart';
 
 class StatsOverviewPage extends StatelessWidget {
   const StatsOverviewPage({super.key});
@@ -14,23 +13,23 @@ class StatsOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TempStatsBloc(
-        // context.read<TransactionsRepository>(),
-      ),child: emptyStatsView(),
-          ///Todo readd this code when I figure out how to get the data from the repository
-        // ..add(
-        //   const StatsInitialEvent(),
-        // )
-        // ..add(const LoadIncomeDataEvent()),
-    );
+        create: (context) => StatsBloc(
+              context.read<TransactionsRepository>(),
+            )
+              ..add(const SubscribedToCategoryAmountsEvent()),
+        child: StatsView());
+
+    // );
   }
 }
-class emptyStatsView extends StatelessWidget{
+
+class emptyStatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-return Center(child: Text('No data to display'),);
+    return Center(
+      child: Text('No data to display'),
+    );
   }
-
 }
 
 class StatsView extends StatelessWidget {
@@ -73,7 +72,7 @@ class StatsSuccessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
-        _logger.d('These are the category totals $state.categoryTotals');
+        _logger.d('These are the category totals in the stats view ${state.transactionCategories}');
         return Scaffold(
           appBar: AppBar(
             title: const Text('Statistics'),
@@ -112,9 +111,9 @@ class StatsSuccessView extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<StatsBloc>().add(
-                            DisplayIncomePieChartStats(),
-                          );
+                      // context.read<StatsBloc>().add(
+                      //       DisplayIncomePieChartStats(),
+                      //     );
                       _logger.d(state.showExpenses);
                     },
                     child: const Text(
@@ -130,14 +129,14 @@ class StatsSuccessView extends StatelessWidget {
                     ? PieChart(
                         PieChartData(
                           sections: List.generate(
-                              state.expenseCategoryTotals.length, (index) {
+                              state.transactionCategories.length, (index) {
                             return PieChartSectionData(
                               color: colorMapper[
-                                  state.expenseCategoryTotals[index].color],
-                              value: 10,
+                                  state.transactionCategories[index].colorName],
+                              value: state.transactionCategories[index].amount.toDouble(),
                               title:
-                                  '${state.expenseCategoryTotals[index].title}\n'
-                                  '${state.expenseCategoryTotals[index].amount}',
+                                  '${state.transactionCategories[index].name}\n'
+                                  '${state.transactionCategories[index].amount}',
                             );
                           }),
                         ),

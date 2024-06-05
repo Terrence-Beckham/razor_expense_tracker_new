@@ -40,12 +40,12 @@ class AddTransactionBloc
 
   FutureOr<void> _onInitial(
       Initial event, Emitter<AddTransactionState> emit) async {
-   final localTransactions = _transactionsRepository.getTransactionCategories();
+   final localTransactions = _transactionsRepository.getCategories();
    _logger.d('These are the local trans from the repository');
 _logger.d(localTransactions);
     emit(state.copyWith(status: () => AddTransactionStatus.loading));
     await emit.forEach<List<TransactionCategory>>(
-      _transactionsRepository.getTransactionCategories(),
+      _transactionsRepository.getCategories(),
       onData: (category) => state.copyWith(
           status: () => AddTransactionStatus.success,
           categories: () => category),
@@ -160,8 +160,8 @@ _logger.d(localTransactions);
   }
 
   FutureOr<void> _onSaveTransactionToCategory(
-      SaveTransactionToCategory event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.saveTransactionToCategory(
+      SaveTransactionToCategory event, Emitter<AddTransactionState> emit) async{
+   await  _transactionsRepository.saveTransactionToCategory(
         event.transaction, event.categoryId);
 
   }
