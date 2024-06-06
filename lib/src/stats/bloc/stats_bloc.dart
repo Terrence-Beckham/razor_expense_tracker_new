@@ -35,29 +35,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     _logger.d('This is a set of all of the categories $transactionCategories');
   }
 
-// Future<List<Expense>> getAllExpenses()async{
-//
-// }
-//   Future<StatsState> _subscribeToExpenseData(
-//     StatsInitialEvent event,
-//     Emitter<StatsState> emit,
-//   ) async {final incomes = _transactionsRepository.getIncomeByCategory();
-//     _logger.d('These are the IcomeByCategory $incomes');
-//     await emit.forEach<List<PieChartDataObject>>(
-//       _transactionsRepository.getIncomeByCategory(),
-//       onData: (expenseCategoryTotals) {
-//         // _logger.d('These are the category totals  : $categoryTotals');
-//         return state.copyWith(
-//           status: () => StatsStatus.success,
-//           // monthlyExpenses: () => expense.reversed.toList(),
-//           expenseCategoryTotals: () => expenseCategoryTotals,
-//         );
-//       },
-//     );
-//     return state.copyWith(
-//       expenseCategoryTotals: () => [],
-//     );
-//   }
+
 
   FutureOr<void> _subscribeToCategoryAmounts(
     SubscribedToCategoryAmountsEvent event,
@@ -117,7 +95,6 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
       _logger
           .e('These are the categories with expenses $categoriesWithExpenses');
-      return uniqueCategories;
     }
     return uniqueCategories;
   }
@@ -152,7 +129,3 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   }
 }
 
-// final sortedCategories =  calculateCategories(state.monthlyExpenses);
-// final expensesPerCat = expensePerCategory( state.monthlyExpenses);
-// _logger..d('These are the expenses per category $expensesPerCat')
-// ..d('These are the sorted categories $sortedCategories');
