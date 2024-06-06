@@ -37,6 +37,12 @@ const TransactionCategorySchema = CollectionSchema(
       id: 3,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'transactions': PropertySchema(
+      id: 4,
+      name: r'transactions',
+      type: IsarType.objectList,
+      target: r'Transaction',
     )
   },
   estimateSize: _transactionCategoryEstimateSize,
@@ -45,15 +51,8 @@ const TransactionCategorySchema = CollectionSchema(
   deserializeProp: _transactionCategoryDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {
-    r'transactions': LinkSchema(
-      id: 8739145559925791467,
-      name: r'transactions',
-      target: r'Transaction',
-      single: false,
-    )
-  },
-  embeddedSchemas: {},
+  links: {},
+  embeddedSchemas: {r'Transaction': TransactionSchema},
   getId: _transactionCategoryGetId,
   getLinks: _transactionCategoryGetLinks,
   attach: _transactionCategoryAttach,
@@ -84,6 +83,14 @@ int _transactionCategoryEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.transactions.length * 3;
+  {
+    final offsets = allOffsets[Transaction]!;
+    for (var i = 0; i < object.transactions.length; i++) {
+      final value = object.transactions[i];
+      bytesCount += TransactionSchema.estimateSize(value, offsets, allOffsets);
+    }
+  }
   return bytesCount;
 }
 
@@ -97,6 +104,12 @@ void _transactionCategorySerialize(
   writer.writeString(offsets[1], object.colorName);
   writer.writeString(offsets[2], object.iconName);
   writer.writeString(offsets[3], object.name);
+  writer.writeObjectList<Transaction>(
+    offsets[4],
+    allOffsets,
+    TransactionSchema.serialize,
+    object.transactions,
+  );
 }
 
 TransactionCategory _transactionCategoryDeserialize(
@@ -111,6 +124,13 @@ TransactionCategory _transactionCategoryDeserialize(
   object.iconName = reader.readStringOrNull(offsets[2]);
   object.id = id;
   object.name = reader.readStringOrNull(offsets[3]);
+  object.transactions = reader.readObjectList<Transaction>(
+        offsets[4],
+        TransactionSchema.deserialize,
+        allOffsets,
+        Transaction(),
+      ) ??
+      [];
   return object;
 }
 
@@ -129,6 +149,14 @@ P _transactionCategoryDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
+    case 4:
+      return (reader.readObjectList<Transaction>(
+            offset,
+            TransactionSchema.deserialize,
+            allOffsets,
+            Transaction(),
+          ) ??
+          []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -140,14 +168,12 @@ Id _transactionCategoryGetId(TransactionCategory object) {
 
 List<IsarLinkBase<dynamic>> _transactionCategoryGetLinks(
     TransactionCategory object) {
-  return [object.transactions];
+  return [];
 }
 
 void _transactionCategoryAttach(
     IsarCollection<dynamic> col, Id id, TransactionCategory object) {
   object.id = id;
-  object.transactions
-      .attach(col, col.isar.collection<Transaction>(), r'transactions', id);
 }
 
 extension TransactionCategoryQueryWhereSort
@@ -823,38 +849,43 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
       ));
     });
   }
-}
-
-extension TransactionCategoryQueryObject on QueryBuilder<TransactionCategory,
-    TransactionCategory, QFilterCondition> {}
-
-extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
-    TransactionCategory, QFilterCondition> {
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      transactions(FilterQuery<Transaction> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'transactions');
-    });
-  }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'transactions', length, true, length, true);
+      return query.listLength(
+        r'transactions',
+        length,
+        true,
+        length,
+        true,
+      );
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'transactions', 0, true, 0, true);
+      return query.listLength(
+        r'transactions',
+        0,
+        true,
+        0,
+        true,
+      );
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'transactions', 0, false, 999999, true);
+      return query.listLength(
+        r'transactions',
+        0,
+        false,
+        999999,
+        true,
+      );
     });
   }
 
@@ -864,7 +895,13 @@ extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'transactions', 0, true, length, include);
+      return query.listLength(
+        r'transactions',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
@@ -874,7 +911,13 @@ extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'transactions', length, include, 999999, true);
+      return query.listLength(
+        r'transactions',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
@@ -886,11 +929,29 @@ extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'transactions', lower, includeLower, upper, includeUpper);
+      return query.listLength(
+        r'transactions',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 }
+
+extension TransactionCategoryQueryObject on QueryBuilder<TransactionCategory,
+    TransactionCategory, QFilterCondition> {
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      transactionsElement(FilterQuery<Transaction> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'transactions');
+    });
+  }
+}
+
+extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
+    TransactionCategory, QFilterCondition> {}
 
 extension TransactionCategoryQuerySortBy
     on QueryBuilder<TransactionCategory, TransactionCategory, QSortBy> {
@@ -1086,6 +1147,13 @@ extension TransactionCategoryQueryProperty
   QueryBuilder<TransactionCategory, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, List<Transaction>, QQueryOperations>
+      transactionsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'transactions');
     });
   }
 }

@@ -12,7 +12,6 @@ class TransactionsRepository {
 
   final TransactionsApi _transactionsApi;
 
-
   /// Provides a [Stream] of all transactions.
   Stream<List<Transaction>> getTransactions() =>
       _transactionsApi.getTransactions();
@@ -26,25 +25,16 @@ class TransactionsRepository {
   Stream<List<TransactionCategory>> subscribeToCategoryAmounts() =>
       _transactionsApi.subscribeToCategoryAmounts();
 
-  /// Saves a [Transaction].
-  ///
-  /// If a [Transaction] with the same id already exists, it will be replaced.
-  Future<void> saveTransaction(Transaction transaction) =>
-      _transactionsApi.saveTransaction(transaction);
 
   ///Saves a [Transaction] to a [TransactionCategory]
-  Future<void> saveTransactionToCategory(Transaction transaction,
-      int categoryId,) =>
-      _transactionsApi.saveTransactionToCategory(transaction, categoryId);
+  Future<void> saveTransactionToCategory(TransactionCategory category,
+      Transaction transaction,) =>
+      _transactionsApi.saveTransactionToCategory(category, transaction);
 
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error
   /// thrown.
-  Future<void> deleteTransaction(Id id) =>
-      _transactionsApi.deleteTransaction(id);
-
-
+  Future<void> deleteTransaction(String  identity) =>
+      _transactionsApi.deleteTransaction(identity);
 }
-
-

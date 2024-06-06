@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../widgets/konstants.dart';
 import '../bloc/add_transaction_bloc.dart';
@@ -367,28 +368,30 @@ class AddTransactionSuccessView extends StatelessWidget {
                     onPressed: () {
                       if (state.isIncome) {
                         final newTransaction = Transaction()
+                          ..iconName = state.tempCategory.iconName!
+                          ..colorName = state.tempCategory.colorName!
+                          ..categoryName = state.tempCategory.name!
+                          ..identity = Uuid().v4()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
-                          ..transactionCategory.value = state.tempCategory
                           ..dateOfTransaction = state.tempDate
                           ..description = ''
                           ..note = ''
                           ..isExpense = false
                           ..isIncome = true;
                         //Add the new transaction to the DB
-                        context
-                            .read<AddTransactionBloc>()
-                            .add(AddTransaction(newTransaction));
                         context.read<AddTransactionBloc>().add(
-                            SaveTransactionToCategory(
-                                newTransaction, state.tempCategory.id!));
+                            AddTransaction(newTransaction, state.tempCategory));
 
                         Navigator.of(context).pop();
                       } else {
                         final newTransaction = Transaction()
+                          ..iconName = state.tempCategory.iconName!
+                          ..colorName = state.tempCategory.colorName!
+                          ..categoryName = state.tempCategory.name!
+                          ..identity = Uuid().v4()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
-                          ..transactionCategory.value = state.tempCategory
                           ..dateOfTransaction = state.tempDate
                           ..description = ''
                           ..note = ''
@@ -399,13 +402,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                           'This is the temporary Expense object: $newTransaction',
                         );
                         //Add the new transaction to the DB
-                        context
-                            .read<AddTransactionBloc>()
-                            .add(AddTransaction(newTransaction));
                         context.read<AddTransactionBloc>().add(
-                            SaveTransactionToCategory(
-                                newTransaction, state.tempCategory.id!));
-
+                            AddTransaction(newTransaction, state.tempCategory));
                         Navigator.of(context).pop();
                       }
                     },
@@ -437,9 +435,7 @@ Future<void> buildShowDatePicker(BuildContext context) async {
     lastDate: DateTime.now().add(const Duration(days: 365)),
   );
   if (picked != null) {
-    context
-        .read<AddTransactionBloc>()
-        .add(UpdateTempDate(picked));
+    context.read<AddTransactionBloc>().add(UpdateTempDate(picked));
 
     context
         .read<AddTransactionBloc>()

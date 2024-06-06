@@ -15,11 +15,12 @@ final class Initial extends AddTransactionEvent {
 }
 
 final class AddTransaction extends AddTransactionEvent{
-  const AddTransaction(this.transaction);
+  const AddTransaction(this.transaction,this.category);
 
   final Transaction transaction;
+  final TransactionCategory category;
   @override
-  List<Object> get props => [transaction];
+  List<Object> get props => [transaction, category];
 }
 
 /// This class updates the selectedIcon field in the AddTransactionState

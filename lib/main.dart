@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [TransactionSchema, TransactionCategorySchema],
+    [ TransactionCategorySchema],
     directory: dir.path,
   );
   final transactionsApi = LocalStorageTransactionsApi(

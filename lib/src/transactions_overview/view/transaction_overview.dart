@@ -226,16 +226,16 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         child: Card(
                           child: ListTile(
                             leading: Icon(
-                              myIcons[state.transactions[index].transactionCategory.value?.iconName],
+                              myIcons[state.transactions[index].iconName],
                               color: colorMapper[
-                                  state.transactions[index].transactionCategory.value?.colorName],
+                                  state.transactions[index].colorName],
                             ),
                             // leading: Icon(
                             // // myIcons(expense.iconname);
                             // Icons.abc , color: Colors.red,
                             // ),
                             title: Text(
-                                state.transactions[index].transactionCategory.value!.name.toString()),
+                                state.transactions[index].categoryName ?? ' '),
                             subtitle: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 4),
                               child: Text(

@@ -19,25 +19,25 @@ abstract class TransactionsApi {
   ///provides a [Stream] of all categories
   Stream<List<TransactionCategory>> getCategories();
 
-
   ///Add a stream of transactions by category
   Stream<List<TransactionCategory>> subscribeToCategoryAmounts();
 
   /// Saves a [transaction].
   ///
   /// If a [Transaction] with the same id already exists, it will be replaced.
-  Future<void> saveTransaction(Transaction transaction);
 
   ///Saves a [Transaction] to a [TransactionCategory]
   Future<void> saveTransactionToCategory(
-      Transaction transaction, int categoryId);
+    TransactionCategory category,
+    Transaction transaction,
+  );
 
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a
   /// [TransactionNotFoundException] error is
   /// thrown.
-  Future<void> deleteTransaction(Id id);
+  Future<void> deleteTransaction(String identity);
 
   /// Closes the client and frees up any resources.
   Future<void> close();

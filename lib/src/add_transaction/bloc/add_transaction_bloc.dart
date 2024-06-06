@@ -16,7 +16,7 @@ class AddTransactionBloc
   AddTransactionBloc(this._transactionsRepository)
       : super(AddTransactionState.empty()) {
     on<Initial>(_onInitial);
-    on<AddTransaction>(onAddTransaction);
+    on<AddTransaction>(onTransactionAdded);
     on<UpdateSelectedIcon>(_onUpdateSelectedIcon);
     on<UpdateSelectedColor>(_onUpdateSelectedColor);
     on<UpdateSelectedCategory>(_onUpdateSelectedCategory);
@@ -32,7 +32,6 @@ class AddTransactionBloc
     on<UpdateTempTransaction>(_onUpdateTempTransaction);
     on<UpdateStatus>(_onUpdateStatus);
     on<UpdateCategories>(_onUpdateCategories);
-    on<SaveTransactionToCategory>(_onSaveTransactionToCategory);
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -52,9 +51,9 @@ _logger.d(localTransactions);
     );
   }
 
-  FutureOr<void> onAddTransaction(
+  FutureOr<void> onTransactionAdded(
       AddTransaction event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.saveTransaction(event.transaction);
+    _transactionsRepository.saveTransactionToCategory(event.category, event.transaction);
   }
 
   FutureOr<void> _onUpdateSelectedIcon(
@@ -159,12 +158,7 @@ _logger.d(localTransactions);
         categories: () => event.categories));
   }
 
-  FutureOr<void> _onSaveTransactionToCategory(
-      SaveTransactionToCategory event, Emitter<AddTransactionState> emit) async{
-   await  _transactionsRepository.saveTransactionToCategory(
-        event.transaction, event.categoryId);
-
-  }
+ 
 
   FutureOr<void> _onUpdateTempDate(UpdateTempDate event, Emitter<AddTransactionState> emit) {
     emit(state.copyWith(

@@ -12,6 +12,7 @@ dependencies:
   isar_flutter_libs: any
   isar_generator: any
   logger: ^2.3.0
+  uuid: ^4.4.0
 
 
 dev_dependencies:

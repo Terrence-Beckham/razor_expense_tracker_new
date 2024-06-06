@@ -18,6 +18,8 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   final Isar _isarDb;
   final Logger _logger;
+
+  ///todo this has to be removed. leaving it here for now
   late final _transactionStreamController =
       BehaviorSubject<List<Transaction>>.seeded(const []);
   late final _categoryStreamController =
@@ -27,12 +29,7 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   ///Initialize both stream controllers.
   Future<void> init() async {
-
     await loadDefaultCategories();
-    final transactions = await _isarDb.transactions.where().findAll();
-
-    _transactionStreamController.add(transactions);
-
     final transactionCategories =
         await _isarDb.transactionCategorys.where().findAll();
     _categoryStreamController.add(transactionCategories);
@@ -42,10 +39,8 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   ///This method generates a list of categories from the default categories and adds them to the database
   Future<void> loadDefaultCategories() async {
-    final categories =
-        await _isarDb.transactionCategorys.where().findAll();
-    _logger
-        .i('transactionCategories at initialization: $categories');
+    final categories = await _isarDb.transactionCategorys.where().findAll();
+    _logger.i('transactionCategories at initialization: $categories');
     if (categories.isEmpty) {
       final categories = defaultCategory;
 
@@ -54,14 +49,29 @@ class LocalStorageTransactionsApi extends TransactionsApi {
           _isarDb.transactionCategorys.putSync(category);
         }
       });
-
     }
   }
 
   ///This method deletes a transaction from the database
   @override
-  Future<void> deleteTransaction(Id id) async {
-    await _isarDb.transactions.delete(id);
+  Future<void> deleteTransaction(String identity) async {
+    final categories = await _isarDb.transactionCategorys.where().findAll();
+    for (final category in categories) {
+      final transactions = category.transactions;
+      for (final transaction in transactions!) {
+        if (transaction.identity == identity) {
+          await _isarDb.writeTxn(() async {
+            category.transactions?.remove(transaction);
+          });
+        }
+      }
+    }
+
+    ///Todo I don't know if this is necessary
+    ///rewrite the category back to the database
+    // await _isarDb.writeTxn(() async {
+    //   await _isarDb.transactionCategorys.putAll(categories);
+    // });
   }
 
   ///This method returns a stream of all transactions
@@ -78,12 +88,20 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   ///This method saves a transaction to the database
   @override
-  Future<void> saveTransaction(Transaction transaction) async {
-    await _isarDb.writeTxnSync(() async {
-      _isarDb.transactions.putSync(transaction);
+  Future<void> saveTransactionToCategory(
+    TransactionCategory category,
+    Transaction transaction,
+  ) async {
+final transactions = [...category.transactions, transaction];
+    await _isarDb.writeTxn(() async {
+      category.transactions = transactions;
+      await _isarDb.transactionCategorys.put(category);
     });
-    final transactions = await _isarDb.transactions.where().findAll();
-    _transactionStreamController.add(transactions);
+
+
+  ///todo I need to add it to whatever stream I'm using to display the transactions
+    final categories = await _isarDb.transactionCategorys.where().findAll();
+    _categoryStreamController.add(categories);
   }
 
   @override
@@ -92,29 +110,10 @@ class LocalStorageTransactionsApi extends TransactionsApi {
     return _categoryStreamController.close();
   }
 
-  @override
-  Future<void> saveTransactionToCategory(
-      Transaction transaction, int categoryId,) async {
-    ///read the transactionCategory from the Database
-    final transactionCategory =
-        await _isarDb.transactionCategorys.get(categoryId);
-    transactionCategory?.transactions.add(transaction);
-    await _isarDb.writeTxn(() async {
-      await transactionCategory?.transactions.save();
-
-      final transactionCategories =
-          await _isarDb.transactionCategorys.where().findAll();
-      _categoryStreamController.add(transactionCategories);
-
-      ///recalculate the total amount of expenses by category
-    });
-  }
 
   ///This method returns a [Stream] of all transactions by category
   @override
   Stream<List<TransactionCategory>> subscribeToCategoryAmounts() {
     return _transactionsAmountsPerCategoryStream.asBroadcastStream();
   }
-
-
 }

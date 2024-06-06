@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:logger/logger.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-import 'package:logger/logger.dart';
 
 part 'transactions_overview_event.dart';
 part 'transactions_overview_state.dart';
@@ -26,19 +26,33 @@ class TransactionsOverviewBloc
     InitialDataEvent event,
     Emitter<TransactionsOverviewState> emit,
   ) async {
-    state.copyWith(status: ()=> TransactionsOverviewStatus.loading);
+    state.copyWith(status: () => TransactionsOverviewStatus.loading);
 
-    await emit.forEach<List<Transaction>>(
-      _transactionsRepository.getTransactions(),
-      onData: (transaction) => state.copyWith(
-        status: () => TransactionsOverviewStatus.success,
-        transactions: () => transaction
-            .reversed.toList(),
-      ),
+    await emit.forEach<List<TransactionCategory>>(
+      _transactionsRepository.getCategories(),
+      onData: (categories) {
+        return state.copyWith(
+            status: () => TransactionsOverviewStatus.success,
+            transactions: () => displayTransactions(categories));
+      },
     );
 
     _logger = Logger();
-    _logger
-        .d('This is the list of transactions stored in the db: ${state.transactions}');
+    _logger.d(
+        'This is the list of transactions stored in the db: ${state.transactions}');
+  }
+
+  List<Transaction> displayTransactions(List<TransactionCategory> categories) {
+    final transactions = <Transaction>[];
+
+    for (final category in categories) {
+
+      transactions.addAll(category.transactions);
+    }
+
+    ///sort the transactions by date in descending order
+    transactions
+        .sort((a, b) => b.dateOfTransaction.compareTo(a.dateOfTransaction));
+    return transactions;
   }
 }
