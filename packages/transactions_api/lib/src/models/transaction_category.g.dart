@@ -18,15 +18,15 @@ const TransactionCategorySchema = CollectionSchema(
   name: r'TransactionCategory',
   id: -3276018964472478727,
   properties: {
-    r'amount': PropertySchema(
-      id: 0,
-      name: r'amount',
-      type: IsarType.long,
-    ),
     r'colorName': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'colorName',
       type: IsarType.string,
+    ),
+    r'iconCodePoint': PropertySchema(
+      id: 1,
+      name: r'iconCodePoint',
+      type: IsarType.long,
     ),
     r'iconName': PropertySchema(
       id: 2,
@@ -38,8 +38,23 @@ const TransactionCategorySchema = CollectionSchema(
       name: r'name',
       type: IsarType.string,
     ),
-    r'transactions': PropertySchema(
+    r'totalAmount': PropertySchema(
       id: 4,
+      name: r'totalAmount',
+      type: IsarType.long,
+    ),
+    r'totalExpenseAmount': PropertySchema(
+      id: 5,
+      name: r'totalExpenseAmount',
+      type: IsarType.long,
+    ),
+    r'totalIncomeAmount': PropertySchema(
+      id: 6,
+      name: r'totalIncomeAmount',
+      type: IsarType.long,
+    ),
+    r'transactions': PropertySchema(
+      id: 7,
       name: r'transactions',
       type: IsarType.objectList,
       target: r'Transaction',
@@ -100,12 +115,15 @@ void _transactionCategorySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.amount);
-  writer.writeString(offsets[1], object.colorName);
+  writer.writeString(offsets[0], object.colorName);
+  writer.writeLong(offsets[1], object.iconCodePoint);
   writer.writeString(offsets[2], object.iconName);
   writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.totalAmount);
+  writer.writeLong(offsets[5], object.totalExpenseAmount);
+  writer.writeLong(offsets[6], object.totalIncomeAmount);
   writer.writeObjectList<Transaction>(
-    offsets[4],
+    offsets[7],
     allOffsets,
     TransactionSchema.serialize,
     object.transactions,
@@ -119,13 +137,16 @@ TransactionCategory _transactionCategoryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TransactionCategory();
-  object.amount = reader.readLong(offsets[0]);
-  object.colorName = reader.readStringOrNull(offsets[1]);
+  object.colorName = reader.readStringOrNull(offsets[0]);
+  object.iconCodePoint = reader.readLongOrNull(offsets[1]);
   object.iconName = reader.readStringOrNull(offsets[2]);
   object.id = id;
   object.name = reader.readStringOrNull(offsets[3]);
+  object.totalAmount = reader.readLong(offsets[4]);
+  object.totalExpenseAmount = reader.readLong(offsets[5]);
+  object.totalIncomeAmount = reader.readLong(offsets[6]);
   object.transactions = reader.readObjectList<Transaction>(
-        offsets[4],
+        offsets[7],
         TransactionSchema.deserialize,
         allOffsets,
         Transaction(),
@@ -142,14 +163,20 @@ P _transactionCategoryDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readLong(offset)) as P;
+    case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
       return (reader.readObjectList<Transaction>(
             offset,
             TransactionSchema.deserialize,
@@ -258,62 +285,6 @@ extension TransactionCategoryQueryWhere
 
 extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     TransactionCategory, QFilterCondition> {
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      amountEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'amount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      amountGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'amount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      amountLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'amount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      amountBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'amount',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       colorNameIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -464,6 +435,80 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'colorName',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'iconCodePoint',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'iconCodePoint',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'iconCodePoint',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      iconCodePointBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'iconCodePoint',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -851,6 +896,174 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalAmountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'totalAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalAmountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'totalAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalAmountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'totalAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalAmountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'totalAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalExpenseAmountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'totalExpenseAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalExpenseAmountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'totalExpenseAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalExpenseAmountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'totalExpenseAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalExpenseAmountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'totalExpenseAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalIncomeAmountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'totalIncomeAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalIncomeAmountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'totalIncomeAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalIncomeAmountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'totalIncomeAmount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      totalIncomeAmountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'totalIncomeAmount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -956,20 +1169,6 @@ extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
 extension TransactionCategoryQuerySortBy
     on QueryBuilder<TransactionCategory, TransactionCategory, QSortBy> {
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      sortByAmount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'amount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      sortByAmountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'amount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
       sortByColorName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'colorName', Sort.asc);
@@ -980,6 +1179,20 @@ extension TransactionCategoryQuerySortBy
       sortByColorNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'colorName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByIconCodePoint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconCodePoint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByIconCodePointDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconCodePoint', Sort.desc);
     });
   }
 
@@ -1010,24 +1223,52 @@ extension TransactionCategoryQuerySortBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalExpenseAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalExpenseAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalExpenseAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalExpenseAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalIncomeAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalIncomeAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByTotalIncomeAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalIncomeAmount', Sort.desc);
+    });
+  }
 }
 
 extension TransactionCategoryQuerySortThenBy
     on QueryBuilder<TransactionCategory, TransactionCategory, QSortThenBy> {
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      thenByAmount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'amount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      thenByAmountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'amount', Sort.desc);
-    });
-  }
-
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
       thenByColorName() {
     return QueryBuilder.apply(this, (query) {
@@ -1039,6 +1280,20 @@ extension TransactionCategoryQuerySortThenBy
       thenByColorNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'colorName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByIconCodePoint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconCodePoint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByIconCodePointDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconCodePoint', Sort.desc);
     });
   }
 
@@ -1083,21 +1338,63 @@ extension TransactionCategoryQuerySortThenBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalExpenseAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalExpenseAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalExpenseAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalExpenseAmount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalIncomeAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalIncomeAmount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByTotalIncomeAmountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'totalIncomeAmount', Sort.desc);
+    });
+  }
 }
 
 extension TransactionCategoryQueryWhereDistinct
     on QueryBuilder<TransactionCategory, TransactionCategory, QDistinct> {
   QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
-      distinctByAmount() {
+      distinctByColorName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'amount');
+      return query.addDistinctBy(r'colorName', caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
-      distinctByColorName({bool caseSensitive = true}) {
+      distinctByIconCodePoint() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'colorName', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'iconCodePoint');
     });
   }
 
@@ -1114,6 +1411,27 @@ extension TransactionCategoryQueryWhereDistinct
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
+      distinctByTotalAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'totalAmount');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
+      distinctByTotalExpenseAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'totalExpenseAmount');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
+      distinctByTotalIncomeAmount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'totalIncomeAmount');
+    });
+  }
 }
 
 extension TransactionCategoryQueryProperty
@@ -1124,16 +1442,17 @@ extension TransactionCategoryQueryProperty
     });
   }
 
-  QueryBuilder<TransactionCategory, int, QQueryOperations> amountProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'amount');
-    });
-  }
-
   QueryBuilder<TransactionCategory, String?, QQueryOperations>
       colorNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'colorName');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, int?, QQueryOperations>
+      iconCodePointProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'iconCodePoint');
     });
   }
 
@@ -1147,6 +1466,27 @@ extension TransactionCategoryQueryProperty
   QueryBuilder<TransactionCategory, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, int, QQueryOperations>
+      totalAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'totalAmount');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, int, QQueryOperations>
+      totalExpenseAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'totalExpenseAmount');
+    });
+  }
+
+  QueryBuilder<TransactionCategory, int, QQueryOperations>
+      totalIncomeAmountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'totalIncomeAmount');
     });
   }
 

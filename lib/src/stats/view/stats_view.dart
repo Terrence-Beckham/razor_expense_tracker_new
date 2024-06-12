@@ -15,8 +15,7 @@ class StatsOverviewPage extends StatelessWidget {
     return BlocProvider(
         create: (context) => StatsBloc(
               context.read<TransactionsRepository>(),
-            )
-              ..add(const SubscribedToCategoryAmountsEvent()),
+            )..add(const SubscribedToCategoryAmountsEvent()),
         child: StatsView());
 
     // );
@@ -72,7 +71,8 @@ class StatsSuccessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
-        _logger.d('These are the category totals in the stats view ${state.transactionCategories}');
+        _logger.d(
+            'These are the category totals in the stats view ${state.selectedTransactionCategories}');
         return Scaffold(
           appBar: AppBar(
             title: const Text('Statistics'),
@@ -100,9 +100,8 @@ class StatsSuccessView extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      context.read<StatsBloc>().add(
-                            DisplayExpensePieChartStats(),
-                          );
+                      context.read<StatsBloc>().add(SetTransactionCategoryType(
+                          ));
                     },
                     child: const Text(
                       'Expenses',
@@ -129,14 +128,18 @@ class StatsSuccessView extends StatelessWidget {
                     ? PieChart(
                         PieChartData(
                           sections: List.generate(
-                              state.transactionCategories.length, (index) {
+                              state.selectedTransactionCategories.length,
+                              (index) {
                             return PieChartSectionData(
-                              color: colorMapper[
-                                  state.transactionCategories[index].colorName],
-                              value: state.transactionCategories[index].amount.toDouble(),
+                              color: colorMapper[state
+                                  .selectedTransactionCategories[index]
+                                  .colorName],
+                              value: state.selectedTransactionCategories[index]
+                                  .totalAmount
+                                  .toDouble(),
                               title:
-                                  '${state.transactionCategories[index].name}\n'
-                                  '${state.transactionCategories[index].amount}',
+                                  '${state.selectedTransactionCategories[index].name}\n'
+                                  '${state.selectedTransactionCategories[index].totalAmount}',
                             );
                           }),
                         ),
@@ -144,20 +147,56 @@ class StatsSuccessView extends StatelessWidget {
                     : PieChart(
                         PieChartData(
                           sections: List.generate(
-                              state.incomeCategoryTotals.length, (index) {
+                              state.selectedTransactionCategories.length,
+                              (index) {
                             _logger.e(
-                                'This is what should be: ${state.incomeCategoryTotals}');
+                                'This is what should be: ${state.selectedTransactionCategories}');
                             return PieChartSectionData(
-                              color: colorMapper[
-                                  state.incomeCategoryTotals[index].color],
+                              color: colorMapper[state
+                                  .selectedTransactionCategories[index]
+                                  .colorName],
                               value: 10,
                               title:
-                                  '${state.incomeCategoryTotals[index].title}\n'
-                                  '${state.incomeCategoryTotals[index].amount}',
+                                  '${state.selectedTransactionCategories[index].name}\n'
+                                  '${state.selectedTransactionCategories[index].totalAmount}',
                             );
                           }),
                         ),
                       ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: List.generate(
+                    state.selectedTransactionCategories.length,
+                    (index) {
+                      return ListTile(
+                        leading: Icon(
+                          // myIcons[state.transactionCategories[index].iconName],
+                          myIcons[state
+                              .selectedTransactionCategories[index].iconName],
+                          color: colorMapper[state
+                              .selectedTransactionCategories[index].colorName],
+                        ),
+                        title: Text(
+                          state.selectedTransactionCategories[index].name!,
+                          style: TextStyle(
+                            color: colorMapper[state
+                                .selectedTransactionCategories[index]
+                                .colorName],
+                          ),
+                        ),
+                        subtitle: Text(
+                            'Amount: ${state.selectedTransactionCategories[index].totalAmount}'),
+                        // trailing: Text('Percentage: ${state.transactionCategories[index].percentage}'),
+                      );
+                      // return Chip(
+                      //   backgroundColor: colorMapper[
+                      //       state.transactionCategories[index].colorName],
+                      //   label: Text(state.transactionCategories[index].name!),
+                      // );
+                    },
+                  ),
+                ),
               ),
             ],
           ),

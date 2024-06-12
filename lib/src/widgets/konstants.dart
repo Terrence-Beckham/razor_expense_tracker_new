@@ -1,7 +1,7 @@
-import 'package:transactions_api/transactions_api.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:transactions_api/transactions_api.dart';
+
 ///Todo This needs to become a list and then stored in a Repo
 ///User categories will be stored here as well.
 final business = TransactionCategory()
@@ -219,83 +219,120 @@ final defaultCategory = <TransactionCategory>[
   tools, //handyman
 ];
 
+/// I need this list reverse mapped to the icons
+/// I can use the categoryWidgetsLookupMap.map((key, value) => MapEntry(value, key));
+final categoryWidgetsLookupMap = <IconData, String>{
+  Icons.rice_bowl: 'food',
+  Icons.shopping_bag: 'groceries',
+  Icons.attach_money: 'loans',
+  Icons.credit_card: 'credit',
+  Icons.medical_information: 'medical',
+  Icons.gas_meter: 'electricity',
+  Icons.run_circle: 'gymMembership',
+  Icons.comment_bank: 'subscriptions',
+  Icons.military_tech: 'business',
+  Icons.emoji_emotions: 'specialOccasion',
+  Icons.local_pizza: 'restaurants',
+  Icons.art_track: 'entertainment',
+  Icons.local_hospital: 'medical',
+  Icons.bubble_chart: 'investing',
+  Icons.house: 'mortgage',
+  Icons.access_alarm: 'exercise',
+  Icons.accessibility: 'charity',
+  Icons.account_balance: 'business',
+  Icons.account_balance_wallet: 'loans',
+  Icons.account_box: 'business',
+  Icons.account_circle: 'old_business',
+  Icons.account_tree: 'new_business'
+};
+
 final categoryWidgets = <Icon>[
+  const Icon(Icons.access_alarm, size: 32, color: Colors.white),
+  const Icon(Icons.accessibility, size: 32, color: Colors.white),
+  const Icon(Icons.account_balance, size: 32, color: Colors.white),
+  const Icon(Icons.account_balance_wallet, size: 32, color: Colors.white),
+  const Icon(Icons.account_box, size: 32, color: Colors.white),
+  const Icon(Icons.account_tree, size: 32, color: Colors.white),
   const Icon(
-    FontAwesomeIcons.house,
+    Icons.house,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.bagShopping,
+    Icons.shopping_bag,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.bowlFood,
+    Icons.rice_bowl,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.moneyBills,
+    Icons.attach_money,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.creditCard,
+    Icons.credit_card,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.bookMedical,
+    Icons.medical_information,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.gasPump,
+    Icons.gas_meter,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.personRunning,
+    Icons.run_circle,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.piggyBank,
+    Icons.comment_bank,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.personMilitaryToPerson,
+    Icons.military_tech,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.cheese,
+    Icons.emoji_emotions,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.pizzaSlice,
+    Icons.local_pizza,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.artstation,
+    Icons.art_track,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.hospital,
+    Icons.local_hospital,
     size: 32,
     color: Colors.white,
   ),
   const Icon(
-    FontAwesomeIcons.artstation,
+    Icons.bubble_chart,
     size: 32,
     color: Colors.white,
   ),
 ];
+
+
+
+/// I can use the categoryWidgetsLookupMap.map((key, value) => MapEntry(value, key));
 final colorMapper = <String, Color>{
   'red': Colors.red,
   'yellow': Colors.yellow,

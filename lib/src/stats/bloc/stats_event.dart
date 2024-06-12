@@ -42,3 +42,10 @@ final class LoadedCategoryAmountsEvent extends StatsEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class SetTransactionCategoryType extends StatsEvent {
+  const SetTransactionCategoryType();
+
+  @override
+  List<Object?> get props => [];
+}

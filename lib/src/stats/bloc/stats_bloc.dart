@@ -22,21 +22,6 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   final TransactionsRepository _transactionsRepository;
   final Logger _logger;
 
-  List<TransactionCategory> calculateCategories(
-    List<Transaction> transaction,
-  ) {
-    final transactionCategories = <TransactionCategory>[];
-    for (final element in transaction) {
-      // _logger.d(element.category.name);
-      ///Todo I'm using Isar LInks here, so I have to figure out how here.
-      // transactionCategories.add(element.transactionCategory);
-    }
-    return transactionCategories.toSet().toList();
-    _logger.d('This is a set of all of the categories $transactionCategories');
-  }
-
-
-
   FutureOr<void> _subscribeToCategoryAmounts(
     SubscribedToCategoryAmountsEvent event,
     Emitter<StatsState> emit,
@@ -49,16 +34,20 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     await emit.forEach<List<TransactionCategory>>(
       _transactionsRepository.getCategories(),
       onData: (transactionCategories) {
-        final categories =loadCategoryAmounts(transactionCategories);
-        // final categories = transactionCategories;
+        final categories = loadCategoryAmounts(transactionCategories);
+        final expenseCategories = _displayExpensesData(transactionCategories);
+        final incomeCategories = _displayIncomeData(transactionCategories);
+        _logger.d('These are the expenses in the stream  : ${expenseCategories}');
+        _logger.d('These are the income in the stream  : ${incomeCategories}');
 
-       // final uniqueCategories = loadCategoryAmounts(categories);
-        _logger.i(
-            'These are the category totals in the stream  : ${transactionCategories}');
         return state.copyWith(
           status: () => StatsStatus.success,
           // monthlyExpenses: () => expense.reversed.toList(),
           transactionCategories: () => categories,
+          expenseCategories: () => expenseCategories,
+          incomeCategories: () => incomeCategories,
+          isDisplayExpenses: () => true,
+
         );
       },
     );
@@ -67,17 +56,12 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   ///This method calculates the total amount of expenses by category
   List<TransactionCategory> loadCategoryAmounts(
       List<TransactionCategory> categories) {
-    _logger.d('these are the categories in loadCategory $categories');
-
     final categoriesWithExpenses = <TransactionCategory>[];
     final uniqueCategories = <TransactionCategory>[];
     for (final category in categories) {
       // _logger.d('These are the expenses in the for loop ${category.transactions}');
       if (category.transactions.isNotEmpty) {
         categoriesWithExpenses.add(category);
-        _logger.e(
-          'These are the categories with expenses $categoriesWithExpenses',
-        );
       }
     }
     for (final category in categoriesWithExpenses) {
@@ -85,16 +69,10 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         0,
         (previousValue, element) => previousValue + element.amount,
       );
-      _logger.i('This is the numnber of transactions per ${category.name}:  ${category.transactions.length}');
-      category.amount = total;
-      _logger.e(
-          'This is the total amount for the categories that have expenses ${category.name} $total');
+      category.totalAmount = total;
       uniqueCategories.add(category);
 
       // final uniqueCategories = categories.toSet().toList();
-
-      _logger
-          .e('These are the categories with expenses $categoriesWithExpenses');
     }
     return uniqueCategories;
   }
@@ -127,5 +105,57 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       );
     }
   }
-}
 
+  List<TransactionCategory> _displayExpensesData(
+      List<TransactionCategory> categories)  {
+    final categoriesWithExpenses = <TransactionCategory>[];
+
+    for (final category in categories) {
+      // _logger.d('These are the expenses in the for loop ${category.transactions}');
+      if (category.transactions.isNotEmpty) {
+        categoriesWithExpenses.add(category);
+      }
+    }
+    ;
+    for (final category in categoriesWithExpenses) {
+      final expenseTransactions =
+          category.transactions.where((element) => element.isExpense);
+      final total = expenseTransactions.fold(
+        0,
+        (previousValue, element) => previousValue + element.amount,
+      );
+      category.totalExpenseAmount = total;
+    }
+
+    return categoriesWithExpenses;
+  }
+
+  List<TransactionCategory> _displayIncomeData(
+      List<TransactionCategory> categories)  {
+    final categoriesWithTransactions = <TransactionCategory>[];
+    final categoriesWithIncome = <TransactionCategory>[];
+
+    for (final category in categories) {
+      // _logger.d('These are the expenses in the for loop ${category.transactions}');
+      if (category.transactions.isNotEmpty) {
+        categoriesWithTransactions.add(category);
+      }
+    }
+    ;
+    for (final category in categoriesWithTransactions) {
+      final incomeTransactions =
+      category.transactions.where((element) => element.isIncome  );
+      _logger.d(incomeTransactions);
+      final total = incomeTransactions.fold(
+        0,
+            (previousValue, element) => previousValue + element.amount,
+      );
+      category.totalIncomeAmount = total;
+      _logger.d('This is the total income amount: $total');
+      categoriesWithIncome.add(category);
+      _logger.d('These are the ccategoriesWithIncome $categoriesWithIncome');
+    }
+
+    return categoriesWithIncome;
+  }
+}

@@ -28,16 +28,18 @@ abstract class TransactionsApi {
 
   ///Saves a [Transaction] to a [TransactionCategory]
   Future<void> saveTransactionToCategory(
-    TransactionCategory category,
     Transaction transaction,
   );
+
+ /// Adds a new [TransactionCategory] to the database
+  Future<void> addCustomCategory(TransactionCategory category);
 
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a
   /// [TransactionNotFoundException] error is
   /// thrown.
-  Future<void> deleteTransaction(String identity);
+  Future<void> deleteTransaction(Transaction transaction);
 
   /// Closes the client and frees up any resources.
   Future<void> close();

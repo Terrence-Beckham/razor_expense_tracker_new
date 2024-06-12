@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:razor_expense_tracker_new/src/widgets/konstants.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -18,13 +19,11 @@ class AddTransactionBloc
     on<Initial>(_onInitial);
     on<AddTransaction>(onTransactionAdded);
     on<UpdateSelectedIcon>(_onUpdateSelectedIcon);
-    on<UpdateSelectedColor>(_onUpdateSelectedColor);
     on<UpdateSelectedCategory>(_onUpdateSelectedCategory);
     on<UpdateIsExpense>(_onUpdateIsExpense);
     on<UpdateIsIncome>(_onUpdateIsIncome);
     on<UpdateIsCategoryExpanded>(_onUpdateIsCategoryExpanded);
     on<UpdateIsCategorySelected>(_onUpdateIsCategorySelected);
-    on<UpdateTempCategory>(_onUpdateTempCategory);
     on<UpdateDateTextField>(_onUpdateDateTextController);
     on<UpdateTransactionAmountField>(_onUpdateTransactionAmountField);
     on<UpdateIsDateChoosen>(_onUpdateIsDateChoosen);
@@ -32,6 +31,15 @@ class AddTransactionBloc
     on<UpdateTempTransaction>(_onUpdateTempTransaction);
     on<UpdateStatus>(_onUpdateStatus);
     on<UpdateCategories>(_onUpdateCategories);
+    on<LaunchAddNewCategoryPage>(_onLaunchAddNewCategoryPage);
+    on<ExpandNewIconPicker>(_onExpandNewIconPicker);
+    on<ExpandNewColorPicker>(_onExpandNewColorPicker);
+    on<UpdateCustomCategoryIcon>(_onUpdateCustomCategoryIcon);
+    on<UpdateTempCustomCategoryName>(_onUpdateTempCategoryName);
+    on<AddNewCategory>(_onAddNewCategory);
+    on<UpdateTempCategory>(_onUpdateTempCategory);
+    on<UpdateNewCategoryColor>(_onUpdateNewCategoryColor);
+    
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -39,9 +47,8 @@ class AddTransactionBloc
 
   FutureOr<void> _onInitial(
       Initial event, Emitter<AddTransactionState> emit) async {
-   final localTransactions = _transactionsRepository.getCategories();
-   _logger.d('These are the local trans from the repository');
-_logger.d(localTransactions);
+    final localTransactions = _transactionsRepository.getCategories();
+    _logger.d('These are the local trans from the repository');
     emit(state.copyWith(status: () => AddTransactionStatus.loading));
     await emit.forEach<List<TransactionCategory>>(
       _transactionsRepository.getCategories(),
@@ -53,7 +60,8 @@ _logger.d(localTransactions);
 
   FutureOr<void> onTransactionAdded(
       AddTransaction event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.saveTransactionToCategory(event.category, event.transaction);
+    _transactionsRepository.saveTransactionToCategory(
+         event.transaction);
   }
 
   FutureOr<void> _onUpdateSelectedIcon(
@@ -63,13 +71,18 @@ _logger.d(localTransactions);
         selectedIcon: () => event.icon));
   }
 
-  FutureOr<void> _onUpdateSelectedColor(
+  FutureOr<void> _onUpdateNewCategoryColor(
       event, Emitter<AddTransactionState> emit) {
+   final reverseColorMapper = colorMapper.map((key, value) => MapEntry(value, key));
     emit(state.copyWith(
         status: () => AddTransactionStatus.success,
-        selectedColor: () => event.color));
-  }
+    selectedColor: () => event.color,
+    newCustomCategory: () => state.newCustomCategory
+      ..colorName = reverseColorMapper[event.color]));
 
+  }
+  //
+  /// I can use the categoryWidgetsLookupMap.map((key, value) => MapEntry(value, key));
   FutureOr<void> _onUpdateSelectedCategory(
       UpdateSelectedCategory event, Emitter<AddTransactionState> emit) {
     emit(state.copyWith(
@@ -158,11 +171,56 @@ _logger.d(localTransactions);
         categories: () => event.categories));
   }
 
- 
-
-  FutureOr<void> _onUpdateTempDate(UpdateTempDate event, Emitter<AddTransactionState> emit) {
+  FutureOr<void> _onUpdateTempDate(
+      UpdateTempDate event, Emitter<AddTransactionState> emit) {
     emit(state.copyWith(
         status: () => AddTransactionStatus.success,
         tempDate: () => event.tempDate));
+  }
+
+  FutureOr<void> _onLaunchAddNewCategoryPage(
+      LaunchAddNewCategoryPage event, Emitter<AddTransactionState> emit) {
+    emit(state.copyWith(
+      status: () => AddTransactionStatus.addNewCategory,
+    ));
+  }
+
+  FutureOr<void> _onExpandNewIconPicker(
+      ExpandNewIconPicker event, Emitter<AddTransactionState> emit) {
+    emit(state.copyWith(
+        status: () => AddTransactionStatus.success,
+        isAddNewCategoryExpanded: () => !state.isAddNewCategoryExpanded));
+  }
+
+  FutureOr<void> _onExpandNewColorPicker(
+      ExpandNewColorPicker event, Emitter<AddTransactionState> emit) {
+    emit(state.copyWith(
+        // status: () => AddTransactionStatus.success,
+        isAddNewCategoryColorPickerExpanded: () =>
+            !state.isAddNewCategoryColorPickerExpanded));
+    _logger.i(
+        'The color picker has been expanded its value is ${state.isAddNewCategoryColorPickerExpanded}');
+  }
+
+  _onUpdateCustomCategoryIcon(
+      UpdateCustomCategoryIcon event, Emitter<AddTransactionState> emit) {
+    _logger.e(event.icon);
+    emit(state.copyWith(
+        status: () => AddTransactionStatus.success,
+        newCustomCategory: () => state.newCustomCategory
+          ..iconName = categoryWidgetsLookupMap[event.icon.icon]));
+  }
+
+  FutureOr<void> _onUpdateTempCategoryName(UpdateTempCustomCategoryName event, Emitter<AddTransactionState> emit) {
+    _logger.e(event.categoryName);
+    emit(state.copyWith(
+        status: () => AddTransactionStatus.success,
+        newCustomCategory: () => state.newCustomCategory
+          ..name = event.categoryName));
+  }
+  
+
+  FutureOr<void> _onAddNewCategory(AddNewCategory event, Emitter<AddTransactionState> emit) {
+    _transactionsRepository.addCustomCategory(state.newCustomCategory);
   }
 }

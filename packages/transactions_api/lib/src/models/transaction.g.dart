@@ -18,58 +18,63 @@ const TransactionSchema = Schema(
       name: r'amount',
       type: IsarType.long,
     ),
-    r'categoryName': PropertySchema(
+    r'categoryId': PropertySchema(
       id: 1,
+      name: r'categoryId',
+      type: IsarType.long,
+    ),
+    r'categoryName': PropertySchema(
+      id: 2,
       name: r'categoryName',
       type: IsarType.string,
     ),
     r'colorName': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'colorName',
       type: IsarType.string,
     ),
     r'dateOfTransaction': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'dateOfTransaction',
       type: IsarType.dateTime,
     ),
     r'description': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'description',
       type: IsarType.string,
     ),
     r'iconName': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'iconName',
       type: IsarType.string,
     ),
     r'identity': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'identity',
       type: IsarType.string,
     ),
     r'isExpense': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'isExpense',
       type: IsarType.bool,
     ),
     r'isIncome': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'isIncome',
       type: IsarType.bool,
     ),
     r'note': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'note',
       type: IsarType.string,
     ),
     r'subCategory': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'subCategory',
       type: IsarType.string,
     ),
     r'timestamp': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'timestamp',
       type: IsarType.dateTime,
     )
@@ -123,17 +128,18 @@ void _transactionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.amount);
-  writer.writeString(offsets[1], object.categoryName);
-  writer.writeString(offsets[2], object.colorName);
-  writer.writeDateTime(offsets[3], object.dateOfTransaction);
-  writer.writeString(offsets[4], object.description);
-  writer.writeString(offsets[5], object.iconName);
-  writer.writeString(offsets[6], object.identity);
-  writer.writeBool(offsets[7], object.isExpense);
-  writer.writeBool(offsets[8], object.isIncome);
-  writer.writeString(offsets[9], object.note);
-  writer.writeString(offsets[10], object.subCategory);
-  writer.writeDateTime(offsets[11], object.timestamp);
+  writer.writeLong(offsets[1], object.categoryId);
+  writer.writeString(offsets[2], object.categoryName);
+  writer.writeString(offsets[3], object.colorName);
+  writer.writeDateTime(offsets[4], object.dateOfTransaction);
+  writer.writeString(offsets[5], object.description);
+  writer.writeString(offsets[6], object.iconName);
+  writer.writeString(offsets[7], object.identity);
+  writer.writeBool(offsets[8], object.isExpense);
+  writer.writeBool(offsets[9], object.isIncome);
+  writer.writeString(offsets[10], object.note);
+  writer.writeString(offsets[11], object.subCategory);
+  writer.writeDateTime(offsets[12], object.timestamp);
 }
 
 Transaction _transactionDeserialize(
@@ -144,17 +150,18 @@ Transaction _transactionDeserialize(
 ) {
   final object = Transaction();
   object.amount = reader.readLong(offsets[0]);
-  object.categoryName = reader.readString(offsets[1]);
-  object.colorName = reader.readString(offsets[2]);
-  object.dateOfTransaction = reader.readDateTime(offsets[3]);
-  object.description = reader.readStringOrNull(offsets[4]);
-  object.iconName = reader.readString(offsets[5]);
-  object.identity = reader.readStringOrNull(offsets[6]);
-  object.isExpense = reader.readBool(offsets[7]);
-  object.isIncome = reader.readBool(offsets[8]);
-  object.note = reader.readStringOrNull(offsets[9]);
-  object.subCategory = reader.readStringOrNull(offsets[10]);
-  object.timestamp = reader.readDateTime(offsets[11]);
+  object.categoryId = reader.readLong(offsets[1]);
+  object.categoryName = reader.readString(offsets[2]);
+  object.colorName = reader.readString(offsets[3]);
+  object.dateOfTransaction = reader.readDateTime(offsets[4]);
+  object.description = reader.readStringOrNull(offsets[5]);
+  object.iconName = reader.readString(offsets[6]);
+  object.identity = reader.readStringOrNull(offsets[7]);
+  object.isExpense = reader.readBool(offsets[8]);
+  object.isIncome = reader.readBool(offsets[9]);
+  object.note = reader.readStringOrNull(offsets[10]);
+  object.subCategory = reader.readStringOrNull(offsets[11]);
+  object.timestamp = reader.readDateTime(offsets[12]);
   return object;
 }
 
@@ -168,26 +175,28 @@ P _transactionDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readDateTime(offset)) as P;
-    case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
       return (reader.readString(offset)) as P;
-    case 6:
+    case 4:
+      return (reader.readDateTime(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
+      return (reader.readStringOrNull(offset)) as P;
+    case 12:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -242,6 +251,62 @@ extension TransactionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'amount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'categoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'categoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'categoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'categoryId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,

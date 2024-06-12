@@ -15,6 +15,7 @@ dependencies:
   uuid: ^4.4.0
 
 
+
 dev_dependencies:
   build_runner: ^2.2.0
   equatable: 2.0.3

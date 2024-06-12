@@ -1,6 +1,13 @@
 part of 'add_transaction_bloc.dart';
 
-enum AddTransactionStatus { initial, loading, success, failure }
+enum AddTransactionStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  addNewCategory,
+  chooseCategory
+}
 
 class AddTransactionState extends Equatable {
   final AddTransactionStatus status;
@@ -11,7 +18,7 @@ class AddTransactionState extends Equatable {
   final bool isExpense;
   final bool isIncome;
   final bool isCategoryExpanded;
-  final bool  isColorExpanded;
+  final bool isColorExpanded;
   final bool isCategorySelected;
   final TransactionCategory tempCategory;
   final String dateTextField;
@@ -19,8 +26,14 @@ class AddTransactionState extends Equatable {
   final bool isDateChosen;
   final DateTime tempDate;
   final Transaction tempTransaction;
+  final TransactionCategory newCustomCategory;
+  final bool isAddNewCategoryExpanded;
+  final List<Icon> categoryWidgetIcons;
+  final bool isAddNewCategoryColorPickerExpanded;
 
   AddTransactionState({
+    required this.newCustomCategory,
+    required this.isAddNewCategoryColorPickerExpanded,
     required this.isColorExpanded,
     required this.tempDate,
     required this.categories,
@@ -33,19 +46,25 @@ class AddTransactionState extends Equatable {
     required this.isCategoryExpanded,
     required this.isCategorySelected,
     required this.isDateChosen,
+    required this.isAddNewCategoryExpanded,
     required this.tempCategory,
     required this.dateTextField,
     required this.transactionAmount,
     required this.tempTransaction,
+    required this.categoryWidgetIcons,
   });
 
   AddTransactionState copyWith({
+    TransactionCategory Function()? newCustomCategory,
     AddTransactionStatus Function()? status,
     List<TransactionCategory> Function()? categories,
+    List<Icon> Function()? categoryWidgetIcons,
     Icon Function()? selectedIcon,
     Color Function()? selectedColor,
     String Function()? selectedTransactionType,
     bool Function()? isExpense,
+    bool Function()? isAddNewCategoryColorPickerExpanded,
+    bool Function()? isAddNewCategoryExpanded,
     bool Function()? isIncome,
     bool Function()? isCategoryExpanded,
     bool Function()? isCategorySelected,
@@ -58,29 +77,57 @@ class AddTransactionState extends Equatable {
     Transaction Function()? tempTransaction,
   }) {
     return AddTransactionState(
-      isColorExpanded: isColorExpanded != null ? isColorExpanded() : this.isColorExpanded,
+      newCustomCategory: newCustomCategory != null
+          ? newCustomCategory()
+          : this.newCustomCategory,
+      isAddNewCategoryColorPickerExpanded:
+          isAddNewCategoryColorPickerExpanded != null
+              ? isAddNewCategoryColorPickerExpanded()
+              : this.isAddNewCategoryColorPickerExpanded,
+      categoryWidgetIcons: categoryWidgetIcons != null
+          ? categoryWidgetIcons()
+          : this.categoryWidgetIcons,
+      isColorExpanded:
+          isColorExpanded != null ? isColorExpanded() : this.isColorExpanded,
       status: status != null ? status() : this.status,
       categories: categories != null ? categories() : this.categories,
       selectedIcon: selectedIcon != null ? selectedIcon() : this.selectedIcon,
-      selectedColor: selectedColor != null ? selectedColor() : this.selectedColor,
-      selectedTransactionType: selectedTransactionType != null ? selectedTransactionType() : this.selectedTransactionType,
+      selectedColor:
+          selectedColor != null ? selectedColor() : this.selectedColor,
+      selectedTransactionType: selectedTransactionType != null
+          ? selectedTransactionType()
+          : this.selectedTransactionType,
       isExpense: isExpense != null ? isExpense() : this.isExpense,
       isIncome: isIncome != null ? isIncome() : this.isIncome,
-      isCategoryExpanded: isCategoryExpanded != null ? isCategoryExpanded() : this.isCategoryExpanded,
-      isCategorySelected: isCategorySelected != null ? isCategorySelected() : this.isCategorySelected,
+      isAddNewCategoryExpanded: isAddNewCategoryExpanded != null
+          ? isAddNewCategoryExpanded()
+          : this.isAddNewCategoryExpanded,
+      isCategoryExpanded: isCategoryExpanded != null
+          ? isCategoryExpanded()
+          : this.isCategoryExpanded,
+      isCategorySelected: isCategorySelected != null
+          ? isCategorySelected()
+          : this.isCategorySelected,
       tempCategory: tempCategory != null ? tempCategory() : this.tempCategory,
-      dateTextField: dateTextField != null ? dateTextField() : this.dateTextField,
-      transactionAmount: transactionAmountController != null ? transactionAmountController() : this.transactionAmount,
+      dateTextField:
+          dateTextField != null ? dateTextField() : this.dateTextField,
+      transactionAmount: transactionAmountController != null
+          ? transactionAmountController()
+          : this.transactionAmount,
       isDateChosen: isDateChoosen != null ? isDateChoosen() : this.isDateChosen,
       tempDate: tempDate != null ? tempDate() : this.tempDate,
-      tempTransaction: tempTransaction != null ? tempTransaction() : this.tempTransaction,
+      tempTransaction:
+          tempTransaction != null ? tempTransaction() : this.tempTransaction,
     );
   }
 
   AddTransactionState.empty()
       : status = AddTransactionStatus.initial,
+        newCustomCategory = TransactionCategory(),
+        categoryWidgetIcons = categoryWidgets,
         categories = [],
         isColorExpanded = false,
+        isAddNewCategoryColorPickerExpanded = false,
         selectedIcon = Icon(Icons.category),
         selectedColor = Colors.red,
         selectedTransactionType = "income",
@@ -88,9 +135,10 @@ class AddTransactionState extends Equatable {
         isIncome = false,
         isCategoryExpanded = false,
         isCategorySelected = false,
+        isAddNewCategoryExpanded = false,
         tempCategory = TransactionCategory(),
         dateTextField = 'Choose Date',
-        transactionAmount ='0',
+        transactionAmount = '0',
         isDateChosen = false,
         tempDate = DateTime.now(),
         tempTransaction = Transaction();
@@ -106,37 +154,15 @@ class AddTransactionState extends Equatable {
         isIncome,
         isCategoryExpanded,
         isCategorySelected,
+        isAddNewCategoryExpanded,
         tempCategory,
         dateTextField,
         transactionAmount,
         isDateChosen,
         tempDate,
         tempTransaction,
+        isAddNewCategoryColorPickerExpanded,
+        newCustomCategory,
+        isColorExpanded,
       ];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

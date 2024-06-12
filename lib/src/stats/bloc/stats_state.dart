@@ -8,16 +8,27 @@ final class StatsState extends Equatable {
     this.monthlyTransactions = const [],
     this.incomeCategoryTotals = const [],
     this.expenseCategoryTotals = const [],
-    this.transactionCategories = const [],
+    this.selectedTransactionCategories = const [],
+    this.incomeCategories = const [],
+    this.expenseCategories = const [],
+    this.totalAmount = 0,
     this.showExpenses = true,
+    this.isDisplayExpenses = true,
+    this.isDisplayIncome = false,
   });
 
   final List<Transaction> monthlyTransactions;
   final StatsStatus status;
   final List<PieChartDataObject> expenseCategoryTotals;
   final List<PieChartDataObject> incomeCategoryTotals;
-  final List<TransactionCategory> transactionCategories;
+  final List<TransactionCategory> selectedTransactionCategories;
+  final List<TransactionCategory> incomeCategories;
+  final List<TransactionCategory> expenseCategories;
   final bool showExpenses;
+  final bool isDisplayExpenses;
+  final bool isDisplayIncome;
+
+  final int totalAmount;
 
   StatsState copyWith({
     List<Transaction> Function()? monthlyTransactions,
@@ -25,14 +36,24 @@ final class StatsState extends Equatable {
     List<PieChartDataObject> Function()? incomeCategoryTotals,
     List<PieChartDataObject> Function()? expenseCategoryTotals,
     List<TransactionCategory> Function()? transactionCategories,
+    List<TransactionCategory> Function()? incomeCategories,
+    List<TransactionCategory> Function()? expenseCategories,
     bool Function()? showTransactions,
+    int Function()? totalAmount,
+    bool Function()? isDisplayExpenses,
+    bool Function()? isDisplayIncome,
   }) {
     return StatsState(
       showExpenses:
           showTransactions != null ? showTransactions() : this.showExpenses,
-      transactionCategories: transactionCategories != null
+      selectedTransactionCategories: transactionCategories != null
           ? transactionCategories()
-          : this.transactionCategories,
+          : this.selectedTransactionCategories,
+      incomeCategories:
+          incomeCategories != null ? incomeCategories() : this.incomeCategories,
+      expenseCategories: expenseCategories != null
+          ? expenseCategories()
+          : this.expenseCategories,
       monthlyTransactions: monthlyTransactions != null
           ? monthlyTransactions()
           : this.monthlyTransactions,
@@ -43,6 +64,12 @@ final class StatsState extends Equatable {
       expenseCategoryTotals: expenseCategoryTotals != null
           ? expenseCategoryTotals()
           : this.expenseCategoryTotals,
+      totalAmount: totalAmount != null ? totalAmount() : this.totalAmount,
+      isDisplayExpenses: isDisplayExpenses != null
+          ? isDisplayExpenses()
+          : this.isDisplayExpenses,
+      isDisplayIncome:
+          isDisplayIncome != null ? isDisplayIncome() : this.isDisplayIncome,
     );
   }
 
@@ -53,6 +80,11 @@ final class StatsState extends Equatable {
         incomeCategoryTotals,
         expenseCategoryTotals,
         showExpenses,
-        transactionCategories,
+        selectedTransactionCategories,
+        totalAmount,
+        isDisplayExpenses,
+        isDisplayIncome,
+        incomeCategories,
+        expenseCategories,
       ];
 }

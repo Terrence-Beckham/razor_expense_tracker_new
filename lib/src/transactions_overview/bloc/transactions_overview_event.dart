@@ -11,3 +11,21 @@ final class InitialDataEvent extends TransactionsOverviewEvent{
   List<Object?> get props =>[];
 
 }
+
+final class DeleteTransactionEvent extends TransactionsOverviewEvent{
+  const DeleteTransactionEvent(this.transaction);
+
+  final Transaction transaction;
+
+  @override
+  List<Object?> get props => [transaction];
+}
+
+final class UndoDeleteTransactionEvent extends TransactionsOverviewEvent{
+  const UndoDeleteTransactionEvent(this.transaction);
+
+  final Transaction transaction;
+
+  @override
+  List<Object?> get props => [transaction];
+}

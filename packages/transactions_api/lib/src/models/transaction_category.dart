@@ -10,17 +10,18 @@ class TransactionCategory {
   String? name;
   String? iconName;
   String? colorName;
-  int amount = 0;
+  int? iconCodePoint;
+  int totalAmount = 0;
+  int totalExpenseAmount = 0;
+  int totalIncomeAmount = 0;
 
   // Other properties...
 
   // Make sure transactions is a growable list
   List<Transaction> transactions = <Transaction>[];
 
-
-
   @override
   String toString() {
-    return 'TransactionCategory{id: $id, name: $name, iconName: $iconName, colorName: $colorName, amount: $amount, transactions: $transactions}';
+    return 'TransactionCategory{id: $id, name: $name, iconName: $iconName, colorName: $colorName, iconCodePoint: $iconCodePoint, totalAmount: $totalAmount, totalExpenseAmount: $totalExpenseAmount, totalIncomeAmount: $totalIncomeAmount, transactions: $transactions}';
   }
 }

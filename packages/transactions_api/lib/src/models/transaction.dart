@@ -37,19 +37,10 @@ class Transaction {
   String iconName = '';
   String colorName = '';
   String categoryName = '';
-
-
+  int categoryId = 0;
 
   @override
   String toString() {
-    return 'Transaction{'
-        ' amount: $amount,'
-        ' timestamp: $timestamp, '
-        ' subCategory: $subCategory,'
-        ' dateOfTransaction: $dateOfTransaction, '
-        'description: $description,'
-        ' note: $note,'
-        ' isExpense: $isExpense,'
-        ' isIncome: $isIncome}';
+    return 'Transaction{identity: $identity, amount: $amount, timestamp: $timestamp, subCategory: $subCategory, dateOfTransaction: $dateOfTransaction, description: $description, note: $note, isExpense: $isExpense, isIncome: $isIncome, iconName: $iconName, colorName: $colorName, categoryName: $categoryName, categoryId: $categoryId}';
   }
 }

@@ -27,14 +27,20 @@ class TransactionsRepository {
 
 
   ///Saves a [Transaction] to a [TransactionCategory]
-  Future<void> saveTransactionToCategory(TransactionCategory category,
+  Future<void> saveTransactionToCategory(
       Transaction transaction,) =>
-      _transactionsApi.saveTransactionToCategory(category, transaction);
+      _transactionsApi.saveTransactionToCategory( transaction);
 
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error
   /// thrown.
-  Future<void> deleteTransaction(String  identity) =>
-      _transactionsApi.deleteTransaction(identity);
+  Future<void> deleteTransaction(Transaction  transaction) =>
+      _transactionsApi.deleteTransaction(transaction);
+
+
+  /// Adds a new [TransactionCategory] to the database
+  Future<void> addCustomCategory(TransactionCategory category) =>
+      _transactionsApi.addCustomCategory(category);
+
 }

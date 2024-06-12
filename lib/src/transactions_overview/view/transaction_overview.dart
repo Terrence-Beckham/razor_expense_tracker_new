@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:transactions_repository/transactions_repository.dart';
+
 import '../../widgets/konstants.dart';
 import '../bloc/transactions_overview_bloc.dart';
 
@@ -62,7 +64,34 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionsOverviewBloc, TransactionsOverviewState>(
+    return BlocConsumer<TransactionsOverviewBloc, TransactionsOverviewState>(
+      listenWhen: (previous, current) =>
+          previous.deletedTransaction != current.deletedTransaction &&
+          current.deletedTransaction != null,
+      listener: (context, state) {
+        final deletedTransaction = state.deletedTransaction;
+        final messenger = ScaffoldMessenger.of( context);
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              'Transaction deleted',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                context.read<TransactionsOverviewBloc>().add(
+                      UndoDeleteTransactionEvent(
+                        deletedTransaction!,
+                      ),
+                    );
+              },
+            ),
+          ),
+        );
+      },
       builder: (context, state) {
         return Column(
           children: [
@@ -93,7 +122,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                   elevation: 8,
                   shadowColor: Theme.of(context).colorScheme.primary,
                   color: Theme.of(context).colorScheme.primary,
-                  child:    Column(
+                  child: Column(
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(top: 8),
@@ -102,18 +131,20 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                           style: TextStyle(color: Colors.white, fontSize: 24),
                         ),
                       ),
-
-                     if (state.transactions.isNotEmpty) Text(
-                        // r' $1,000.00',
-                       '\$ ${state.transactions.first.amount?? '\$'}'
-                     // '\$'
-                       ,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 34,
-                        ),
-                      ) else const Text(r'$'),
-                      const Row(
+                      if (state.transactions.isNotEmpty)
+                        Text(
+                          // r' $1,000.00',
+                          '\$ ${state.balance ?? '\$'}'
+                          // '\$'
+                          ,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                          ),
+                        )
+                      else
+                        const Text(r'$'),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
@@ -134,7 +165,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      r' $1,000',
+                                      '\$ ${state.incomeTotals ?? '\$'}',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 24,
@@ -169,7 +200,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        r' $1,000',
+                                        '\$ ${state.expenseTotals ?? '\$'}',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
@@ -224,37 +255,60 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                       return SizedBox(
                         height: 75,
                         child: Card(
-                          child: ListTile(
-                            leading: Icon(
-                              myIcons[state.transactions[index].iconName],
-                              color: colorMapper[
-                                  state.transactions[index].colorName],
+                          child: Slidable(
+                            endActionPane: ActionPane(
+                              motion: StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    context
+                                        .read<TransactionsOverviewBloc>()
+                                        .add(DeleteTransactionEvent(
+                                            state.transactions[index]));
+                                  },
+                                  backgroundColor: Colors.red,
+                                  icon: Icons.delete,
+                                ),
+                                SlidableAction(
+                                  onPressed: (context) {},
+                                  backgroundColor: Colors.green,
+                                  icon: Icons.edit,
+                                ),
+                              ],
                             ),
-                            // leading: Icon(
-                            // // myIcons(expense.iconname);
-                            // Icons.abc , color: Colors.red,
-                            // ),
-                            title: Text(
-                                state.transactions[index].categoryName ?? ' '),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 4),
-                              child: Text(
-                                state.transactions[index].dateOfTransaction
-                                    .toString()
-                                    .substring(0, 10),
+                            child: ListTile(
+                              leading: Icon(
+                                myIcons[state.transactions[index].iconName],
+                                color: colorMapper[
+                                    state.transactions[index].colorName],
                               ),
-                            ),
-                            trailing: Text(
-                              '\$ ${state.transactions[index].amount}',
-                              style: state.transactions[index].isExpense
-                                  ? const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.red,
-                                    )
-                                  : const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.green,
-                                    ),
+                              // leading: Icon(
+                              // // myIcons(expense.iconname);
+                              // Icons.abc , color: Colors.red,
+                              // ),
+                              title: Text(
+                                  state.transactions[index].categoryName ??
+                                      ' '),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 4),
+                                child: Text(
+                                  state.transactions[index].dateOfTransaction
+                                      .toString()
+                                      .substring(0, 10),
+                                ),
+                              ),
+                              trailing: Text(
+                                '\$ ${state.transactions[index].amount}',
+                                style: state.transactions[index].isExpense
+                                    ? const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      )
+                                    : const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.green,
+                                      ),
+                              ),
                             ),
                           ),
                         ),

@@ -34,8 +34,8 @@ final class UpdateSelectedIcon extends AddTransactionEvent {
 }
 
 /// This class updates the selectedColor field in the AddTransactionState class
-final class UpdateSelectedColor extends AddTransactionEvent {
-  const UpdateSelectedColor(this.color);
+final class UpdateNewCategoryColor extends AddTransactionEvent {
+  const UpdateNewCategoryColor(this.color);
 
   final Color color;
 
@@ -108,6 +108,16 @@ final class UpdateTempCategory extends AddTransactionEvent {
 
   @override
   List<Object> get props => [category];
+}
+
+///Update the Name of the TempCategory
+final class UpdateTempCustomCategoryName extends AddTransactionEvent {
+  const UpdateTempCustomCategoryName(this.categoryName);
+
+  final String categoryName;
+
+  @override
+  List<Object> get props => [categoryName];
 }
 /// This class updates the dateTextController field in the AddTransactionState class
 final class UpdateDateTextField extends AddTransactionEvent {
@@ -185,4 +195,47 @@ final class SaveTransactionToCategory extends AddTransactionEvent {
 
   @override
   List<Object> get props => [transaction, categoryId];
+}
+
+/// Launch the AddNewCategoryPage
+final class LaunchAddNewCategoryPage extends AddTransactionEvent {
+  const LaunchAddNewCategoryPage();
+
+  @override
+  List<Object> get props => [];
+}
+
+/// Expand the IconPicker in Add New Category Page
+final class ExpandNewIconPicker extends AddTransactionEvent {
+  const ExpandNewIconPicker();
+
+  @override
+  List<Object> get props => [];
+}
+
+/// Expand the ColorPicker in Add New Category Page
+final class ExpandNewColorPicker extends AddTransactionEvent {
+  const ExpandNewColorPicker();
+
+  @override
+  List<Object> get props => [];
+}
+
+///Sets the Icon for the Custom Category
+final class UpdateCustomCategoryIcon extends AddTransactionEvent {
+  const UpdateCustomCategoryIcon(this.icon);
+
+  final Icon icon;
+
+  @override
+  List<Object> get props => [icon];
+}
+
+/// Add a new Category
+final class AddNewCategory extends AddTransactionEvent {
+  const AddNewCategory();
+
+
+  @override
+  List<Object> get props => [];
 }
