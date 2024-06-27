@@ -18,9 +18,13 @@ final class StatsState extends Equatable {
     this.isDisplayExpenses = true,
     this.isDisplayIncome = false,
     this.datePeriodChosen = DatePeriodChosen.allTime,
+    startMonth,
     startDate,
     endDate,
-  })  : this.startDate = (startDate != null ? startDate : DateTime.utc(0)),
+    startYear,
+  })  : this.startMonth = DateTime.now().month,
+        this.startYear = DateTime.now().year,
+        this.startDate = (startDate != null ? startDate : DateTime.utc(0)),
         this.endDate =
             (endDate != null ? endDate : DateTime(DateTime.now().year + 9999));
 
@@ -37,6 +41,12 @@ final class StatsState extends Equatable {
   final DateTime? startDate;
   final DateTime? endDate;
   final DatePeriodChosen datePeriodChosen;
+
+  ///The starting month
+  final int startMonth;
+
+  ///The starting year
+  final int startYear;
 
   final int totalAmount;
 
@@ -56,6 +66,8 @@ final class StatsState extends Equatable {
     final DateTime Function()? startDate,
     final DateTime Function()? endDate,
     final DatePeriodChosen Function()? datePeriodChosen,
+    final int? Function()? startMonth,
+    final int? Function()? startYear,
   }) {
     return StatsState(
       showExpenses:
@@ -88,11 +100,15 @@ final class StatsState extends Equatable {
       endDate: endDate != null ? endDate() : this.endDate,
       datePeriodChosen:
           datePeriodChosen != null ? datePeriodChosen() : this.datePeriodChosen,
+      startMonth: startMonth != null ? startMonth() : this.startMonth,
+      startYear: startYear != null ? startYear() : this.startYear,
     );
   }
 
   @override
   List<Object?> get props => [
+        startMonth,
+        startYear,
         monthlyTransactions,
         status,
         incomeCategoryTotals,
