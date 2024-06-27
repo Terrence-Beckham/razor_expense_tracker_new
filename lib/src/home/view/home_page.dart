@@ -32,32 +32,54 @@ class HomeView extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          backgroundColor: Theme.of(context).colorScheme.onTertiary,
+          // shape: const CircleBorder(),
+          backgroundColor: Colors.green,
+
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute<AddTransactionPage>(
-                builder: (context) => const AddTransactionPage()));
+            Navigator.of(context).push(
+              MaterialPageRoute<AddTransactionPage>(
+                builder: (context) => const AddTransactionPage(),
+              ),
+            );
           },
           key: const Key('homeView_addTransaction_floatingActionButton'),
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add,color: Colors.white,),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Theme.of(context).colorScheme.primary,
-          shape: const CircularNotchedRectangle(),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _HomeTabButton(
-                groupValue: selectedTab,
-                value: HomeTab.transactions,
-                icon: const Icon(Icons.home),
-              ),
-              _HomeTabButton(
-                groupValue: selectedTab,
-                value: HomeTab.stats,
-                icon: const Icon(Icons.show_chart_rounded),
-              ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(8, 8),
+                  blurRadius: 15,
+                  spreadRadius: 1),
+              BoxShadow(
+                  color: Colors.white,
+                  offset: Offset(-8, -8),
+                  blurRadius: 15,
+                  spreadRadius: 1)
             ],
+          ),
+          child: BottomAppBar(
+            color: Colors.grey[200],
+            shape: const CircularNotchedRectangle(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _HomeTabButton(
+                  groupValue: selectedTab,
+                  value: HomeTab.transactions,
+                  icon: const Icon(Icons.home),
+                ),
+                _HomeTabButton(
+                  groupValue: selectedTab,
+                  value: HomeTab.stats,
+                  icon: const Icon(Icons.show_chart_rounded),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -17,7 +17,7 @@ class TransactionsRepository {
       _transactionsApi.getTransactions();
 
   ///provides a [Stream] of all categories
-  Stream<List<TransactionCategory>> getCategories() =>
+  Stream<List<TransactionCategory>> streamCategories() =>
       _transactionsApi.getCategories();
 
   ///Calculates the total amount of expenses by category

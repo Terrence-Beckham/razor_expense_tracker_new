@@ -48,4 +48,26 @@ final class SetTransactionCategoryType extends StatsEvent {
 
   @override
   List<Object?> get props => [];
+
+
+}
+final class IncomeDisplayRequested extends StatsEvent {
+  const IncomeDisplayRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
+final class ExpenseDisplayRequested extends StatsEvent {
+  const ExpenseDisplayRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
+final class DatePeriodChosenEvent extends StatsEvent {
+  const DatePeriodChosenEvent(this.datePeriodChosen);
+final DatePeriodChosen datePeriodChosen;
+  @override
+  List<Object?> get props => [datePeriodChosen];
 }

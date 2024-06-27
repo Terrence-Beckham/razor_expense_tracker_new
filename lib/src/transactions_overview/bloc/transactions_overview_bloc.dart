@@ -32,7 +32,7 @@ class TransactionsOverviewBloc
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
 
     await emit.forEach<List<TransactionCategory>>(
-      _transactionsRepository.getCategories(),
+      _transactionsRepository.streamCategories(),
       onData: (categories) {
         final transactions = displayTransactions(categories);
         return state.copyWith(

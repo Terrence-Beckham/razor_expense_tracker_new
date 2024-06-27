@@ -260,7 +260,8 @@ class AddTransactionSuccessView extends StatelessWidget {
               if (state.isCategoryExpanded)
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16),
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 50),
                     decoration: const BoxDecoration(
                       color: Colors.blueGrey,
                       borderRadius: BorderRadius.only(
@@ -272,7 +273,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                     height: 300,
                     child: Column(
                       children: [
-                        SizedBox(
+                       AnimatedContainer(
+                         duration: Duration(milliseconds: 50),
                           height: 250,
                           child: GridView.builder(
                             padding: const EdgeInsets.only(
@@ -281,9 +283,13 @@ class AddTransactionSuccessView extends StatelessWidget {
                             shrinkWrap: true,
                             itemCount: state.categories.length,
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                            ),
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    childAspectRatio: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                        (MediaQuery.of(context).size.height /
+                                            4)),
                             itemBuilder: (context, int index) {
                               return InputChip(
                                 backgroundColor: colorMapper[
@@ -296,6 +302,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                                   state.categories[index].name.toString(),
                                   style: const TextStyle(color: Colors.black87),
                                 ),
+
                                 onPressed: () {
                                   context.read<AddTransactionBloc>().add(
                                         UpdateTempCategory(
@@ -595,9 +602,13 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                             child: GridView.builder(
                               itemCount: state.categoryWidgetIcons.length,
                               gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                              ),
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                          (MediaQuery.of(context).size.height /
+                                              4)),
                               itemBuilder: (context, int i) {
                                 return GestureDetector(
                                   onTap: () => {
@@ -734,7 +745,7 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                     ),
                     ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                           Theme.of(context).colorScheme.onTertiary,
                         ),
                       ),

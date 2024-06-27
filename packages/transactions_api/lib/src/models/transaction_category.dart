@@ -14,6 +14,8 @@ class TransactionCategory {
   int totalAmount = 0;
   int totalExpenseAmount = 0;
   int totalIncomeAmount = 0;
+  String expensePercentage = '';
+  String incomePercentage = '';
 
   // Other properties...
 
@@ -22,6 +24,9 @@ class TransactionCategory {
 
   @override
   String toString() {
-    return 'TransactionCategory{id: $id, name: $name, iconName: $iconName, colorName: $colorName, iconCodePoint: $iconCodePoint, totalAmount: $totalAmount, totalExpenseAmount: $totalExpenseAmount, totalIncomeAmount: $totalIncomeAmount, transactions: $transactions}';
+    return 'TransactionCategory{id: $id, name: $name, iconName: $iconName, colorName: $colorName,'
+        ' iconCodePoint: $iconCodePoint, totalAmount: $totalAmount,'
+        ' totalExpenseAmount: $totalExpenseAmount, totalIncomeAmount: $totalIncomeAmount,'
+        ' transactions: $transactions, expensePercentage: $expensePercentage, incomePercentage: $incomePercentage}';
   }
 }

@@ -27,6 +27,7 @@ class TransactionsOverviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey[200],
         appBar: AppBar(
           title: Text(
             'Razor Expense Tracker',
@@ -70,7 +71,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
           current.deletedTransaction != null,
       listener: (context, state) {
         final deletedTransaction = state.deletedTransaction;
-        final messenger = ScaffoldMessenger.of( context);
+        final messenger = ScaffoldMessenger.of(context);
         messenger.showSnackBar(
           SnackBar(
             content: Text(
@@ -95,22 +96,63 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
       builder: (context, state) {
         return Column(
           children: [
-            ListTile(
-              title: const Text('Hello Buddy'),
-              subtitle: const Text('User'),
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: const Icon(
-                  Icons.person_2_outlined,
-                  color: Colors.white,
+            Container(
+              child: ListTile(
+                title: const Text(
+                  'Hello Buddy',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-              ),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).colorScheme.onTertiary,
+                subtitle: const Text('User'),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(8, 8),
+                          blurRadius: 15,
+                          spreadRadius: 1),
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(-8, -8),
+                          blurRadius: 15,
+                          spreadRadius: 1)
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey[200],
+                    child: Icon(
+                      Icons.person_2_outlined,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
                 ),
-                onPressed: () {},
+                trailing: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(8, 8),
+                          blurRadius: 15,
+                          spreadRadius: 1),
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(-8, -8),
+                          blurRadius: 15,
+                          spreadRadius: 1),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: Theme.of(context).colorScheme.onTertiary,
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -118,17 +160,32 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
               child: SizedBox(
                 height: MediaQuery.of(context).size.width / 2,
                 width: MediaQuery.of(context).size.width,
-                child: Card(
-                  elevation: 8,
-                  shadowColor: Theme.of(context).colorScheme.primary,
-                  color: Theme.of(context).colorScheme.primary,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(8, 8),
+                          blurRadius: 15,
+                          spreadRadius: 1),
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(-8, -8),
+                          blurRadius: 15,
+                          spreadRadius: 1),
+                    ],
+                  ),
                   child: Column(
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
                           'Total Balance',
-                          style: TextStyle(color: Colors.white, fontSize: 24),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 24),
                         ),
                       ),
                       if (state.transactions.isNotEmpty)
@@ -137,8 +194,8 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                           '\$ ${state.balance ?? '\$'}'
                           // '\$'
                           ,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
                             fontSize: 34,
                           ),
                         )
@@ -161,13 +218,13 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                       'Income',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: Colors.white,
+                                        color: Theme.of(context).primaryColor,
                                       ),
                                     ),
                                     Text(
                                       '\$ ${state.incomeTotals ?? '\$'}',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Theme.of(context).primaryColor,
                                         fontSize: 24,
                                       ),
                                     ),
@@ -195,14 +252,14 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                       Text(
                                         'Expenses',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: Theme.of(context).primaryColor,
                                           fontSize: 18,
                                         ),
                                       ),
                                       Text(
                                         '\$ ${state.expenseTotals ?? '\$'}',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: Theme.of(context).primaryColor,
                                           fontSize: 24,
                                         ),
                                       ),
@@ -219,24 +276,27 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(16),
+            Padding(
+              padding: EdgeInsets.only(top: 16, left: 16,right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Text(
-                      'Transactions',
-                      style: TextStyle(fontSize: 24),
-                    ),
+                  Text(
+                    'Transactions',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Text(
-                      'view all',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+                    padding: EdgeInsets.all( 8),
+                    child: TextButton(
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(
+                              Theme.of(context).colorScheme.onPrimary)),
+                      onPressed: () {},
+                      child: Text(
+                        'View All',
+                        style: TextStyle(color: Colors.green, fontSize: 16 ),
+                      ),
                     ),
                   ),
                 ],
@@ -245,76 +305,88 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
             Expanded(
               child: SizedBox(
                 height: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: ListView.builder(
-                    // shrinkWrap: true,
-                    itemCount: state.transactions.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
-                      return SizedBox(
+                child: ListView.builder(
+                  // shrinkWrap: true,
+                  itemCount: state.transactions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.grey,
+                                offset: Offset(8, 8),
+                                blurRadius: 15,
+                                spreadRadius: 1),
+                            BoxShadow(
+                                color: Colors.white,
+                                offset: Offset(-8, -8),
+                                blurRadius: 15,
+                                spreadRadius: 1)
+                          ],
+                        ),
                         height: 75,
-                        child: Card(
-                          child: Slidable(
-                            endActionPane: ActionPane(
-                              motion: StretchMotion(),
-                              children: [
-                                SlidableAction(
-                                  onPressed: (context) {
-                                    context
-                                        .read<TransactionsOverviewBloc>()
-                                        .add(DeleteTransactionEvent(
-                                            state.transactions[index]));
-                                  },
-                                  backgroundColor: Colors.red,
-                                  icon: Icons.delete,
-                                ),
-                                SlidableAction(
-                                  onPressed: (context) {},
-                                  backgroundColor: Colors.green,
-                                  icon: Icons.edit,
-                                ),
-                              ],
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            motion: StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  context.read<TransactionsOverviewBloc>().add(
+                                      DeleteTransactionEvent(
+                                          state.transactions[index]));
+                                },
+                                backgroundColor: Colors.red,
+                                icon: Icons.delete,
+                              ),
+                              SlidableAction(
+                                onPressed: (context) {},
+                                backgroundColor: Colors.green,
+                                icon: Icons.edit,
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            leading: Icon(
+                              myIcons[state.transactions[index].iconName],
+                              color: colorMapper[
+                                  state.transactions[index].colorName],
                             ),
-                            child: ListTile(
-                              leading: Icon(
-                                myIcons[state.transactions[index].iconName],
-                                color: colorMapper[
-                                    state.transactions[index].colorName],
+                            // leading: Icon(
+                            // // myIcons(expense.iconname);
+                            // Icons.abc , color: Colors.red,
+                            // ),
+                            title: Text(
+                                state.transactions[index].categoryName ?? ' '),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(left: 8, top: 4),
+                              child: Text(
+                                state.transactions[index].dateOfTransaction
+                                    .toString()
+                                    .substring(0, 10),
                               ),
-                              // leading: Icon(
-                              // // myIcons(expense.iconname);
-                              // Icons.abc , color: Colors.red,
-                              // ),
-                              title: Text(
-                                  state.transactions[index].categoryName ??
-                                      ' '),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(left: 8, top: 4),
-                                child: Text(
-                                  state.transactions[index].dateOfTransaction
-                                      .toString()
-                                      .substring(0, 10),
-                                ),
-                              ),
-                              trailing: Text(
-                                '\$ ${state.transactions[index].amount}',
-                                style: state.transactions[index].isExpense
-                                    ? const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.red,
-                                      )
-                                    : const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.green,
-                                      ),
-                              ),
+                            ),
+                            trailing: Text(
+                              '\$ ${state.transactions[index].amount}',
+                              style: state.transactions[index].isExpense
+                                  ? const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.red,
+                                    )
+                                  : const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.green,
+                                    ),
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

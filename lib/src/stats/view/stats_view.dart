@@ -75,33 +75,21 @@ class StatsSuccessView extends StatelessWidget {
             'These are the category totals in the stats view ${state.selectedTransactionCategories}');
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Statistics'),
+            title:  Text('Analytics',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                )),
           ),
           body: Column(
             children: [
-              const Row(
-                children: [
-                  Icon(
-                    Icons.arrow_left,
-                    size: 40,
-                  ),
-                  Text('May'),
-                  Icon(
-                    Icons.arrow_right,
-                    size: 40,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 50,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      context.read<StatsBloc>().add(SetTransactionCategoryType(
-                          ));
+                      context.read<StatsBloc>().add(ExpenseDisplayRequested());
                     },
                     child: const Text(
                       'Expenses',
@@ -110,10 +98,7 @@ class StatsSuccessView extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // context.read<StatsBloc>().add(
-                      //       DisplayIncomePieChartStats(),
-                      //     );
-                      _logger.d(state.showExpenses);
+                      context.read<StatsBloc>().add(IncomeDisplayRequested());
                     },
                     child: const Text(
                       'Income',
@@ -122,80 +107,157 @@ class StatsSuccessView extends StatelessWidget {
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InputChip(
+                      label: Text('All Time'),
+                      onPressed: () {
+                        context.read<StatsBloc>().add(
+                            DatePeriodChosenEvent(DatePeriodChosen.allTime));
+                      },
+                      selectedColor: Colors.yellow,
+                      selected:
+                          state.datePeriodChosen == DatePeriodChosen.allTime,
+                    ),
+                    InputChip(
+                      label: Text(' Yearly'),
+                      onPressed: () {
+                        context.read<StatsBloc>().add(
+                            DatePeriodChosenEvent(DatePeriodChosen.yearly));
+                      },
+                      selectedColor: Colors.yellow,
+                      selected:
+                          state.datePeriodChosen == DatePeriodChosen.yearly,
+                    ),
+                    InputChip(
+                      label: Text('Monthly'),
+                      onPressed: () {
+                        context.read<StatsBloc>().add(
+                            DatePeriodChosenEvent(DatePeriodChosen.monthly));
+                      },
+                      selectedColor: Colors.yellow,
+                      selected:
+                          state.datePeriodChosen == DatePeriodChosen.monthly,
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.arrow_back),
+                  ),
+                  Text('2024'),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.arrow_forward),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.arrow_back),
+                  ),
+                  Text('January'),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.arrow_forward),
+                  ),
+                ],
+              ),
               SizedBox(
-                height: 300,
-                child: state.showExpenses
-                    ? PieChart(
-                        PieChartData(
-                          sections: List.generate(
-                              state.selectedTransactionCategories.length,
-                              (index) {
-                            return PieChartSectionData(
+                height: MediaQuery.of(context).size.width / 1.5,
+                child: Stack(alignment: Alignment.center, children: [
+                  state.isDisplayExpenses
+                      ? Text(state.totalAmount.toStringAsFixed(1))
+                      : Text('Income Goes here'),
+                  PieChart(
+                    PieChartData(
+                      sections: List.generate(
+                        state.selectedTransactionCategories.length,
+                        (index) {
+                          return PieChartSectionData(
+                              radius: 70,
                               color: colorMapper[state
                                   .selectedTransactionCategories[index]
                                   .colorName],
-                              value: state.selectedTransactionCategories[index]
-                                  .totalAmount
-                                  .toDouble(),
-                              title:
-                                  '${state.selectedTransactionCategories[index].name}\n'
-                                  '${state.selectedTransactionCategories[index].totalAmount}',
-                            );
-                          }),
-                        ),
-                      )
-                    : PieChart(
-                        PieChartData(
-                          sections: List.generate(
-                              state.selectedTransactionCategories.length,
-                              (index) {
-                            _logger.e(
-                                'This is what should be: ${state.selectedTransactionCategories}');
-                            return PieChartSectionData(
-                              color: colorMapper[state
-                                  .selectedTransactionCategories[index]
-                                  .colorName],
-                              value: 10,
-                              title:
-                                  '${state.selectedTransactionCategories[index].name}\n'
-                                  '${state.selectedTransactionCategories[index].totalAmount}',
-                            );
-                          }),
-                        ),
+                              titleStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              value: state.isDisplayExpenses
+                                  ? state.selectedTransactionCategories[index]
+                                      .totalExpenseAmount
+                                      .toDouble()
+                                  : state.selectedTransactionCategories[index]
+                                      .totalIncomeAmount
+                                      .toDouble(),
+                              title: state.isDisplayExpenses
+                                  ? '${state.selectedTransactionCategories[index].name}\n'
+                                      '\$${state.selectedTransactionCategories[index].totalExpenseAmount}'
+                                  : '${state.selectedTransactionCategories[index].name}\n'
+                                      '\$${state.selectedTransactionCategories[index].totalIncomeAmount}');
+                        },
                       ),
+                    ),
+                  ),
+                ]),
+              ),
+              SizedBox(
+                height: 20,
               ),
               Expanded(
-                child: ListView(
-                  children: List.generate(
-                    state.selectedTransactionCategories.length,
-                    (index) {
-                      return ListTile(
-                        leading: Icon(
-                          // myIcons[state.transactionCategories[index].iconName],
-                          myIcons[state
-                              .selectedTransactionCategories[index].iconName],
-                          color: colorMapper[state
-                              .selectedTransactionCategories[index].colorName],
-                        ),
-                        title: Text(
-                          state.selectedTransactionCategories[index].name!,
-                          style: TextStyle(
-                            color: colorMapper[state
-                                .selectedTransactionCategories[index]
-                                .colorName],
-                          ),
-                        ),
-                        subtitle: Text(
-                            'Amount: ${state.selectedTransactionCategories[index].totalAmount}'),
-                        // trailing: Text('Percentage: ${state.transactionCategories[index].percentage}'),
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: state.selectedTransactionCategories.length,
+                  itemBuilder: (context, index) {
+                    if (state.isDisplayExpenses &&
+                        state.selectedTransactionCategories[index]
+                                .totalExpenseAmount >
+                            0) {
+                      return InputChip(
+                        onPressed: () {},
+                        label: Text(
+                            style: TextStyle(
+                              color: Colors.white,
+                              overflow: TextOverflow.visible,
+                            ),
+                            '${state.selectedTransactionCategories[index].name} '
+                            ' ${state.selectedTransactionCategories[index].expensePercentage} %'),
+                        //
+                        backgroundColor: colorMapper[state
+                            .selectedTransactionCategories[index].colorName],
                       );
-                      // return Chip(
-                      //   backgroundColor: colorMapper[
-                      //       state.transactionCategories[index].colorName],
-                      //   label: Text(state.transactionCategories[index].name!),
-                      // );
-                    },
-                  ),
+                    } else if (state.isDisplayIncome &&
+                        state.selectedTransactionCategories[index]
+                                .totalIncomeAmount >
+                            0) {
+                      return InputChip(
+                        onPressed: () {},
+                        label: Text(
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              overflow: TextOverflow.visible,
+                            ),
+                            '${state.selectedTransactionCategories[index].name} '
+                            ' ${state.selectedTransactionCategories[index].incomePercentage} %'),
+                        //
+                        backgroundColor: colorMapper[state
+                            .selectedTransactionCategories[index].colorName],
+                      );
+                    } else {
+                      return Container();
+                    }
+                    //
+                  },
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 5)),
                 ),
               ),
             ],
