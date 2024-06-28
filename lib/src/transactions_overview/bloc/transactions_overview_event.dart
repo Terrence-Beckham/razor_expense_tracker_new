@@ -22,7 +22,7 @@ final class DeleteTransactionEvent extends TransactionsOverviewEvent{
 }
 
 final class UndoDeleteTransactionEvent extends TransactionsOverviewEvent{
-  const UndoDeleteTransactionEvent(this.transaction);
+  const UndoDeleteTransactionEvent(this.transaction ) ;
 
   final Transaction transaction;
 

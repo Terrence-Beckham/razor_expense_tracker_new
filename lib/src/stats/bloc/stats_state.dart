@@ -7,7 +7,7 @@ enum DatePeriodChosen { allTime, yearly, monthly }
 final class StatsState extends Equatable {
   StatsState({
     this.status = StatsStatus.initial,
-    this.monthlyTransactions = const [],
+    this.transactions = const [],
     this.incomeCategoryTotals = const [],
     this.expenseCategoryTotals = const [],
     this.selectedTransactionCategories = const [],
@@ -18,17 +18,13 @@ final class StatsState extends Equatable {
     this.isDisplayExpenses = true,
     this.isDisplayIncome = false,
     this.datePeriodChosen = DatePeriodChosen.allTime,
-    startMonth,
-    startDate,
-    endDate,
-    startYear,
-  })  : this.startMonth = DateTime.now().month,
-        this.startYear = DateTime.now().year,
-        this.startDate = (startDate != null ? startDate : DateTime.utc(0)),
-        this.endDate =
-            (endDate != null ? endDate : DateTime(DateTime.now().year + 9999));
-
-  final List<Transaction> monthlyTransactions;
+    this.expenseTransactions = const [],
+    this.incomeTransactions = const [],
+    selectedMonth,
+    selectedYear,
+  })  : this.selectedMonth = DateTime.now().month,
+        this.selectedYear = DateTime.now().year;
+  final List<Transaction> transactions;
   final StatsStatus status;
   final List<PieChartDataObject> expenseCategoryTotals;
   final List<PieChartDataObject> incomeCategoryTotals;
@@ -38,20 +34,17 @@ final class StatsState extends Equatable {
   final bool showExpenses;
   final bool isDisplayExpenses;
   final bool isDisplayIncome;
-  final DateTime? startDate;
-  final DateTime? endDate;
   final DatePeriodChosen datePeriodChosen;
+  final expenseTransactions;
+  final incomeTransactions;
+final int selectedMonth;
+final int selectedYear;
 
-  ///The starting month
-  final int startMonth;
-
-  ///The starting year
-  final int startYear;
 
   final int totalAmount;
 
   StatsState copyWith({
-    List<Transaction> Function()? monthlyTransactions,
+    List<Transaction> Function()? transactions,
     StatsStatus Function()? status,
     List<PieChartDataObject> Function()? incomeCategoryTotals,
     List<PieChartDataObject> Function()? expenseCategoryTotals,
@@ -59,15 +52,15 @@ final class StatsState extends Equatable {
     List<TransactionCategory> Function()? incomeCategories,
     List<TransactionCategory> Function()? expenseCategories,
     List<TransactionCategory> Function()? selectedTransactionCategories,
+    List<Transaction> Function()? expenseTransactions,
+    List<Transaction> Function()? incomeTransactions,
     bool Function()? showTransactions,
     int Function()? totalAmount,
     bool Function()? isDisplayExpenses,
     bool Function()? isDisplayIncome,
-    final DateTime Function()? startDate,
-    final DateTime Function()? endDate,
-    final DatePeriodChosen Function()? datePeriodChosen,
-    final int? Function()? startMonth,
-    final int? Function()? startYear,
+     DatePeriodChosen Function()? datePeriodChosen,
+     int Function()? selectedMonth,
+     int Function()? selectedYear,
   }) {
     return StatsState(
       showExpenses:
@@ -80,9 +73,7 @@ final class StatsState extends Equatable {
       expenseCategories: expenseCategories != null
           ? expenseCategories()
           : this.expenseCategories,
-      monthlyTransactions: monthlyTransactions != null
-          ? monthlyTransactions()
-          : this.monthlyTransactions,
+      transactions: transactions != null ? transactions() : this.transactions,
       status: status != null ? status() : this.status,
       incomeCategoryTotals: incomeCategoryTotals != null
           ? incomeCategoryTotals()
@@ -96,20 +87,23 @@ final class StatsState extends Equatable {
           : this.isDisplayExpenses,
       isDisplayIncome:
           isDisplayIncome != null ? isDisplayIncome() : this.isDisplayIncome,
-      startDate: startDate != null ? startDate() : this.startDate,
-      endDate: endDate != null ? endDate() : this.endDate,
       datePeriodChosen:
-          datePeriodChosen != null ? datePeriodChosen() : this.datePeriodChosen,
-      startMonth: startMonth != null ? startMonth() : this.startMonth,
-      startYear: startYear != null ? startYear() : this.startYear,
+      datePeriodChosen != null ? datePeriodChosen() : this.datePeriodChosen,
+
+      expenseTransactions: expenseTransactions != null
+          ? expenseTransactions()
+          : this.expenseTransactions,
+      incomeTransactions: incomeTransactions != null
+          ? incomeTransactions()
+          : this.incomeTransactions,
     );
   }
 
   @override
   List<Object?> get props => [
-        startMonth,
-        startYear,
-        monthlyTransactions,
+        selectedYear,
+        selectedMonth,
+        transactions,
         status,
         incomeCategoryTotals,
         expenseCategoryTotals,
@@ -121,7 +115,7 @@ final class StatsState extends Equatable {
         incomeCategories,
         expenseCategories,
         datePeriodChosen,
-        startDate,
-        endDate,
+        expenseTransactions,
+        incomeTransactions,
       ];
 }

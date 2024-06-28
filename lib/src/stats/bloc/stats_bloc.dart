@@ -7,121 +7,103 @@ import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 part 'stats_event.dart';
-
 part 'stats_state.dart';
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> {
   StatsBloc(this._transactionsRepository)
       : _logger = Logger(),
         super(StatsState()) {
-    on<SubscribedToCategoryAmountsEvent>(_subscribeToCategoryAmounts);
+    on<SubscribedToCategoryAmountsEvent>(_initialize);
     on<IncomeDisplayRequested>(_incomeDisplayRequested);
     on<ExpenseDisplayRequested>(_expenseDisplayRequested);
     on<DatePeriodChosenEvent>(_datePeriodChosen);
-
   }
 
   final TransactionsRepository _transactionsRepository;
   final Logger _logger;
 
-  FutureOr<void> _subscribeToCategoryAmounts(
-      SubscribedToCategoryAmountsEvent event,
-      Emitter<StatsState> emit,) async {
+  FutureOr<void> _initialize(
+    SubscribedToCategoryAmountsEvent event,
+    Emitter<StatsState> emit,
+  ) async {
     emit(
       state.copyWith(
         status: () => StatsStatus.loading,
       ),
     );
-    await emit.forEach<List<TransactionCategory>>(
-      _transactionsRepository.streamCategories(),
-      onData: (transactionCategories) {
-        final categories = loadCategoryAmounts(transactionCategories);
-        final sortedCategoriesByType =
-        _sortTransactionsByType(transactionCategories);
-        _logger.d(
-            'These are the expenses in the stream  : ${sortedCategoriesByType}');
-        final categoriesWithPercentages =
-        _calculateCategoryPercentages(sortedCategoriesByType);
-        return state.copyWith(
-          status: () => StatsStatus.success,
-          // monthlyExpenses: () => expense.reversed.toList(),
-          transactionCategories: () => categories,
-          selectedTransactionCategories: () => categoriesWithPercentages,
-          isDisplayExpenses: () => true,
-        );
-      },
-    );
-    _logger.d(
-        'These are the categories with only expenses  : ${state
-            .selectedTransactionCategories}');
-    _logger.d(
-        'These are the categories with only income  : ${state
-            .selectedTransactionCategories}');
+    _streamTransactions;
+    _streamCategories;
   }
 
-  ///This method calculates the total amount of expenses by category
-  List<TransactionCategory> loadCategoryAmounts(
-      List<TransactionCategory> categories) {
-    final categoriesWithExpenses = <TransactionCategory>[];
-    final uniqueCategories = <TransactionCategory>[];
-    final categoriesWithDateRangeData = <TransactionCategory>[];
-    for (final category in categories) {
-      // _logger.d('These are the expenses in the for loop ${category.transactions}');
-      if (category.transactions.isNotEmpty) {
-        categoriesWithExpenses.add(category);
-      }
-    }
-    for (final category in categoriesWithExpenses) {
-      ///Todo I need to have another function here that only adds the transactions that
-      ///match the date I request
-      _transactionByDateTime(category, state.datePeriodChosen);
-      final total = category.transactions.fold(
-        0,
-            (previousValue, element) => previousValue + element.amount,
-      );
-      category.totalAmount = total;
-      uniqueCategories.add(category);
+  Future<void> _streamTransactions(Emitter<StatsState> emit) async {
+    await emit.forEach<List<Transaction>>(
+      _transactionsRepository.getTransactions(),
+      onData: (transactions) {
+        final transactionsByDate = _transactionsByDate(transactions,
+            state.selectedYear, state.selectedMonth, state.datePeriodChosen);
+        return state.copyWith(
+          status: () => StatsStatus.success,
+          transactions: () => transactionsByDate,
+        );
+      },
+      onError: (error, stackTrace) =>
+          state.copyWith(status: () => StatsStatus.failure),
+    );
+  }
 
-      // final uniqueCategories = categories.toSet().toList();
-    }
-    return uniqueCategories;
+  List<Transaction> _transactionsByDate(List<Transaction> transactions,
+      int year, int month, DatePeriodChosen dateRange) {
+    final transactionsByDate = transactions.where((element) {
+      switch (dateRange) {
+        case DatePeriodChosen.allTime:
+          return true;
+        case DatePeriodChosen.monthly:
+          return element.dateOfTransaction.month == state.selectedMonth &&
+              element.dateOfTransaction.year == state.selectedYear;
+        case DatePeriodChosen.yearly:
+          return element.dateOfTransaction.year == state.selectedYear;
+      }
+    }).toList();
+
+    return transactionsByDate;
+  }
+
+  Future<void> _streamCategories(Emitter<StatsState> emit) async {
+    await emit.forEach<List<TransactionCategory>>(
+        _transactionsRepository.streamCategories(), onData: (categories) {
+      final sortedCategories =
+          _sortTransactionsByType(categories, state.transactions);
+      return state.copyWith(
+          status: () => StatsStatus.success,
+          selectedTransactionCategories: () => sortedCategories);
+    });
   }
 
   List<TransactionCategory> _sortTransactionsByType(
-      List<TransactionCategory> categories) {
-    final categoriesWithExpenses = <TransactionCategory>[];
+      List<TransactionCategory> categories, List<Transaction> transactions) {
     final sortedCategories = <TransactionCategory>[];
-
     for (final category in categories) {
-      // _logger.d('These are the expenses in the for loop ${category.transactions}');
-      if (category.transactions.isNotEmpty) {
-        categoriesWithExpenses.add(category);
+      for (final transaction in transactions) {
+        if (transaction.category.value == category && transaction.isExpense) {
+          category.totalExpenseAmount += transaction.amount;
+        } else if (transaction.category.value == category &&
+            transaction.isIncome) {
+          category.totalIncomeAmount += transaction.amount;
+        }
       }
-    }
-    ;
-    for (final category in categoriesWithExpenses) {
-      final expenseTransactions =
-      category.transactions.where((element) => element.isExpense);
-      final total = expenseTransactions.fold(
-        0,
-            (previousValue, element) => previousValue + element.amount,
-      );
-      category.totalExpenseAmount = total;
       sortedCategories.add(category);
     }
-
-    for (final category in categoriesWithExpenses) {
-      final incomeTransactions =
-      category.transactions.where((element) => element.isIncome);
-      final total = incomeTransactions.fold(
-        0,
-            (previousValue, element) => previousValue + element.amount,
-      );
-      category.totalIncomeAmount = total;
-      sortedCategories.add(category);
-    }
-    _logger.d('These are the sorted Categories: $sortedCategories');
     return sortedCategories;
+  }
+
+  FutureOr<void> _incomeDisplayRequested(
+      IncomeDisplayRequested event, Emitter<StatsState> emit) {
+    emit(
+      state.copyWith(
+        isDisplayIncome: () => true,
+        isDisplayExpenses: () => false,
+      ),
+    );
   }
 
   List<TransactionCategory> _calculateCategoryPercentages(
@@ -141,18 +123,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     return categoriesWithPercentages;
   }
 
-  FutureOr<void> _incomeDisplayRequested(IncomeDisplayRequested event,
-      Emitter<StatsState> emit) {
-    emit(
-      state.copyWith(
-        isDisplayIncome: () => true,
-        isDisplayExpenses: () => false,
-      ),
-    );
-  }
-
-  FutureOr<void> _expenseDisplayRequested(ExpenseDisplayRequested event,
-      Emitter<StatsState> emit) {
+  FutureOr<void> _expenseDisplayRequested(
+      ExpenseDisplayRequested event, Emitter<StatsState> emit) {
     emit(
       state.copyWith(
         isDisplayIncome: () => false,
@@ -161,38 +133,30 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     );
   }
 
-  TransactionCategory _transactionByDateTime(TransactionCategory category, DatePeriodChosen datePeriodChosen) {
-
-
-
-  }
-
-    FutureOr<void> _datePeriodChosen(
-    DatePeriodChosenEvent event, Emitter<StatsState> emit) {
-    switch(event.datePeriodChosen){
-    case DatePeriodChosen.allTime:
-    emit(
-    state.copyWith(
-    datePeriodChosen: () => DatePeriodChosen.allTime,
-    ),
-    );
-    break;
-    case DatePeriodChosen.monthly:
-    emit(
-    state.copyWith(
-    datePeriodChosen: () => DatePeriodChosen.monthly,
-    ),
-    );
-    break;
-    case DatePeriodChosen.yearly:
-    emit(
-    state.copyWith(
-    datePeriodChosen: () => DatePeriodChosen.yearly,
-    ),
-    );
-    break;
-    }
-
-
+  FutureOr<void> _datePeriodChosen(
+      DatePeriodChosenEvent event, Emitter<StatsState> emit) {
+    switch (event.datePeriodChosen) {
+      case DatePeriodChosen.allTime:
+        emit(
+          state.copyWith(
+            datePeriodChosen: () => DatePeriodChosen.allTime,
+          ),
+        );
+        break;
+      case DatePeriodChosen.monthly:
+        emit(
+          state.copyWith(
+            datePeriodChosen: () => DatePeriodChosen.monthly,
+          ),
+        );
+        break;
+      case DatePeriodChosen.yearly:
+        emit(
+          state.copyWith(
+            datePeriodChosen: () => DatePeriodChosen.yearly,
+          ),
+        );
+        break;
     }
   }
+}

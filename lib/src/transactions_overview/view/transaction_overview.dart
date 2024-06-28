@@ -85,7 +85,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
               onPressed: () {
                 context.read<TransactionsOverviewBloc>().add(
                       UndoDeleteTransactionEvent(
-                        deletedTransaction!,
+                        deletedTransaction!
                       ),
                     );
               },
@@ -352,16 +352,16 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                           ),
                           child: ListTile(
                             leading: Icon(
-                              myIcons[state.transactions[index].iconName],
+                              myIcons[state.transactions[index].category.value?.iconName],
                               color: colorMapper[
-                                  state.transactions[index].colorName],
+                                  state.transactions[index].category.value?.colorName],
                             ),
                             // leading: Icon(
                             // // myIcons(expense.iconname);
                             // Icons.abc , color: Colors.red,
                             // ),
                             title: Text(
-                                state.transactions[index].categoryName ?? ' '),
+                                state.transactions[index].category.value?.name ?? ' '),
                             subtitle: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 4),
                               child: Text(

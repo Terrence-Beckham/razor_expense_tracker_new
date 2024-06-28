@@ -23,46 +23,45 @@ const TransactionCategorySchema = CollectionSchema(
       name: r'colorName',
       type: IsarType.string,
     ),
-    r'iconCodePoint': PropertySchema(
+    r'expensePercentage': PropertySchema(
       id: 1,
+      name: r'expensePercentage',
+      type: IsarType.string,
+    ),
+    r'iconCodePoint': PropertySchema(
+      id: 2,
       name: r'iconCodePoint',
       type: IsarType.long,
     ),
     r'iconName': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'iconName',
       type: IsarType.string,
     ),
+    r'incomePercentage': PropertySchema(
+      id: 4,
+      name: r'incomePercentage',
+      type: IsarType.string,
+    ),
     r'name': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'name',
       type: IsarType.string,
     ),
-    r'percentage': PropertySchema(
-      id: 4,
-      name: r'percentage',
-      type: IsarType.string,
-    ),
     r'totalAmount': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'totalAmount',
       type: IsarType.long,
     ),
     r'totalExpenseAmount': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'totalExpenseAmount',
       type: IsarType.long,
     ),
     r'totalIncomeAmount': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'totalIncomeAmount',
       type: IsarType.long,
-    ),
-    r'transactions': PropertySchema(
-      id: 8,
-      name: r'transactions',
-      type: IsarType.objectList,
-      target: r'Transaction',
     )
   },
   estimateSize: _transactionCategoryEstimateSize,
@@ -71,8 +70,15 @@ const TransactionCategorySchema = CollectionSchema(
   deserializeProp: _transactionCategoryDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
-  embeddedSchemas: {r'Transaction': TransactionSchema},
+  links: {
+    r'transactions': LinkSchema(
+      id: 8739145559925791467,
+      name: r'transactions',
+      target: r'Transaction',
+      single: false,
+    )
+  },
+  embeddedSchemas: {},
   getId: _transactionCategoryGetId,
   getLinks: _transactionCategoryGetLinks,
   attach: _transactionCategoryAttach,
@@ -91,25 +97,18 @@ int _transactionCategoryEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.expensePercentage.length * 3;
   {
     final value = object.iconName;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.incomePercentage.length * 3;
   {
     final value = object.name;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
-    }
-  }
-  bytesCount += 3 + object.expensePercentage.length * 3;
-  bytesCount += 3 + object.transactions.length * 3;
-  {
-    final offsets = allOffsets[Transaction]!;
-    for (var i = 0; i < object.transactions.length; i++) {
-      final value = object.transactions[i];
-      bytesCount += TransactionSchema.estimateSize(value, offsets, allOffsets);
     }
   }
   return bytesCount;
@@ -122,19 +121,14 @@ void _transactionCategorySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.colorName);
-  writer.writeLong(offsets[1], object.iconCodePoint);
-  writer.writeString(offsets[2], object.iconName);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.expensePercentage);
-  writer.writeLong(offsets[5], object.totalAmount);
-  writer.writeLong(offsets[6], object.totalExpenseAmount);
-  writer.writeLong(offsets[7], object.totalIncomeAmount);
-  writer.writeObjectList<Transaction>(
-    offsets[8],
-    allOffsets,
-    TransactionSchema.serialize,
-    object.transactions,
-  );
+  writer.writeString(offsets[1], object.expensePercentage);
+  writer.writeLong(offsets[2], object.iconCodePoint);
+  writer.writeString(offsets[3], object.iconName);
+  writer.writeString(offsets[4], object.incomePercentage);
+  writer.writeString(offsets[5], object.name);
+  writer.writeLong(offsets[6], object.totalAmount);
+  writer.writeLong(offsets[7], object.totalExpenseAmount);
+  writer.writeLong(offsets[8], object.totalIncomeAmount);
 }
 
 TransactionCategory _transactionCategoryDeserialize(
@@ -145,21 +139,15 @@ TransactionCategory _transactionCategoryDeserialize(
 ) {
   final object = TransactionCategory();
   object.colorName = reader.readStringOrNull(offsets[0]);
-  object.iconCodePoint = reader.readLongOrNull(offsets[1]);
-  object.iconName = reader.readStringOrNull(offsets[2]);
+  object.expensePercentage = reader.readString(offsets[1]);
+  object.iconCodePoint = reader.readLongOrNull(offsets[2]);
+  object.iconName = reader.readStringOrNull(offsets[3]);
   object.id = id;
-  object.name = reader.readStringOrNull(offsets[3]);
-  object.expensePercentage = reader.readString(offsets[4]);
-  object.totalAmount = reader.readLong(offsets[5]);
-  object.totalExpenseAmount = reader.readLong(offsets[6]);
-  object.totalIncomeAmount = reader.readLong(offsets[7]);
-  object.transactions = reader.readObjectList<Transaction>(
-        offsets[8],
-        TransactionSchema.deserialize,
-        allOffsets,
-        Transaction(),
-      ) ??
-      [];
+  object.incomePercentage = reader.readString(offsets[4]);
+  object.name = reader.readStringOrNull(offsets[5]);
+  object.totalAmount = reader.readLong(offsets[6]);
+  object.totalExpenseAmount = reader.readLong(offsets[7]);
+  object.totalIncomeAmount = reader.readLong(offsets[8]);
   return object;
 }
 
@@ -173,27 +161,21 @@ P _transactionCategoryDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readLong(offset)) as P;
     case 7:
       return (reader.readLong(offset)) as P;
     case 8:
-      return (reader.readObjectList<Transaction>(
-            offset,
-            TransactionSchema.deserialize,
-            allOffsets,
-            Transaction(),
-          ) ??
-          []) as P;
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -205,12 +187,14 @@ Id _transactionCategoryGetId(TransactionCategory object) {
 
 List<IsarLinkBase<dynamic>> _transactionCategoryGetLinks(
     TransactionCategory object) {
-  return [];
+  return [object.transactions];
 }
 
 void _transactionCategoryAttach(
     IsarCollection<dynamic> col, Id id, TransactionCategory object) {
   object.id = id;
+  object.transactions
+      .attach(col, col.isar.collection<Transaction>(), r'transactions', id);
 }
 
 extension TransactionCategoryQueryWhereSort
@@ -444,6 +428,142 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'colorName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'expensePercentage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'expensePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'expensePercentage',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'expensePercentage',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      expensePercentageIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'expensePercentage',
         value: '',
       ));
     });
@@ -752,6 +872,142 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'incomePercentage',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'incomePercentage',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'incomePercentage',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'incomePercentage',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      incomePercentageIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'incomePercentage',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -900,142 +1156,6 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'percentage',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'percentage',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'percentage',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'percentage',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      percentageIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'percentage',
         value: '',
       ));
     });
@@ -1208,43 +1328,38 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
       ));
     });
   }
+}
+
+extension TransactionCategoryQueryObject on QueryBuilder<TransactionCategory,
+    TransactionCategory, QFilterCondition> {}
+
+extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
+    TransactionCategory, QFilterCondition> {
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
+      transactions(FilterQuery<Transaction> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'transactions');
+    });
+  }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        length,
-        true,
-        length,
-        true,
-      );
+      return query.linkLength(r'transactions', length, true, length, true);
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        0,
-        true,
-        0,
-        true,
-      );
+      return query.linkLength(r'transactions', 0, true, 0, true);
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
       transactionsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        0,
-        false,
-        999999,
-        true,
-      );
+      return query.linkLength(r'transactions', 0, false, 999999, true);
     });
   }
 
@@ -1254,13 +1369,7 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.linkLength(r'transactions', 0, true, length, include);
     });
   }
 
@@ -1270,13 +1379,7 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.linkLength(r'transactions', length, include, 999999, true);
     });
   }
 
@@ -1288,29 +1391,11 @@ extension TransactionCategoryQueryFilter on QueryBuilder<TransactionCategory,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'transactions',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
+      return query.linkLength(
+          r'transactions', lower, includeLower, upper, includeUpper);
     });
   }
 }
-
-extension TransactionCategoryQueryObject on QueryBuilder<TransactionCategory,
-    TransactionCategory, QFilterCondition> {
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterFilterCondition>
-      transactionsElement(FilterQuery<Transaction> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'transactions');
-    });
-  }
-}
-
-extension TransactionCategoryQueryLinks on QueryBuilder<TransactionCategory,
-    TransactionCategory, QFilterCondition> {}
 
 extension TransactionCategoryQuerySortBy
     on QueryBuilder<TransactionCategory, TransactionCategory, QSortBy> {
@@ -1325,6 +1410,20 @@ extension TransactionCategoryQuerySortBy
       sortByColorNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'colorName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByExpensePercentage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'expensePercentage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByExpensePercentageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'expensePercentage', Sort.desc);
     });
   }
 
@@ -1357,6 +1456,20 @@ extension TransactionCategoryQuerySortBy
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByIncomePercentage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'incomePercentage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      sortByIncomePercentageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'incomePercentage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
       sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1367,20 +1480,6 @@ extension TransactionCategoryQuerySortBy
       sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      sortByPercentage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'percentage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      sortByPercentageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'percentage', Sort.desc);
     });
   }
 
@@ -1444,6 +1543,20 @@ extension TransactionCategoryQuerySortThenBy
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByExpensePercentage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'expensePercentage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByExpensePercentageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'expensePercentage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
       thenByIconCodePoint() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'iconCodePoint', Sort.asc);
@@ -1486,6 +1599,20 @@ extension TransactionCategoryQuerySortThenBy
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByIncomePercentage() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'incomePercentage', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
+      thenByIncomePercentageDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'incomePercentage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
       thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1496,20 +1623,6 @@ extension TransactionCategoryQuerySortThenBy
       thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      thenByPercentage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'percentage', Sort.asc);
-    });
-  }
-
-  QueryBuilder<TransactionCategory, TransactionCategory, QAfterSortBy>
-      thenByPercentageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'percentage', Sort.desc);
     });
   }
 
@@ -1566,6 +1679,14 @@ extension TransactionCategoryQueryWhereDistinct
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
+      distinctByExpensePercentage({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'expensePercentage',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
       distinctByIconCodePoint() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'iconCodePoint');
@@ -1580,16 +1701,17 @@ extension TransactionCategoryQueryWhereDistinct
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
-      distinctByName({bool caseSensitive = true}) {
+      distinctByIncomePercentage({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'incomePercentage',
+          caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<TransactionCategory, TransactionCategory, QDistinct>
-      distinctByPercentage({bool caseSensitive = true}) {
+      distinctByName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'percentage', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
@@ -1630,6 +1752,13 @@ extension TransactionCategoryQueryProperty
     });
   }
 
+  QueryBuilder<TransactionCategory, String, QQueryOperations>
+      expensePercentageProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'expensePercentage');
+    });
+  }
+
   QueryBuilder<TransactionCategory, int?, QQueryOperations>
       iconCodePointProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1644,16 +1773,16 @@ extension TransactionCategoryQueryProperty
     });
   }
 
-  QueryBuilder<TransactionCategory, String?, QQueryOperations> nameProperty() {
+  QueryBuilder<TransactionCategory, String, QQueryOperations>
+      incomePercentageProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'name');
+      return query.addPropertyName(r'incomePercentage');
     });
   }
 
-  QueryBuilder<TransactionCategory, String, QQueryOperations>
-      percentageProperty() {
+  QueryBuilder<TransactionCategory, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'percentage');
+      return query.addPropertyName(r'name');
     });
   }
 
@@ -1675,13 +1804,6 @@ extension TransactionCategoryQueryProperty
       totalIncomeAmountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'totalIncomeAmount');
-    });
-  }
-
-  QueryBuilder<TransactionCategory, List<Transaction>, QQueryOperations>
-      transactionsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'transactions');
     });
   }
 }

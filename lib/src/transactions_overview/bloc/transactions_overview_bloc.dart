@@ -31,10 +31,9 @@ class TransactionsOverviewBloc
   ) async {
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
 
-    await emit.forEach<List<TransactionCategory>>(
-      _transactionsRepository.streamCategories(),
-      onData: (categories) {
-        final transactions = displayTransactions(categories);
+    await emit.forEach<List<Transaction>>(
+      _transactionsRepository.getTransactions(),
+      onData: (transactions) {
         return state.copyWith(
           status: () => TransactionsOverviewStatus.success,
           transactions: () => transactions,
@@ -48,22 +47,6 @@ class TransactionsOverviewBloc
     _logger = Logger();
     _logger.d(
         'This is the list of transactions stored in the db: ${state.transactions}');
-  }
-
-  List<Transaction> displayTransactions(List<TransactionCategory> categories) {
-    final transactions = <Transaction>[];
-
-    for (final category in categories) {
-      transactions.addAll(category.transactions);
-    }
-
-    ///todo need code to add up all of the values of the transactions
-    ///and display them in the overview
-
-    ///sort the transactions by date in descending order
-    transactions
-        .sort((a, b) => b.dateOfTransaction.compareTo(a.dateOfTransaction));
-    return transactions;
   }
 
   int calculateTotalExpenses(List<Transaction> transactions) {
@@ -101,19 +84,23 @@ class TransactionsOverviewBloc
   FutureOr<void> _deleteTransaction(
       event, Emitter<TransactionsOverviewState> emit) {
     _transactionsRepository.deleteTransaction(event.transaction);
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: () => TransactionsOverviewStatus.success,
         deletedTransaction: () => event.transaction,
-        categoryOfDeletedTransaction: () => event.transaction.categoryId));
+      ),
+    );
   }
 
   FutureOr<void> _undoDeleteTransaction(UndoDeleteTransactionEvent event,
       Emitter<TransactionsOverviewState> emit) {
-    final transaction = state.deletedTransaction;
-    emit(state.copyWith(
+    _logger.d('${state.deletedTransaction}');
+    _transactionsRepository.reSaveTransaction(event.transaction);
+    emit(
+      state.copyWith(
         status: () => TransactionsOverviewStatus.success,
         deletedTransaction: () => null,
-        categoryOfDeletedTransaction: () => null));
-    _transactionsRepository.saveTransactionToCategory(transaction!);
+      ),
+    );
   }
 }

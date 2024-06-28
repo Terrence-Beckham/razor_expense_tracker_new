@@ -10,7 +10,6 @@ final class TransactionsOverviewState extends Equatable {
     this.expenseTotals = 0,
     this.balance = 0,
     this.deletedTransaction ,
-    this.categoryIDOfDeletedTransaction ,
   });
 
   final TransactionsOverviewStatus status;
@@ -19,7 +18,6 @@ final class TransactionsOverviewState extends Equatable {
   final int expenseTotals;
   final int balance;
   final Transaction? deletedTransaction;
-  final int? categoryIDOfDeletedTransaction;
 
   TransactionsOverviewState copyWith({
     TransactionsOverviewStatus Function()? status,
@@ -28,7 +26,6 @@ final class TransactionsOverviewState extends Equatable {
     int Function()? expenseTotals,
     int Function()? balance,
     Transaction? Function()? deletedTransaction,
-    int? Function()? categoryOfDeletedTransaction,
   }) {
     return TransactionsOverviewState(
       status: status != null ? status() : this.status,
@@ -40,9 +37,6 @@ final class TransactionsOverviewState extends Equatable {
       deletedTransaction: deletedTransaction != null
           ? deletedTransaction()
           : this.deletedTransaction,
-      categoryIDOfDeletedTransaction: categoryOfDeletedTransaction != null
-          ? categoryOfDeletedTransaction()
-          : this.categoryIDOfDeletedTransaction,
     );
   }
 
@@ -54,6 +48,5 @@ final class TransactionsOverviewState extends Equatable {
         expenseTotals,
         balance,
         deletedTransaction,
-        categoryIDOfDeletedTransaction
       ];
 }

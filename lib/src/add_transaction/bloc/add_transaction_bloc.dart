@@ -60,8 +60,8 @@ class AddTransactionBloc
 
   FutureOr<void> onTransactionAdded(
       AddTransaction event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.saveTransactionToCategory(
-         event.transaction);
+    _transactionsRepository.saveTransaction(
+         event.transaction, event.category);
   }
 
   FutureOr<void> _onUpdateSelectedIcon(

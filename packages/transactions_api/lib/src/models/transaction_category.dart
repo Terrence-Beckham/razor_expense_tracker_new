@@ -17,16 +17,23 @@ class TransactionCategory {
   String expensePercentage = '';
   String incomePercentage = '';
 
-  // Other properties...
+  final transactions = IsarLinks<Transaction>();
 
-  // Make sure transactions is a growable list
-  List<Transaction> transactions = <Transaction>[];
 
-  @override
+@override
   String toString() {
-    return 'TransactionCategory{id: $id, name: $name, iconName: $iconName, colorName: $colorName,'
-        ' iconCodePoint: $iconCodePoint, totalAmount: $totalAmount,'
-        ' totalExpenseAmount: $totalExpenseAmount, totalIncomeAmount: $totalIncomeAmount,'
-        ' transactions: $transactions, expensePercentage: $expensePercentage, incomePercentage: $incomePercentage}';
+    return 'TransactionCategory{\n'
+        'id: $id,\n'
+        'name: $name,\n'
+        'iconName: $iconName,\n'
+        'colorName: $colorName,\n'
+        'iconCodePoint: $iconCodePoint,\n'
+        'totalAmount: $totalAmount,\n'
+        'totalExpenseAmount: $totalExpenseAmount,\n'
+        'totalIncomeAmount: $totalIncomeAmount,\n'
+        'transactions: $transactions,\n'
+        'expensePercentage: $expensePercentage,\n'
+        'incomePercentage: $incomePercentage\n'
+        '}';
   }
 }

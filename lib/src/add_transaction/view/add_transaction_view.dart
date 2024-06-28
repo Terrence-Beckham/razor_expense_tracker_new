@@ -80,11 +80,7 @@ class AddTransactionSuccessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AddTransactionBloc, AddTransactionState>(
       builder: (context, state) {
-        _logger
-          ..d('The category is expanded: ${state.isCategoryExpanded}')
-          ..d('This is the list of categories ${state.categories}');
-
-        return SingleChildScrollView(
+         return SingleChildScrollView(
           child: Column(
             children: [
               Center(
@@ -395,11 +391,6 @@ class AddTransactionSuccessView extends StatelessWidget {
                     onPressed: () {
                       if (state.isIncome) {
                         final newTransaction = Transaction()
-                          ..identity = Uuid().v4()
-                          ..iconName = state.tempCategory.iconName!
-                          ..colorName = state.tempCategory.colorName!
-                          ..categoryName = state.tempCategory.name!
-                          ..categoryId = state.tempCategory.id!
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
                           ..dateOfTransaction = state.tempDate
@@ -414,11 +405,6 @@ class AddTransactionSuccessView extends StatelessWidget {
                         Navigator.of(context).pop();
                       } else {
                         final newTransaction = Transaction()
-                          ..identity = Uuid().v4()
-                          ..iconName = state.tempCategory.iconName!
-                          ..colorName = state.tempCategory.colorName!
-                          ..categoryName = state.tempCategory.name!
-                          ..categoryId = state.tempCategory.id!
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
                           ..dateOfTransaction = state.tempDate
