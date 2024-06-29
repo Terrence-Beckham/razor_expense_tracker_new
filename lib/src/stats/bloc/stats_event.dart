@@ -21,20 +21,22 @@ final class PieChartSectionEvent extends StatsEvent {
   List<Object?> get props => [];
 }
 
-final class SubscribedToCategoryAmountsEvent extends StatsEvent {
-  const SubscribedToCategoryAmountsEvent();
+final class SubscribeToTransactionsEvent extends StatsEvent {
+  const SubscribeToTransactionsEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-final class DisplayIncomePieChartStats extends StatsEvent {
+final class CalculateTransactionsForChosenDates extends StatsEvent {
+  const CalculateTransactionsForChosenDates();
 
+  @override
+  List<Object?> get props => [];
 }
 
-final class DisplayExpensePieChartStats extends StatsEvent {
 
-}
+
 
 final class LoadedCategoryAmountsEvent extends StatsEvent {
   const LoadedCategoryAmountsEvent();
@@ -70,4 +72,10 @@ final class DatePeriodChosenEvent extends StatsEvent {
 final DatePeriodChosen datePeriodChosen;
   @override
   List<Object?> get props => [datePeriodChosen];
+}
+final class SubscribeToCategoriesEvent extends StatsEvent {
+  const SubscribeToCategoriesEvent();
+
+  @override
+  List<Object?> get props => [];
 }

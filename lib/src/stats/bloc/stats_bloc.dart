@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
@@ -13,17 +14,20 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   StatsBloc(this._transactionsRepository)
       : _logger = Logger(),
         super(StatsState()) {
-    on<SubscribedToCategoryAmountsEvent>(_initialize);
+    on<SubscribeToTransactionsEvent>(_subscribeToTransactions);
     on<IncomeDisplayRequested>(_incomeDisplayRequested);
     on<ExpenseDisplayRequested>(_expenseDisplayRequested);
     on<DatePeriodChosenEvent>(_datePeriodChosen);
+    on<CalculateTransactionsForChosenDates>(
+        _calculateTransactionsForChosenDates);
+    on<SubscribeToCategoriesEvent>(_subscribeToCategories);
   }
 
   final TransactionsRepository _transactionsRepository;
   final Logger _logger;
 
-  FutureOr<void> _initialize(
-    SubscribedToCategoryAmountsEvent event,
+  FutureOr<void> _subscribeToTransactions(
+    SubscribeToTransactionsEvent event,
     Emitter<StatsState> emit,
   ) async {
     emit(
@@ -31,28 +35,22 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         status: () => StatsStatus.loading,
       ),
     );
-    _streamTransactions;
-    _streamCategories;
-  }
-
-  Future<void> _streamTransactions(Emitter<StatsState> emit) async {
     await emit.forEach<List<Transaction>>(
-      _transactionsRepository.getTransactions(),
-      onData: (transactions) {
-        final transactionsByDate = _transactionsByDate(transactions,
-            state.selectedYear, state.selectedMonth, state.datePeriodChosen);
-        return state.copyWith(
-          status: () => StatsStatus.success,
-          transactions: () => transactionsByDate,
-        );
-      },
-      onError: (error, stackTrace) =>
-          state.copyWith(status: () => StatsStatus.failure),
-    );
+        _transactionsRepository.getTransactions(), onData: (transactions) {
+      final sortedTransactions = _transactionsByDate(transactions,
+          state.selectedYear, state.selectedMonth, state.datePeriodChosen);
+      _logger.d('These are the sorted transactions: $sortedTransactions');
+      return state.copyWith(
+        status: () => StatsStatus.success,
+        transactions: () => transactions,
+        sortedTransactions: () => sortedTransactions,
+      );
+    });
   }
 
-  List<Transaction> _transactionsByDate(List<Transaction> transactions,
-      int year, int month, DatePeriodChosen dateRange) {
+  ///This method filters transactions by date
+  _transactionsByDate(List<Transaction> transactions, int year, int month,
+      DatePeriodChosen dateRange) {
     final transactionsByDate = transactions.where((element) {
       switch (dateRange) {
         case DatePeriodChosen.allTime:
@@ -63,37 +61,48 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         case DatePeriodChosen.yearly:
           return element.dateOfTransaction.year == state.selectedYear;
       }
-    }).toList();
-
-    return transactionsByDate;
-  }
-
-  Future<void> _streamCategories(Emitter<StatsState> emit) async {
-    await emit.forEach<List<TransactionCategory>>(
-        _transactionsRepository.streamCategories(), onData: (categories) {
-      final sortedCategories =
-          _sortTransactionsByType(categories, state.transactions);
-      return state.copyWith(
-          status: () => StatsStatus.success,
-          selectedTransactionCategories: () => sortedCategories);
     });
+    return transactionsByDate.toList();
   }
 
-  List<TransactionCategory> _sortTransactionsByType(
+  ///This method calculates the total amount of all transactions
+  List<TransactionCategory> _calculateTransactionAmountsPerCategory(
       List<TransactionCategory> categories, List<Transaction> transactions) {
     final sortedCategories = <TransactionCategory>[];
+    final uniqueCategories = <TransactionCategory>[];
     for (final category in categories) {
-      for (final transaction in transactions) {
-        if (transaction.category.value == category && transaction.isExpense) {
-          category.totalExpenseAmount += transaction.amount;
-        } else if (transaction.category.value == category &&
-            transaction.isIncome) {
-          category.totalIncomeAmount += transaction.amount;
+      _logger.d('${category.transactions} is the category transactions');
+
+
+
+      for (final category in sortedCategories) {
+        for (final transaction in transactions) {
+          if (transaction.category.value == category && transaction.isExpense) {
+            _logger.d(
+                'This is the category of this transaction ${transaction.category.value}');
+            category.totalExpenseAmount += transaction.amount;
+            uniqueCategories.add(category);
+          } else if (transaction.category.value == category &&
+              transaction.isIncome) {
+            category.totalIncomeAmount += transaction.amount;
+            uniqueCategories.add(category);
+          }
         }
       }
-      sortedCategories.add(category);
     }
-    return sortedCategories;
+    // for (final category in categories) {
+    //   for (final transaction in transactions) {
+    //     if (transaction.category.value == category && transaction.isExpense) {
+    //       _logger.d('This is the category of this transaction ${transaction.category.value}');
+    //       category.totalExpenseAmount += transaction.amount;
+    //     } else if (transaction.category.value == category &&
+    //         transaction.isIncome) {
+    //       category.totalIncomeAmount += transaction.amount;
+    //     }
+    //   }
+    //   sortedCategories.add(category);
+    // }
+    return uniqueCategories;
   }
 
   FutureOr<void> _incomeDisplayRequested(
@@ -158,5 +167,35 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
         break;
     }
+  }
+
+  FutureOr<void> _calculateTransactionsForChosenDates(
+      CalculateTransactionsForChosenDates event, Emitter<StatsState> emit) {
+    _logger.d('This message was called from the calculate transactions event');
+    final sortedTransactions = _transactionsByDate(state.transactions,
+        state.selectedYear, state.selectedMonth, state.datePeriodChosen);
+    emit(
+      state.copyWith(
+        sortedTransactions: () => sortedTransactions,
+      ),
+    );
+  }
+
+  FutureOr<void> _subscribeToCategories(
+      SubscribeToCategoriesEvent event, Emitter<StatsState> emit) async {
+    await emit.forEach<List<TransactionCategory>>(
+      _transactionsRepository.streamCategories(),
+      onData: (categories) {
+        final sortedCategories = _calculateTransactionAmountsPerCategory(
+            categories, state.transactions);
+        _logger.d('These are the sorted categories: $categories');
+        return state.copyWith(
+          status: () => StatsStatus.success,
+          categories: () => categories,
+          sortedCategories: () => sortedCategories,
+        );
+      },
+      onError: (_, __) => state.copyWith(status: () => StatsStatus.failure),
+    );
   }
 }

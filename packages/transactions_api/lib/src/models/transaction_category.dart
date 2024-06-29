@@ -17,6 +17,7 @@ class TransactionCategory {
   String expensePercentage = '';
   String incomePercentage = '';
 
+  @Backlink(to: 'category')
   final transactions = IsarLinks<Transaction>();
 
 

@@ -15,7 +15,9 @@ class StatsOverviewPage extends StatelessWidget {
     return BlocProvider(
         create: (context) => StatsBloc(
               context.read<TransactionsRepository>(),
-            )..add(const SubscribedToCategoryAmountsEvent()),
+            )
+              ..add(const SubscribeToTransactionsEvent())
+              ..add(SubscribeToCategoriesEvent()),
         child: StatsView());
 
     // );
@@ -45,16 +47,16 @@ class StatsView extends StatelessWidget {
 
             case StatsStatus.loading:
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Loading'),
               );
             case StatsStatus.initial:
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Initial'),
               );
 
             case StatsStatus.failure:
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Center(
+                child: emptyStatsView(),
               );
           }
         },
@@ -69,13 +71,18 @@ class StatsSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StatsBloc, StatsState>(
+    return BlocConsumer<StatsBloc, StatsState>(
+      listenWhen: (previous, current) =>
+          previous.datePeriodChosen != current.datePeriodChosen,
+      listener: (context, state) {
+        context.read<StatsBloc>()
+          ..add(SubscribeToTransactionsEvent())
+          ..add(SubscribeToCategoriesEvent());
+      },
       builder: (context, state) {
-        _logger.d(
-            'These are the category totals in the stats view ${state.selectedTransactionCategories}');
         return Scaffold(
           appBar: AppBar(
-            title:  Text('Analytics',
+            title: Text('Analytics',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -170,37 +177,40 @@ class StatsSuccessView extends StatelessWidget {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.width / 1.5,
-                child: Stack(alignment: Alignment.center, children: [
-                  state.isDisplayExpenses
-                      ? Text(state.totalAmount.toStringAsFixed(1))
-                      : Text('Income Goes here'),
-                  PieChart(
-                    PieChartData(
-                      sections: List.generate(
-                        state.selectedTransactionCategories.length,
-                        (index) {
-                          return PieChartSectionData(
-                              radius: 70,
-                              color: colorMapper[state
-                                  .selectedTransactionCategories[index]
-                                  .colorName],
-                              titleStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                              value: state.isDisplayExpenses
-                                  ? state.selectedTransactionCategories[index]
-                                      .totalExpenseAmount
-                                      .toDouble()
-                                  : state.selectedTransactionCategories[index]
-                                      .totalIncomeAmount
-                                      .toDouble(),
-                              title: state.isDisplayExpenses
-                                  ? '${state.selectedTransactionCategories[index].name}\n'
-                                      '\$${state.selectedTransactionCategories[index].totalExpenseAmount}'
-                                  : '${state.selectedTransactionCategories[index].name}\n'
-                                      '\$${state.selectedTransactionCategories[index].totalIncomeAmount}');
-                        },
+                child: Column(children: [
+                  // state.isDisplayExpenses
+                  //     ? Text(state.totalAmount.toStringAsFixed(1))
+                  //     : Text('Income Goes here'),
+                  Expanded(
+                    child: PieChart(
+
+                      PieChartData(
+                        centerSpaceColor: Colors.green,
+                        sections: List.generate(
+                          state.sortedCategories.length,
+                          (index) {
+                            return PieChartSectionData(
+                                radius: 70,
+                                color: colorMapper[
+                                    state.sortedCategories[index].colorName],
+                                titleStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                                value: state.isDisplayExpenses
+                                    ? state.sortedCategories[index]
+                                        .totalExpenseAmount
+                                        .toDouble()
+                                    : state.sortedCategories[index]
+                                        .totalIncomeAmount
+                                        .toDouble(),
+                                title: state.isDisplayExpenses
+                                    ? '${state.sortedCategories[index].name}\n'
+                                        '\$${state.sortedCategories[index].totalExpenseAmount}'
+                                    : '${state.sortedCategories[index].name}\n'
+                                        '\$${state.sortedCategories[index].totalIncomeAmount}');
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -212,12 +222,10 @@ class StatsSuccessView extends StatelessWidget {
               Expanded(
                 child: GridView.builder(
                   padding: const EdgeInsets.all(8),
-                  itemCount: state.selectedTransactionCategories.length,
+                  itemCount: state.categories.length,
                   itemBuilder: (context, index) {
                     if (state.isDisplayExpenses &&
-                        state.selectedTransactionCategories[index]
-                                .totalExpenseAmount >
-                            0) {
+                        state.categories[index].totalExpenseAmount > 0) {
                       return InputChip(
                         onPressed: () {},
                         label: Text(
@@ -225,16 +233,14 @@ class StatsSuccessView extends StatelessWidget {
                               color: Colors.white,
                               overflow: TextOverflow.visible,
                             ),
-                            '${state.selectedTransactionCategories[index].name} '
-                            ' ${state.selectedTransactionCategories[index].expensePercentage} %'),
+                            '${state.categories[index].name} '
+                            ' ${state.categories[index].expensePercentage} %'),
                         //
-                        backgroundColor: colorMapper[state
-                            .selectedTransactionCategories[index].colorName],
+                        backgroundColor:
+                            colorMapper[state.categories[index].colorName],
                       );
                     } else if (state.isDisplayIncome &&
-                        state.selectedTransactionCategories[index]
-                                .totalIncomeAmount >
-                            0) {
+                        state.categories[index].totalIncomeAmount > 0) {
                       return InputChip(
                         onPressed: () {},
                         label: Text(
@@ -243,11 +249,11 @@ class StatsSuccessView extends StatelessWidget {
                               color: Colors.white,
                               overflow: TextOverflow.visible,
                             ),
-                            '${state.selectedTransactionCategories[index].name} '
-                            ' ${state.selectedTransactionCategories[index].incomePercentage} %'),
+                            '${state.categories[index].name} '
+                            ' ${state.categories[index].incomePercentage} %'),
                         //
-                        backgroundColor: colorMapper[state
-                            .selectedTransactionCategories[index].colorName],
+                        backgroundColor:
+                            colorMapper[state.categories[index].colorName],
                       );
                     } else {
                       return Container();

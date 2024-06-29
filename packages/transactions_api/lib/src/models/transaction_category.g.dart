@@ -72,10 +72,11 @@ const TransactionCategorySchema = CollectionSchema(
   indexes: {},
   links: {
     r'transactions': LinkSchema(
-      id: 8739145559925791467,
+      id: 4263648197618996247,
       name: r'transactions',
       target: r'Transaction',
       single: false,
+      linkName: r'category',
     )
   },
   embeddedSchemas: {},

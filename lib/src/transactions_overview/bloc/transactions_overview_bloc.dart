@@ -34,9 +34,10 @@ class TransactionsOverviewBloc
     await emit.forEach<List<Transaction>>(
       _transactionsRepository.getTransactions(),
       onData: (transactions) {
+        final reversedTransactions = transactions.reversed.toList();
         return state.copyWith(
           status: () => TransactionsOverviewStatus.success,
-          transactions: () => transactions,
+          transactions: () => reversedTransactions,
           incomeTotals: () => calculateTotalIncome(transactions),
           expenseTotals: () => calculateTotalExpenses(transactions),
           balance: () => calculateTotalBalance(transactions),

@@ -5,6 +5,7 @@ part 'transaction.g.dart';
 
 
 /// This is the model for the transactions that are made in the app.
+ @Collection(ignore: {'copyWith'})
 class Transaction{
 
 ///Transactions are either expenses or income items class Transaction {
