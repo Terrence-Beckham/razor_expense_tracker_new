@@ -22,43 +22,49 @@ const TransactionSchema = CollectionSchema(
       name: r'amount',
       type: IsarType.long,
     ),
-    r'dateOfTransaction': PropertySchema(
+    r'category': PropertySchema(
       id: 1,
+      name: r'category',
+      type: IsarType.object,
+      target: r'TransactionCategory',
+    ),
+    r'dateOfTransaction': PropertySchema(
+      id: 2,
       name: r'dateOfTransaction',
       type: IsarType.dateTime,
     ),
     r'description': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'description',
       type: IsarType.string,
     ),
     r'identity': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'identity',
       type: IsarType.string,
     ),
     r'isExpense': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'isExpense',
       type: IsarType.bool,
     ),
     r'isIncome': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'isIncome',
       type: IsarType.bool,
     ),
     r'note': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'note',
       type: IsarType.string,
     ),
     r'subCategory': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'subCategory',
       type: IsarType.string,
     ),
     r'timestamp': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'timestamp',
       type: IsarType.dateTime,
     )
@@ -69,15 +75,8 @@ const TransactionSchema = CollectionSchema(
   deserializeProp: _transactionDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {
-    r'category': LinkSchema(
-      id: 9039453146683828404,
-      name: r'category',
-      target: r'TransactionCategory',
-      single: true,
-    )
-  },
-  embeddedSchemas: {},
+  links: {},
+  embeddedSchemas: {r'TransactionCategory': TransactionCategorySchema},
   getId: _transactionGetId,
   getLinks: _transactionGetLinks,
   attach: _transactionAttach,
@@ -90,6 +89,14 @@ int _transactionEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.category;
+    if (value != null) {
+      bytesCount += 3 +
+          TransactionCategorySchema.estimateSize(
+              value, allOffsets[TransactionCategory]!, allOffsets);
+    }
+  }
   {
     final value = object.description;
     if (value != null) {
@@ -124,14 +131,20 @@ void _transactionSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.amount);
-  writer.writeDateTime(offsets[1], object.dateOfTransaction);
-  writer.writeString(offsets[2], object.description);
-  writer.writeString(offsets[3], object.identity);
-  writer.writeBool(offsets[4], object.isExpense);
-  writer.writeBool(offsets[5], object.isIncome);
-  writer.writeString(offsets[6], object.note);
-  writer.writeString(offsets[7], object.subCategory);
-  writer.writeDateTime(offsets[8], object.timestamp);
+  writer.writeObject<TransactionCategory>(
+    offsets[1],
+    allOffsets,
+    TransactionCategorySchema.serialize,
+    object.category,
+  );
+  writer.writeDateTime(offsets[2], object.dateOfTransaction);
+  writer.writeString(offsets[3], object.description);
+  writer.writeString(offsets[4], object.identity);
+  writer.writeBool(offsets[5], object.isExpense);
+  writer.writeBool(offsets[6], object.isIncome);
+  writer.writeString(offsets[7], object.note);
+  writer.writeString(offsets[8], object.subCategory);
+  writer.writeDateTime(offsets[9], object.timestamp);
 }
 
 Transaction _transactionDeserialize(
@@ -142,15 +155,20 @@ Transaction _transactionDeserialize(
 ) {
   final object = Transaction();
   object.amount = reader.readLong(offsets[0]);
-  object.dateOfTransaction = reader.readDateTime(offsets[1]);
-  object.description = reader.readStringOrNull(offsets[2]);
+  object.category = reader.readObjectOrNull<TransactionCategory>(
+    offsets[1],
+    TransactionCategorySchema.deserialize,
+    allOffsets,
+  );
+  object.dateOfTransaction = reader.readDateTime(offsets[2]);
+  object.description = reader.readStringOrNull(offsets[3]);
   object.id = id;
-  object.identity = reader.readStringOrNull(offsets[3]);
-  object.isExpense = reader.readBool(offsets[4]);
-  object.isIncome = reader.readBool(offsets[5]);
-  object.note = reader.readStringOrNull(offsets[6]);
-  object.subCategory = reader.readStringOrNull(offsets[7]);
-  object.timestamp = reader.readDateTime(offsets[8]);
+  object.identity = reader.readStringOrNull(offsets[4]);
+  object.isExpense = reader.readBool(offsets[5]);
+  object.isIncome = reader.readBool(offsets[6]);
+  object.note = reader.readStringOrNull(offsets[7]);
+  object.subCategory = reader.readStringOrNull(offsets[8]);
+  object.timestamp = reader.readDateTime(offsets[9]);
   return object;
 }
 
@@ -164,20 +182,26 @@ P _transactionDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readObjectOrNull<TransactionCategory>(
+        offset,
+        TransactionCategorySchema.deserialize,
+        allOffsets,
+      )) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readBool(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -189,14 +213,12 @@ Id _transactionGetId(Transaction object) {
 }
 
 List<IsarLinkBase<dynamic>> _transactionGetLinks(Transaction object) {
-  return [object.category];
+  return [];
 }
 
 void _transactionAttach(
     IsarCollection<dynamic> col, Id id, Transaction object) {
   object.id = id;
-  object.category
-      .attach(col, col.isar.collection<TransactionCategory>(), r'category', id);
 }
 
 extension TransactionQueryWhereSort
@@ -329,6 +351,24 @@ extension TransactionQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'category',
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      categoryIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'category',
       ));
     });
   }
@@ -1145,24 +1185,17 @@ extension TransactionQueryFilter
 }
 
 extension TransactionQueryObject
-    on QueryBuilder<Transaction, Transaction, QFilterCondition> {}
-
-extension TransactionQueryLinks
     on QueryBuilder<Transaction, Transaction, QFilterCondition> {
   QueryBuilder<Transaction, Transaction, QAfterFilterCondition> category(
       FilterQuery<TransactionCategory> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'category');
-    });
-  }
-
-  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
-      categoryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'category', 0, true, 0, true);
+      return query.object(q, r'category');
     });
   }
 }
+
+extension TransactionQueryLinks
+    on QueryBuilder<Transaction, Transaction, QFilterCondition> {}
 
 extension TransactionQuerySortBy
     on QueryBuilder<Transaction, Transaction, QSortBy> {
@@ -1475,6 +1508,13 @@ extension TransactionQueryProperty
   QueryBuilder<Transaction, int, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
+    });
+  }
+
+  QueryBuilder<Transaction, TransactionCategory?, QQueryOperations>
+      categoryProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'category');
     });
   }
 

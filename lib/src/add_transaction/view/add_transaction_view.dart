@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../widgets/konstants.dart';
 import '../bloc/add_transaction_bloc.dart';
@@ -80,7 +79,7 @@ class AddTransactionSuccessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AddTransactionBloc, AddTransactionState>(
       builder: (context, state) {
-         return SingleChildScrollView(
+        return SingleChildScrollView(
           child: Column(
             children: [
               Center(
@@ -211,16 +210,16 @@ class AddTransactionSuccessView extends StatelessWidget {
                     readOnly: true,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      hintText: !state.isCategorySelected
-                          ? 'Category'
-                          : state.tempCategory.name,
-                      prefixIcon: !state.isCategorySelected
-                          ? const Icon(
-                              Icons.category,
+                      hintText: state.isCategorySelected
+                          ? state.tempCategory.name
+                          : 'Category',
+                      prefixIcon: state.isCategorySelected
+                          ? Icon(
+                              myIcons[state.tempCategory.iconName.toString()],
                               color: Colors.white,
                             )
-                          : Icon(
-                              myIcons[state.tempCategory.iconName.toString()],
+                          : const Icon(
+                              Icons.category,
                               color: Colors.white,
                             ),
                       suffixIcon: IconButton(
@@ -269,8 +268,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                     height: 300,
                     child: Column(
                       children: [
-                       AnimatedContainer(
-                         duration: Duration(milliseconds: 50),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 50),
                           height: 250,
                           child: GridView.builder(
                             padding: const EdgeInsets.only(
@@ -298,7 +297,6 @@ class AddTransactionSuccessView extends StatelessWidget {
                                   state.categories[index].name.toString(),
                                   style: const TextStyle(color: Colors.black87),
                                 ),
-
                                 onPressed: () {
                                   context.read<AddTransactionBloc>().add(
                                         UpdateTempCategory(
@@ -390,6 +388,12 @@ class AddTransactionSuccessView extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (state.isIncome) {
+                        //Convert the Stored Category object to a TransactionCategory
+                        final transactionCategory = TransactionCategory()
+                          ..name = state.tempCategory.name
+                          ..colorName = state.tempCategory.colorName
+                          ..iconName = state.tempCategory.iconName;
+
                         final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
@@ -397,13 +401,20 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..description = ''
                           ..note = ''
                           ..isExpense = false
-                          ..isIncome = true;
+                          ..isIncome = true
+                          ..category = transactionCategory;
                         //Add the new transaction to the DB
-                        context.read<AddTransactionBloc>().add(
-                            AddTransaction(newTransaction, state.tempCategory));
+                        context
+                            .read<AddTransactionBloc>()
+                            .add(AddTransaction(newTransaction));
 
                         Navigator.of(context).pop();
                       } else {
+                        //Convert the Stored Category object to a TransactionCategory
+                        final transactionCategory = TransactionCategory()
+                          ..name = state.tempCategory.name
+                          ..colorName = state.tempCategory.colorName
+                          ..iconName = state.tempCategory.iconName;
                         final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
@@ -411,14 +422,16 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..description = ''
                           ..note = ''
                           ..isExpense = true
-                          ..isIncome = false;
+                          ..isIncome = false
+                          ..category = transactionCategory;
 
                         print(
                           'This is the temporary Expense object: $newTransaction',
                         );
                         //Add the new transaction to the DB
-                        context.read<AddTransactionBloc>().add(
-                            AddTransaction(newTransaction, state.tempCategory));
+                        context
+                            .read<AddTransactionBloc>()
+                            .add(AddTransaction(newTransaction));
                         Navigator.of(context).pop();
                       }
                     },
@@ -737,7 +750,7 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                       ),
                       onPressed: () {
                         context.read<AddTransactionBloc>().add(
-                              AddNewCategory(),
+                              AddNewCategory(state.tempCategory),
                             );
                         Navigator.pop(context);
                       },

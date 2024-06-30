@@ -45,6 +45,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         transactions: () => transactions,
         sortedTransactions: () => sortedTransactions,
       );
+
     });
   }
 
@@ -67,42 +68,35 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   ///This method calculates the total amount of all transactions
   List<TransactionCategory> _calculateTransactionAmountsPerCategory(
-      List<TransactionCategory> categories, List<Transaction> transactions) {
-    final sortedCategories = <TransactionCategory>[];
-    final uniqueCategories = <TransactionCategory>[];
-    for (final category in categories) {
-      _logger.d('${category.transactions} is the category transactions');
-
-
-
-      for (final category in sortedCategories) {
-        for (final transaction in transactions) {
-          if (transaction.category.value == category && transaction.isExpense) {
-            _logger.d(
-                'This is the category of this transaction ${transaction.category.value}');
-            category.totalExpenseAmount += transaction.amount;
-            uniqueCategories.add(category);
-          } else if (transaction.category.value == category &&
-              transaction.isIncome) {
-            category.totalIncomeAmount += transaction.amount;
-            uniqueCategories.add(category);
-          }
+      List<Transaction> transactions) {
+    final pieChartCategories = <TransactionCategory>[];
+    for (final transaction in transactions) {
+      final category = transaction.category;
+      if (category != null) {
+        final categoryIndex = pieChartCategories.indexWhere(
+          (element) => element.name == category.name,
+        );
+        if (categoryIndex == -1) {
+          pieChartCategories.add(
+            TransactionCategory()
+              ..name = category.name
+              ..colorName = category.colorName
+              ..totalAmount = transaction.amount
+              ..totalExpenseAmount =
+                  transaction.isExpense ? transaction.amount : 0
+              ..totalIncomeAmount =
+                  transaction.isIncome ? transaction.amount : 0,
+          );
+        } else {
+          pieChartCategories[categoryIndex].totalAmount += transaction.amount;
+          pieChartCategories[categoryIndex].totalExpenseAmount +=
+              transaction.isExpense ? transaction.amount : 0;
+          pieChartCategories[categoryIndex].totalIncomeAmount +=
+              transaction.isIncome ? transaction.amount : 0;
         }
       }
     }
-    // for (final category in categories) {
-    //   for (final transaction in transactions) {
-    //     if (transaction.category.value == category && transaction.isExpense) {
-    //       _logger.d('This is the category of this transaction ${transaction.category.value}');
-    //       category.totalExpenseAmount += transaction.amount;
-    //     } else if (transaction.category.value == category &&
-    //         transaction.isIncome) {
-    //       category.totalIncomeAmount += transaction.amount;
-    //     }
-    //   }
-    //   sortedCategories.add(category);
-    // }
-    return uniqueCategories;
+    return pieChartCategories;
   }
 
   FutureOr<void> _incomeDisplayRequested(
@@ -183,15 +177,14 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   FutureOr<void> _subscribeToCategories(
       SubscribeToCategoriesEvent event, Emitter<StatsState> emit) async {
-    await emit.forEach<List<TransactionCategory>>(
+    await emit.forEach<List<StoredCategory>>(
       _transactionsRepository.streamCategories(),
       onData: (categories) {
-        final sortedCategories = _calculateTransactionAmountsPerCategory(
-            categories, state.transactions);
+        final sortedCategories =
+            _calculateTransactionAmountsPerCategory(state.transactions);
         _logger.d('These are the sorted categories: $categories');
         return state.copyWith(
           status: () => StatsStatus.success,
-          categories: () => categories,
           sortedCategories: () => sortedCategories,
         );
       },

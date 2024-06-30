@@ -16,20 +16,15 @@ class TransactionsRepository {
       _transactionsApi.getTransactions();
 
   ///provides a [Stream] of all categories
-  Stream<List<TransactionCategory>> streamCategories() =>
-      _transactionsApi.getCategories();
+  Stream<List<StoredCategory>> streamCategories() =>
+      _transactionsApi.getStoredCategories();
 
   ///Saves a [Transaction] to a [TransactionCategory]
   Future<void> saveTransaction(
     Transaction transaction,
-    TransactionCategory category,
   ) =>
-      _transactionsApi.saveTransaction(transaction, category);
-////Resave a deleted Transaction
-  Future<void> reSaveTransaction(
-    Transaction transaction,
-  ) =>
-      _transactionsApi.reSaveTransaction(transaction);
+      _transactionsApi.saveTransaction(transaction );
+
   /// Deletes the `transaction` with the given id.
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error
@@ -37,7 +32,7 @@ class TransactionsRepository {
   Future<void> deleteTransaction(Transaction transaction) =>
       _transactionsApi.deleteTransaction(transaction);
 
-  /// Adds a new [TransactionCategory] to the database
-  Future<void> addCustomCategory(TransactionCategory category) =>
+  /// Adds a new [StoredCategory] to the database
+  Future<void> addCustomCategory(StoredCategory category) =>
       _transactionsApi.addCustomCategory(category);
 }

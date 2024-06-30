@@ -96,7 +96,7 @@ class TransactionsOverviewBloc
   FutureOr<void> _undoDeleteTransaction(UndoDeleteTransactionEvent event,
       Emitter<TransactionsOverviewState> emit) {
     _logger.d('${state.deletedTransaction}');
-    _transactionsRepository.reSaveTransaction(event.transaction);
+    _transactionsRepository.saveTransaction(event.transaction,);
     emit(
       state.copyWith(
         status: () => TransactionsOverviewStatus.success,

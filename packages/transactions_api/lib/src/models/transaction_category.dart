@@ -1,15 +1,14 @@
 import 'package:isar/isar.dart';
-import 'package:transactions_api/src/models/transaction.dart';
-import 'package:transactions_api/transactions_api.dart';
-
 part 'transaction_category.g.dart';
 
-@Collection(ignore: {'copyWith'})
+@embedded
 class TransactionCategory {
-  Id? id;
   String? name;
+ ///todo this can be removed don't need an identity
+  String? identity;
   String? iconName;
   String? colorName;
+  ///todo don't need codepoint remove!
   int? iconCodePoint;
   int totalAmount = 0;
   int totalExpenseAmount = 0;
@@ -17,14 +16,11 @@ class TransactionCategory {
   String expensePercentage = '';
   String incomePercentage = '';
 
-  @Backlink(to: 'category')
-  final transactions = IsarLinks<Transaction>();
 
 
 @override
   String toString() {
     return 'TransactionCategory{\n'
-        'id: $id,\n'
         'name: $name,\n'
         'iconName: $iconName,\n'
         'colorName: $colorName,\n'
@@ -32,7 +28,6 @@ class TransactionCategory {
         'totalAmount: $totalAmount,\n'
         'totalExpenseAmount: $totalExpenseAmount,\n'
         'totalIncomeAmount: $totalIncomeAmount,\n'
-        'transactions: $transactions,\n'
         'expensePercentage: $expensePercentage,\n'
         'incomePercentage: $incomePercentage\n'
         '}';

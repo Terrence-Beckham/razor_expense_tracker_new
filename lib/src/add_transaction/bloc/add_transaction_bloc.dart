@@ -39,7 +39,6 @@ class AddTransactionBloc
     on<AddNewCategory>(_onAddNewCategory);
     on<UpdateTempCategory>(_onUpdateTempCategory);
     on<UpdateNewCategoryColor>(_onUpdateNewCategoryColor);
-    
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -50,7 +49,7 @@ class AddTransactionBloc
     final localTransactions = _transactionsRepository.streamCategories();
     _logger.d('These are the local trans from the repository');
     emit(state.copyWith(status: () => AddTransactionStatus.loading));
-    await emit.forEach<List<TransactionCategory>>(
+    await emit.forEach<List<StoredCategory>>(
       _transactionsRepository.streamCategories(),
       onData: (category) => state.copyWith(
           status: () => AddTransactionStatus.success,
@@ -60,8 +59,7 @@ class AddTransactionBloc
 
   FutureOr<void> onTransactionAdded(
       AddTransaction event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.saveTransaction(
-         event.transaction, event.category);
+    _transactionsRepository.saveTransaction(event.transaction);
   }
 
   FutureOr<void> _onUpdateSelectedIcon(
@@ -73,14 +71,15 @@ class AddTransactionBloc
 
   FutureOr<void> _onUpdateNewCategoryColor(
       event, Emitter<AddTransactionState> emit) {
-   final reverseColorMapper = colorMapper.map((key, value) => MapEntry(value, key));
+    final reverseColorMapper =
+        colorMapper.map((key, value) => MapEntry(value, key));
     emit(state.copyWith(
         status: () => AddTransactionStatus.success,
-    selectedColor: () => event.color,
-    newCustomCategory: () => state.newCustomCategory
-      ..colorName = reverseColorMapper[event.color]));
-
+        selectedColor: () => event.color,
+        newCustomCategory: () => state.newCustomCategory
+          ..colorName = reverseColorMapper[event.color]));
   }
+
   //
   /// I can use the categoryWidgetsLookupMap.map((key, value) => MapEntry(value, key));
   FutureOr<void> _onUpdateSelectedCategory(
@@ -211,16 +210,17 @@ class AddTransactionBloc
           ..iconName = categoryWidgetsLookupMap[event.icon.icon]));
   }
 
-  FutureOr<void> _onUpdateTempCategoryName(UpdateTempCustomCategoryName event, Emitter<AddTransactionState> emit) {
+  FutureOr<void> _onUpdateTempCategoryName(
+      UpdateTempCustomCategoryName event, Emitter<AddTransactionState> emit) {
     _logger.e(event.categoryName);
     emit(state.copyWith(
         status: () => AddTransactionStatus.success,
-        newCustomCategory: () => state.newCustomCategory
-          ..name = event.categoryName));
+        newCustomCategory: () =>
+            state.newCustomCategory..name = event.categoryName));
   }
-  
 
-  FutureOr<void> _onAddNewCategory(AddNewCategory event, Emitter<AddTransactionState> emit) {
-    _transactionsRepository.addCustomCategory(state.newCustomCategory);
+  FutureOr<void> _onAddNewCategory(
+      AddNewCategory event, Emitter<AddTransactionState> emit) {
+    _transactionsRepository.addCustomCategory(event.category);
   }
 }

@@ -15,12 +15,11 @@ final class Initial extends AddTransactionEvent {
 }
 
 final class AddTransaction extends AddTransactionEvent{
-  const AddTransaction(this.transaction,this.category);
+  const AddTransaction(this.transaction);
 
   final Transaction transaction;
-  final TransactionCategory category;
   @override
-  List<Object> get props => [transaction, category];
+  List<Object> get props => [transaction];
 }
 
 /// This class updates the selectedIcon field in the AddTransactionState
@@ -49,7 +48,7 @@ final class UpdateNewCategoryColor extends AddTransactionEvent {
 final class UpdateSelectedCategory extends AddTransactionEvent {
   const UpdateSelectedCategory(this.category);
 
-  final TransactionCategory category;
+  final StoredCategory category;
 
   @override
   List<Object> get props => [category];
@@ -104,7 +103,7 @@ final class UpdateIsCategorySelected extends AddTransactionEvent {
 final class UpdateTempCategory extends AddTransactionEvent {
   const UpdateTempCategory(this.category);
 
-  final TransactionCategory category;
+  final StoredCategory category;
 
   @override
   List<Object> get props => [category];
@@ -180,7 +179,7 @@ final class UpdateStatus extends AddTransactionEvent {
 final class UpdateCategories extends AddTransactionEvent {
   const UpdateCategories(this.categories);
 
-  final List<TransactionCategory> categories;
+  final List<StoredCategory> categories;
 
   @override
   List<Object> get props => [categories];
@@ -233,9 +232,9 @@ final class UpdateCustomCategoryIcon extends AddTransactionEvent {
 
 /// Add a new Category
 final class AddNewCategory extends AddTransactionEvent {
-  const AddNewCategory();
-
+  const AddNewCategory(this.category);
+final StoredCategory category;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [category];
 }

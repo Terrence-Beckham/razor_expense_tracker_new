@@ -2,6 +2,7 @@
 
 import 'package:isar/isar.dart';
 import 'package:transactions_api/src/models/pie_chart_data.dart';
+import 'package:transactions_api/src/models/stored_category.dart';
 import 'package:transactions_api/src/models/transaction.dart';
 import 'package:transactions_api/src/models/transaction_category.dart';
 
@@ -17,18 +18,15 @@ abstract class TransactionsApi {
   Stream<List<Transaction>> getTransactions();
 
   ///provides a [Stream] of all categories
-  Stream<List<TransactionCategory>> getCategories();
+  Stream<List<StoredCategory>> getStoredCategories();
 
   /// Saves a [transaction].
   /// If a [Transaction] with the same id already exists, it will be replaced.
 
   Future<void> saveTransaction(
     Transaction transaction,
-    TransactionCategory category,
   );
 
-  /// Resaves a deleted [Transaction].
-  Future<void> reSaveTransaction(Transaction transaction);
 
   /// Deletes the `transaction` with the given id.
   ///
@@ -37,8 +35,8 @@ abstract class TransactionsApi {
   /// thrown.
   Future<void> deleteTransaction(Transaction transaction);
 
-  /// Adds a new [TransactionCategory] to the database
-  Future<void> addCustomCategory(TransactionCategory category);
+  /// Adds a new [StoredCategory] to the database
+  Future<void> addCustomCategory(StoredCategory category);
 
   /// Closes the client and frees up any resources.
   Future<void> close();

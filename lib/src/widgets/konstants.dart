@@ -182,7 +182,7 @@ const myIcons = <String, IconData>{
   'tools': Symbols.handyman,
 };
 
-final defaultCategory = <TransactionCategory>[
+final localCategories = <TransactionCategory>[
   gymMembership, //exercise
   salon, //styler
   subscriptions, //subscriptions

@@ -22,28 +22,29 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   ///todo this has to be removed. leaving it here for now
   late final _transactionStreamController =
       BehaviorSubject<List<Transaction>>.seeded(const []);
-  late final _categoryStreamController =
-      BehaviorSubject<List<TransactionCategory>>.seeded(const []);
+  late final _storedCategoryStreamController =
+      BehaviorSubject<List<StoredCategory>>.seeded(const []);
 
   ///Initialize both stream controllers.
   Future<void> init() async {
-    await loadDefaultCategories();
-    final transactionCategories =
-        await _isarDb.transactionCategorys.where().findAll();
-    _categoryStreamController.add(transactionCategories);
+    await loadStoredCategories();
+    final storedCategories =
+        await _isarDb.storedCategorys.where().findAll();
+    _storedCategoryStreamController.add(storedCategories);
+    ///todo I need to preform my initial query to the stream controller here
     final transactions = await _isarDb.transactions.where().findAll();
     _transactionStreamController.add(transactions);
   }
 
   ///This method generates a list of categories from the default categories and adds them to the database
-  Future<void> loadDefaultCategories() async {
-    final categories = await _isarDb.transactionCategorys.where().findAll();
+  Future<void> loadStoredCategories() async {
+    final categories = await _isarDb.storedCategorys.where().findAll();
 
     if (categories.isEmpty) {
       final categories = defaultCategory;
 
       await _isarDb.writeTxn(() async {
-        await _isarDb.transactionCategorys.putAll(categories);
+        await _isarDb.storedCategorys.putAll(categories);
       });
     }
   }
@@ -56,8 +57,6 @@ class LocalStorageTransactionsApi extends TransactionsApi {
     await _isarDb.writeTxn(() async {
       await _isarDb.transactions.delete(deletedTransaction.id!);
     });
-    final transactions = await _isarDb.transactions.where().findAll();
-    _transactionStreamController.add(transactions);
   }
 
   ///This method returns a stream of all transactions
@@ -70,59 +69,33 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   @override
   Future<void> saveTransaction(
     Transaction transaction,
-    TransactionCategory category,
   ) async {
     await _isarDb.writeTxn(() async {
       await _isarDb.transactions.put(transaction);
-      category.transactions.add(transaction);
-      transaction.category.value = category;
-      await category.transactions.save();
-      await transaction.category.save();
     });
-
-    final transactions = await _isarDb.transactions.where().findAll();
-    _transactionStreamController.add(transactions);
   }
 
-  @override
-  Future<void> reSaveTransaction(Transaction transaction) async {
-    final newTransaction = Transaction()
-      ..timestamp = transaction.timestamp
-      ..amount = transaction.amount
-      ..description = transaction.description
-      ..isExpense = transaction.isExpense
-      ..isIncome = transaction.isIncome;
-    newTransaction.category.value = transaction.category.value;
-
-    await _isarDb.writeTxn(() async {
-      await _isarDb.transactions.put(newTransaction);
-      await newTransaction.category.save();
-
-    });
-
-    final transactions = await _isarDb.transactions.where().findAll();
-    _transactionStreamController.add(transactions);
-  }
+  
 
   /// This method returns a [Stream] of all transaction categories
   @override
-  Stream<List<TransactionCategory>> getCategories() {
-    return _categoryStreamController.asBroadcastStream();
+  Stream<List<StoredCategory>> getStoredCategories() {
+    return _storedCategoryStreamController.asBroadcastStream();
   }
 
   @override
   Future<void> close() {
     _transactionStreamController.close();
-    return _categoryStreamController.close();
+    return _storedCategoryStreamController.close();
   }
 
   @override
-  Future<void> addCustomCategory(TransactionCategory category) async {
+  Future<void> addCustomCategory(StoredCategory category) async {
     await _isarDb.writeTxn(() async {
-      await _isarDb.transactionCategorys.put(category);
+      await _isarDb.storedCategorys.put(category);
     });
-    final categories = await _isarDb.transactionCategorys.where().findAll();
+    final categories = await _isarDb.storedCategorys.where().findAll();
 
-    _categoryStreamController.add(categories);
+    _storedCategoryStreamController.add(categories);
   }
 }

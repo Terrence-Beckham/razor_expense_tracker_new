@@ -11,7 +11,7 @@ enum AddTransactionStatus {
 
 class AddTransactionState extends Equatable {
   final AddTransactionStatus status;
-  final List<TransactionCategory> categories;
+  final List<StoredCategory> categories;
   final Icon selectedIcon;
   final Color selectedColor;
   final String selectedTransactionType;
@@ -20,13 +20,13 @@ class AddTransactionState extends Equatable {
   final bool isCategoryExpanded;
   final bool isColorExpanded;
   final bool isCategorySelected;
-  final TransactionCategory tempCategory;
+  final StoredCategory tempCategory;
   final String dateTextField;
   final String transactionAmount;
   final bool isDateChosen;
   final DateTime tempDate;
   final Transaction tempTransaction;
-  final TransactionCategory newCustomCategory;
+  final StoredCategory newCustomCategory;
   final bool isAddNewCategoryExpanded;
   final List<Icon> categoryWidgetIcons;
   final bool isAddNewCategoryColorPickerExpanded;
@@ -55,9 +55,9 @@ class AddTransactionState extends Equatable {
   });
 
   AddTransactionState copyWith({
-    TransactionCategory Function()? newCustomCategory,
+    StoredCategory Function()? newCustomCategory,
     AddTransactionStatus Function()? status,
-    List<TransactionCategory> Function()? categories,
+    List<StoredCategory> Function()? categories,
     List<Icon> Function()? categoryWidgetIcons,
     Icon Function()? selectedIcon,
     Color Function()? selectedColor,
@@ -68,7 +68,7 @@ class AddTransactionState extends Equatable {
     bool Function()? isIncome,
     bool Function()? isCategoryExpanded,
     bool Function()? isCategorySelected,
-    TransactionCategory Function()? tempCategory,
+    StoredCategory Function()? tempCategory,
     String Function()? dateTextField,
     String Function()? transactionAmountController,
     bool Function()? isDateChoosen,
@@ -123,7 +123,7 @@ class AddTransactionState extends Equatable {
 
   AddTransactionState.empty()
       : status = AddTransactionStatus.initial,
-        newCustomCategory = TransactionCategory(),
+        newCustomCategory = StoredCategory(),
         categoryWidgetIcons = categoryWidgets,
         categories = [],
         isColorExpanded = false,
@@ -136,7 +136,7 @@ class AddTransactionState extends Equatable {
         isCategoryExpanded = false,
         isCategorySelected = false,
         isAddNewCategoryExpanded = false,
-        tempCategory = TransactionCategory(),
+        tempCategory = StoredCategory(),
         dateTextField = 'Choose Date',
         transactionAmount = '0',
         isDateChosen = false,
