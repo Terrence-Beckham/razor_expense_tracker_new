@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/add_transaction/view/add_transaction_view.dart';
 import 'package:razor_expense_tracker_new/src/home/cubit/home_cubit.dart';
 import 'package:razor_expense_tracker_new/src/stats/view/stats_view.dart';
+import 'package:transactions_repository/transactions_repository.dart';
 
+import '../../stats/bloc/stats_bloc.dart';
+import '../../transactions_overview/bloc/transactions_overview_bloc.dart';
 import '../../transactions_overview/view/transaction_overview.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,15 +15,30 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: const HomeView(),
-    );
+    return MultiBlocProvider(providers: [
+      BlocProvider(
+        create: (_) => HomeCubit(),
+        child: HomeView(),
+      ),
+      BlocProvider<TransactionsOverviewBloc>(
+        create: (_) =>
+            TransactionsOverviewBloc(
+              context.read<TransactionsRepository>(),
+            ),
+      ),
+      BlocProvider<StatsBloc>(
+        create: (_) => StatsBloc(context.read<TransactionsRepository>()),
+      ),
+    ], child: HomeView());
   }
 }
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  HomeView({
+    super.key,
+  }) : _logger = Logger();
+
+  final Logger _logger;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +55,16 @@ class HomeView extends StatelessWidget {
           backgroundColor: Colors.green,
 
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<AddTransactionPage>(
-                builder: (context) => const AddTransactionPage(),
-              ),
-            );
+             Navigator.of(context)
+                .push(MaterialPageRoute<AddTransactionPage>(
+              builder: (context) => const AddTransactionPage(),
+            ));
           },
           key: const Key('homeView_addTransaction_floatingActionButton'),
-          child: const Icon(Icons.add,color: Colors.white,),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -104,7 +125,10 @@ class _HomeTabButton extends StatelessWidget {
       onPressed: () => context.read<HomeCubit>().setTab(value),
       iconSize: 32,
       color:
-          groupValue != value ? null : Theme.of(context).colorScheme.secondary,
+      groupValue != value ? null : Theme
+          .of(context)
+          .colorScheme
+          .secondary,
       icon: icon,
     );
   }

@@ -12,12 +12,12 @@ class TransactionsRepository {
   final TransactionsApi _transactionsApi;
 
   /// Provides a [Stream] of all transactions.
-  Stream<List<Transaction>> getTransactions() =>
-      _transactionsApi.getTransactions();
+  Stream<List<Transaction>> transactionStream() =>
+      _transactionsApi.transactionStream();
 
   ///provides a [Stream] of all categories
-  Stream<List<StoredCategory>> streamCategories() =>
-      _transactionsApi.getStoredCategories();
+  Stream<List<StoredCategory>> sortedCategoryStream() =>
+      _transactionsApi.sortedCategorStream();
 
   ///Saves a [Transaction] to a [TransactionCategory]
   Future<void> saveTransaction(
@@ -35,4 +35,7 @@ class TransactionsRepository {
   /// Adds a new [StoredCategory] to the database
   Future<void> addCustomCategory(StoredCategory category) =>
       _transactionsApi.addCustomCategory(category);
+
+  ///Query transactions
+Future<void> getTransactions()=> _transactionsApi.getTransactions();
 }

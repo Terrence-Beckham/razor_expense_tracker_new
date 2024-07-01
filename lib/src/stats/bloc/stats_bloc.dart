@@ -36,10 +36,10 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       ),
     );
     await emit.forEach<List<Transaction>>(
-        _transactionsRepository.getTransactions(), onData: (transactions) {
+        _transactionsRepository.transactionStream(), onData: (transactions) {
       final sortedTransactions = _transactionsByDate(transactions,
           state.selectedYear, state.selectedMonth, state.datePeriodChosen);
-      _logger.d('These are the sorted transactions: $sortedTransactions');
+      // _logger.d('These are the sorted transactions: $sortedTransactions');
       return state.copyWith(
         status: () => StatsStatus.success,
         transactions: () => transactions,
@@ -63,6 +63,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
           return element.dateOfTransaction.year == state.selectedYear;
       }
     });
+    _logger.d(transactionsByDate.toList());
     return transactionsByDate.toList();
   }
 
@@ -96,6 +97,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         }
       }
     }
+    _logger.d(pieChartCategories);
     return pieChartCategories;
   }
 
@@ -178,11 +180,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   FutureOr<void> _subscribeToCategories(
       SubscribeToCategoriesEvent event, Emitter<StatsState> emit) async {
     await emit.forEach<List<StoredCategory>>(
-      _transactionsRepository.streamCategories(),
+      _transactionsRepository.sortedCategoryStream(),
       onData: (categories) {
         final sortedCategories =
             _calculateTransactionAmountsPerCategory(state.transactions);
-        _logger.d('These are the sorted categories: $categories');
+        // _logger.d('These are the sorted categories: $categories');
         return state.copyWith(
           status: () => StatsStatus.success,
           sortedCategories: () => sortedCategories,

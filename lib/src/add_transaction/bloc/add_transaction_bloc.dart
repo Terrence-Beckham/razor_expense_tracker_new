@@ -46,11 +46,11 @@ class AddTransactionBloc
 
   FutureOr<void> _onInitial(
       Initial event, Emitter<AddTransactionState> emit) async {
-    final localTransactions = _transactionsRepository.streamCategories();
+    final localTransactions = _transactionsRepository.sortedCategoryStream();
     _logger.d('These are the local trans from the repository');
     emit(state.copyWith(status: () => AddTransactionStatus.loading));
     await emit.forEach<List<StoredCategory>>(
-      _transactionsRepository.streamCategories(),
+      _transactionsRepository.sortedCategoryStream(),
       onData: (category) => state.copyWith(
           status: () => AddTransactionStatus.success,
           categories: () => category),

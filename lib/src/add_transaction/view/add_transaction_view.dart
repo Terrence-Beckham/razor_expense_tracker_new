@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
+import 'package:razor_expense_tracker_new/src/transactions_overview/bloc/transactions_overview_bloc.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -14,9 +16,24 @@ class AddTransactionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AddTransactionBloc(context.read<TransactionsRepository>())
-        ..add(Initial()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AddTransactionBloc>(
+          create: (_) =>
+              AddTransactionBloc(context.read<TransactionsRepository>())
+                ..add(
+                  Initial(),
+                ),
+        ),
+        BlocProvider<TransactionsOverviewBloc>(
+          create: (_) => TransactionsOverviewBloc(
+            context.read<TransactionsRepository>(),
+          ),
+        ),
+        BlocProvider<StatsBloc>(
+          create: (_) => StatsBloc(context.read<TransactionsRepository>()),
+        ),
+      ],
       child: const AddTransactionView(),
     );
   }
@@ -407,8 +424,9 @@ class AddTransactionSuccessView extends StatelessWidget {
                         context
                             .read<AddTransactionBloc>()
                             .add(AddTransaction(newTransaction));
+                        // context.read<TransactionsOverviewBloc>().add(InitialDataEvent());
 
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop('Cheese');
                       } else {
                         //Convert the Stored Category object to a TransactionCategory
                         final transactionCategory = TransactionCategory()
@@ -432,6 +450,9 @@ class AddTransactionSuccessView extends StatelessWidget {
                         context
                             .read<AddTransactionBloc>()
                             .add(AddTransaction(newTransaction));
+                        // context
+                        //     .read<TransactionsOverviewBloc>()
+                        //     .add(InitialDataEvent());
                         Navigator.of(context).pop();
                       }
                     },

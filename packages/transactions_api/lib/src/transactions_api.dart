@@ -15,10 +15,10 @@ abstract class TransactionsApi {
   const TransactionsApi();
 
   /// Provides a [Stream] of all todos.
-  Stream<List<Transaction>> getTransactions();
+  Stream<List<Transaction>> transactionStream();
 
   ///provides a [Stream] of all categories
-  Stream<List<StoredCategory>> getStoredCategories();
+  Stream<List<StoredCategory>> sortedCategorStream();
 
   /// Saves a [transaction].
   /// If a [Transaction] with the same id already exists, it will be replaced.
@@ -26,6 +26,10 @@ abstract class TransactionsApi {
   Future<void> saveTransaction(
     Transaction transaction,
   );
+
+  ///Queries transactions and adds them to the stream
+  Future<void> getTransactions();
+  
 
 
   /// Deletes the `transaction` with the given id.

@@ -19,20 +19,21 @@ class TransactionsOverviewBloc
     on<InitialDataEvent>(_loadInitialData);
     on<DeleteTransactionEvent>(_deleteTransaction);
     on<UndoDeleteTransactionEvent>(_undoDeleteTransaction);
+    on<TransactionsRequestedEvent>(_requestTransactions);
   }
 
   final TransactionsRepository _transactionsRepository;
 
-  late final Logger _logger;
+  final Logger _logger;
 
   FutureOr<void> _loadInitialData(
     InitialDataEvent event,
     Emitter<TransactionsOverviewState> emit,
   ) async {
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
-
+    _logger.d("It should be loading now.");
     await emit.forEach<List<Transaction>>(
-      _transactionsRepository.getTransactions(),
+      _transactionsRepository.transactionStream(),
       onData: (transactions) {
         final reversedTransactions = transactions.reversed.toList();
         return state.copyWith(
@@ -45,7 +46,6 @@ class TransactionsOverviewBloc
       },
     );
 
-    _logger = Logger();
     _logger.d(
         'This is the list of transactions stored in the db: ${state.transactions}');
   }
@@ -96,12 +96,21 @@ class TransactionsOverviewBloc
   FutureOr<void> _undoDeleteTransaction(UndoDeleteTransactionEvent event,
       Emitter<TransactionsOverviewState> emit) {
     _logger.d('${state.deletedTransaction}');
-    _transactionsRepository.saveTransaction(event.transaction,);
+    _transactionsRepository.saveTransaction(
+      event.transaction,
+    );
     emit(
       state.copyWith(
         status: () => TransactionsOverviewStatus.success,
         deletedTransaction: () => null,
       ),
     );
+  }
+
+  FutureOr<void> _requestTransactions(TransactionsRequestedEvent event,
+      Emitter<TransactionsOverviewState> emit) {
+    state.copyWith(status: () => TransactionsOverviewStatus.loading);
+
+    _transactionsRepository.getTransactions();
   }
 }

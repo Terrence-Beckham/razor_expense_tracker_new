@@ -28,10 +28,16 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   ///Initialize both stream controllers.
   Future<void> init() async {
     await loadStoredCategories();
-    final storedCategories =
-        await _isarDb.storedCategorys.where().findAll();
+    final storedCategories = await _isarDb.storedCategorys.where().findAll();
     _storedCategoryStreamController.add(storedCategories);
+
     ///todo I need to preform my initial query to the stream controller here
+    final transactions = await _isarDb.transactions.where().findAll();
+    _transactionStreamController.add(transactions);
+  }
+
+  @override
+  Future<void> getTransactions() async {
     final transactions = await _isarDb.transactions.where().findAll();
     _transactionStreamController.add(transactions);
   }
@@ -61,7 +67,7 @@ class LocalStorageTransactionsApi extends TransactionsApi {
 
   ///This method returns a stream of all transactions
   @override
-  Stream<List<Transaction>> getTransactions() {
+  Stream<List<Transaction>> transactionStream() {
     return _transactionStreamController.asBroadcastStream();
   }
 
@@ -73,13 +79,14 @@ class LocalStorageTransactionsApi extends TransactionsApi {
     await _isarDb.writeTxn(() async {
       await _isarDb.transactions.put(transaction);
     });
-  }
 
-  
+    final transactions = await _isarDb.transactions.where().findAll();
+    _transactionStreamController.add(transactions);
+  }
 
   /// This method returns a [Stream] of all transaction categories
   @override
-  Stream<List<StoredCategory>> getStoredCategories() {
+  Stream<List<StoredCategory>> sortedCategorStream() {
     return _storedCategoryStreamController.asBroadcastStream();
   }
 

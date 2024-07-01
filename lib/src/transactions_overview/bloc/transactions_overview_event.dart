@@ -4,15 +4,14 @@ abstract class TransactionsOverviewEvent extends Equatable {
   const TransactionsOverviewEvent();
 }
 
-final class InitialDataEvent extends TransactionsOverviewEvent{
+final class InitialDataEvent extends TransactionsOverviewEvent {
   const InitialDataEvent();
 
   @override
-  List<Object?> get props =>[];
-
+  List<Object?> get props => [];
 }
 
-final class DeleteTransactionEvent extends TransactionsOverviewEvent{
+final class DeleteTransactionEvent extends TransactionsOverviewEvent {
   const DeleteTransactionEvent(this.transaction);
 
   final Transaction transaction;
@@ -21,11 +20,18 @@ final class DeleteTransactionEvent extends TransactionsOverviewEvent{
   List<Object?> get props => [transaction];
 }
 
-final class UndoDeleteTransactionEvent extends TransactionsOverviewEvent{
-  const UndoDeleteTransactionEvent(this.transaction ) ;
+final class UndoDeleteTransactionEvent extends TransactionsOverviewEvent {
+  const UndoDeleteTransactionEvent(this.transaction);
 
   final Transaction transaction;
 
   @override
   List<Object?> get props => [transaction];
+}
+
+final class TransactionsRequestedEvent extends TransactionsOverviewEvent {
+  const TransactionsRequestedEvent();
+
+  @override
+  List<Object?> get props => [];
 }
