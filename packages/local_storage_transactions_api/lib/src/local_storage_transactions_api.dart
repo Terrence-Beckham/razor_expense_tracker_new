@@ -63,6 +63,9 @@ class LocalStorageTransactionsApi extends TransactionsApi {
     await _isarDb.writeTxn(() async {
       await _isarDb.transactions.delete(deletedTransaction.id!);
     });
+
+    final transactions = await _isarDb.transactions.where().findAll();
+    _transactionStreamController.add(transactions);
   }
 
   ///This method returns a stream of all transactions

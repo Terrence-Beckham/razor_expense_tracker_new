@@ -35,9 +35,6 @@ final class CalculateTransactionsForChosenDates extends StatsEvent {
   List<Object?> get props => [];
 }
 
-
-
-
 final class LoadedCategoryAmountsEvent extends StatsEvent {
   const LoadedCategoryAmountsEvent();
 
@@ -50,9 +47,8 @@ final class SetTransactionCategoryType extends StatsEvent {
 
   @override
   List<Object?> get props => [];
-
-
 }
+
 final class IncomeDisplayRequested extends StatsEvent {
   const IncomeDisplayRequested();
 
@@ -69,13 +65,34 @@ final class ExpenseDisplayRequested extends StatsEvent {
 
 final class DatePeriodChosenEvent extends StatsEvent {
   const DatePeriodChosenEvent(this.datePeriodChosen);
-final DatePeriodChosen datePeriodChosen;
+
+  final DatePeriodChosen datePeriodChosen;
+
   @override
   List<Object?> get props => [datePeriodChosen];
 }
+
 final class SubscribeToCategoriesEvent extends StatsEvent {
   const SubscribeToCategoriesEvent();
 
   @override
   List<Object?> get props => [];
+}
+
+final class SelectedMonthChanged extends StatsEvent {
+  const SelectedMonthChanged(this.selectedMonth);
+
+  final DateLabel selectedMonth;
+
+  @override
+  List<Object?> get props => [selectedMonth];
+}
+
+final class SelectedYearChanged extends StatsEvent {
+  const SelectedYearChanged(this.selectedYear);
+
+  final int selectedYear;
+
+  @override
+  List<Object?> get props => [selectedYear];
 }

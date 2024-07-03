@@ -18,9 +18,9 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     on<IncomeDisplayRequested>(_incomeDisplayRequested);
     on<ExpenseDisplayRequested>(_expenseDisplayRequested);
     on<DatePeriodChosenEvent>(_datePeriodChosen);
-    on<CalculateTransactionsForChosenDates>(
-        _calculateTransactionsForChosenDates);
     on<SubscribeToCategoriesEvent>(_subscribeToCategories);
+    on<SelectedMonthChanged>(_changeSelectedMonth);
+    on<SelectedYearChanged>(_changeSelectedYear);
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -37,35 +37,49 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     );
     await emit.forEach<List<Transaction>>(
         _transactionsRepository.transactionStream(), onData: (transactions) {
-      final sortedTransactions = _transactionsByDate(transactions,
-          state.selectedYear, state.selectedMonth, state.datePeriodChosen);
-      // _logger.d('These are the sorted transactions: $sortedTransactions');
+      ///todo I have to query the transactions that I need here
+      final sortedTransactions = _transactionsByDate(
+          transactions,
+          state.selectedYear,
+          state.selectedMonth.month,
+          state.datePeriodChosen);
+      final sortedCategories =
+          _calculateTransactionAmountsPerCategory(sortedTransactions);
+
+      ///todo I have to sort the transactions here, then I have to add up the expense amount totals
+      ///to get the percentages
+      final (expenseTotals, incomeTotals) =
+          _calculateTotalAmounts(transactions);
       return state.copyWith(
         status: () => StatsStatus.success,
-        transactions: () => transactions,
-        sortedTransactions: () => sortedTransactions,
+        sortedCategories: () => sortedCategories,
+        expenseTransactionTotals: () => expenseTotals.toDouble(),
+        incomeTransactionTotals: () => incomeTotals.toDouble(),
       );
-
     });
   }
 
   ///This method filters transactions by date
-  _transactionsByDate(List<Transaction> transactions, int year, int month,
-      DatePeriodChosen dateRange) {
+  List<Transaction> _transactionsByDate(List<Transaction> transactions,
+      int year, int month, DatePeriodChosen dateRange) {
     final transactionsByDate = transactions.where((element) {
       switch (dateRange) {
         case DatePeriodChosen.allTime:
           return true;
         case DatePeriodChosen.monthly:
-          return element.dateOfTransaction.month == state.selectedMonth &&
+          return element.dateOfTransaction.month == state.selectedMonth.month &&
               element.dateOfTransaction.year == state.selectedYear;
         case DatePeriodChosen.yearly:
           return element.dateOfTransaction.year == state.selectedYear;
       }
     });
-    _logger.d(transactionsByDate.toList());
+    _logger.d('transactions by date $transactionsByDate');
     return transactionsByDate.toList();
   }
+
+
+
+
 
   ///This method calculates the total amount of all transactions
   List<TransactionCategory> _calculateTransactionAmountsPerCategory(
@@ -97,12 +111,14 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         }
       }
     }
-    _logger.d(pieChartCategories);
+    _logger.d('list of piechart categories $pieChartCategories');
     return pieChartCategories;
   }
 
   FutureOr<void> _incomeDisplayRequested(
       IncomeDisplayRequested event, Emitter<StatsState> emit) {
+
+
     emit(
       state.copyWith(
         isDisplayIncome: () => true,
@@ -111,25 +127,9 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     );
   }
 
-  List<TransactionCategory> _calculateCategoryPercentages(
-      List<TransactionCategory> categories) {
-    final totalSum = categories.fold(
-        0, (previousValue, element) => previousValue + element.totalAmount);
-    final categoriesWithPercentages = <TransactionCategory>[];
-    for (final category in categories) {
-      final expensePercentage = (category.totalExpenseAmount / totalSum) * 100;
-      final incomePercentage = (category.totalIncomeAmount / totalSum) * 100;
-      category.expensePercentage = expensePercentage.toStringAsFixed(1);
-      _logger.d(
-          'These is the percentage of expenses in this category ${category}');
-      category.incomePercentage = incomePercentage.toStringAsFixed(1);
-      categoriesWithPercentages.add(category);
-    }
-    return categoriesWithPercentages;
-  }
-
   FutureOr<void> _expenseDisplayRequested(
       ExpenseDisplayRequested event, Emitter<StatsState> emit) {
+
     emit(
       state.copyWith(
         isDisplayIncome: () => false,
@@ -152,6 +152,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         emit(
           state.copyWith(
             datePeriodChosen: () => DatePeriodChosen.monthly,
+            selectedMonth: () => dateLabelMapper[DateTime.now().month]!,
           ),
         );
         break;
@@ -163,18 +164,6 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
         break;
     }
-  }
-
-  FutureOr<void> _calculateTransactionsForChosenDates(
-      CalculateTransactionsForChosenDates event, Emitter<StatsState> emit) {
-    _logger.d('This message was called from the calculate transactions event');
-    final sortedTransactions = _transactionsByDate(state.transactions,
-        state.selectedYear, state.selectedMonth, state.datePeriodChosen);
-    emit(
-      state.copyWith(
-        sortedTransactions: () => sortedTransactions,
-      ),
-    );
   }
 
   FutureOr<void> _subscribeToCategories(
@@ -192,5 +181,35 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       },
       onError: (_, __) => state.copyWith(status: () => StatsStatus.failure),
     );
+  }
+
+  (double, double) _calculateTotalAmounts(List<Transaction> transactions) {
+    var expenseTotal = 0.0;
+    var incomeTotal = 0.0;
+    for (final transaction in transactions) {
+      if (transaction.isExpense) {
+        expenseTotal += transaction.amount;
+      }
+      if (transaction.isIncome) {
+        incomeTotal += transaction.amount;
+      }
+    }
+    return (expenseTotal, incomeTotal);
+  }
+
+  FutureOr<void> _changeSelectedMonth(
+      SelectedMonthChanged event, Emitter<StatsState> emit) {
+    emit(state.copyWith(
+        status: () => StatsStatus.success,
+        selectedMonth: () => event.selectedMonth));
+    _logger.d('This is the  month that was sent ${event.selectedMonth}');
+    _logger.d('This is the month that was selected ${state.selectedMonth}');
+  }
+
+  FutureOr<void> _changeSelectedYear(
+      SelectedYearChanged event, Emitter<StatsState> emit) {
+    emit(state.copyWith(
+        status: () => StatsStatus.success,
+        selectedYear: () => event.selectedYear));
   }
 }

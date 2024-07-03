@@ -360,7 +360,7 @@ final colorPickerWidgets = <Color>[
   Colors.red,
   Colors.yellow,
   Colors.blue,
-  Colors.white,
+  // Colors.white,
   Colors.green,
   Colors.cyanAccent,
   Colors.orange,

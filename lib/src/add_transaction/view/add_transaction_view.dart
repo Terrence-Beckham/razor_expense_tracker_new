@@ -426,7 +426,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                             .add(AddTransaction(newTransaction));
                         // context.read<TransactionsOverviewBloc>().add(InitialDataEvent());
 
-                        Navigator.of(context).pop('Cheese');
+                        Navigator.of(context).pop();
                       } else {
                         //Convert the Stored Category object to a TransactionCategory
                         final transactionCategory = TransactionCategory()

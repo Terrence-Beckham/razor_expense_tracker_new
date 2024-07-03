@@ -71,202 +71,344 @@ class StatsSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<StatsBloc, StatsState>(
-      listenWhen: (previous, current) =>
-          previous.datePeriodChosen != current.datePeriodChosen,
-      listener: (context, state) {
-        context.read<StatsBloc>()
-          ..add(SubscribeToTransactionsEvent())
-          ..add(SubscribeToCategoriesEvent());
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Analytics',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                )),
+    return MultiBlocListener(
+        listeners: [
+          BlocListener<StatsBloc, StatsState>(
+            listenWhen: (previous, current) =>
+                previous.datePeriodChosen != current.datePeriodChosen,
+            listener: (context, state) {
+              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+            },
           ),
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+          BlocListener<StatsBloc, StatsState>(
+            listenWhen: (previous, current) =>
+                previous.selectedMonth != current.selectedMonth,
+            listener: (context, state) {
+              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+            },
+          ),
+          BlocListener<StatsBloc, StatsState>(
+            listenWhen: (previous, current) =>
+                previous.selectedYear != current.selectedYear,
+            listener: (context, state) {
+              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+            },
+          ),
+          BlocListener<StatsBloc, StatsState>(
+            listenWhen: (previous, current) =>
+                previous.incomeTransactionTotals !=
+                current.incomeTransactionTotals,
+            listener: (context, state) {
+              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+            },
+          ),
+          BlocListener<StatsBloc, StatsState>(
+            listenWhen: (previous, current) =>
+                previous.expenseTransactionTotals !=
+                current.expenseTransactionTotals,
+            listener: (context, state) {
+              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+            },
+          ),
+        ],
+        child: BlocBuilder<StatsBloc, StatsState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('Analytics',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    )),
+              ),
+              body: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<StatsBloc>().add(ExpenseDisplayRequested());
-                    },
-                    child: const Text(
-                      'Expenses',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<StatsBloc>().add(IncomeDisplayRequested());
-                    },
-                    child: const Text(
-                      'Income',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InputChip(
-                      label: Text('All Time'),
-                      onPressed: () {
-                        context.read<StatsBloc>().add(
-                            DatePeriodChosenEvent(DatePeriodChosen.allTime));
-                      },
-                      selectedColor: Colors.yellow,
-                      selected:
-                          state.datePeriodChosen == DatePeriodChosen.allTime,
-                    ),
-                    InputChip(
-                      label: Text(' Yearly'),
-                      onPressed: () {
-                        context.read<StatsBloc>().add(
-                            DatePeriodChosenEvent(DatePeriodChosen.yearly));
-                      },
-                      selectedColor: Colors.yellow,
-                      selected:
-                          state.datePeriodChosen == DatePeriodChosen.yearly,
-                    ),
-                    InputChip(
-                      label: Text('Monthly'),
-                      onPressed: () {
-                        context.read<StatsBloc>().add(
-                            DatePeriodChosenEvent(DatePeriodChosen.monthly));
-                      },
-                      selectedColor: Colors.yellow,
-                      selected:
-                          state.datePeriodChosen == DatePeriodChosen.monthly,
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.arrow_back),
-                  ),
-                  Text('2024'),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.arrow_forward),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.arrow_back),
-                  ),
-                  Text('January'),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.arrow_forward),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width / 1.5,
-                child: Column(children: [
-                  // state.isDisplayExpenses
-                  //     ? Text(state.totalAmount.toStringAsFixed(1))
-                  //     : Text('Income Goes here'),
-                  Expanded(
-                    child: PieChart(
-
-                      PieChartData(
-                        centerSpaceColor: Colors.green,
-                        sections: List.generate(
-                          state.sortedCategories.length,
-                          (index) {
-                            return PieChartSectionData(
-                                radius: 70,
-                                color: colorMapper[
-                                    state.sortedCategories[index].colorName],
-                                titleStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                                value: state.isDisplayExpenses
-                                    ? state.sortedCategories[index]
-                                        .totalExpenseAmount
-                                        .toDouble()
-                                    : state.sortedCategories[index]
-                                        .totalIncomeAmount
-                                        .toDouble(),
-                                title: state.isDisplayExpenses
-                                    ? '${state.sortedCategories[index].name}\n'
-                                        '\$${state.sortedCategories[index].totalExpenseAmount}'
-                                    : '${state.sortedCategories[index].name}\n'
-                                        '\$${state.sortedCategories[index].totalIncomeAmount}');
-                          },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          context
+                              .read<StatsBloc>()
+                              .add(ExpenseDisplayRequested());
+                        },
+                        child: const Text(
+                          'Expenses',
+                          style: TextStyle(fontSize: 24),
                         ),
                       ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context
+                              .read<StatsBloc>()
+                              .add(IncomeDisplayRequested());
+                        },
+                        child: const Text(
+                          'Income',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InputChip(
+                          label: Text('All Time'),
+                          onPressed: () {
+                            context.read<StatsBloc>().add(DatePeriodChosenEvent(
+                                DatePeriodChosen.allTime));
+                          },
+                          selectedColor: Colors.green,
+                          selected: state.datePeriodChosen ==
+                              DatePeriodChosen.allTime,
+                        ),
+                        InputChip(
+                          label: Text(' Yearly'),
+                          onPressed: () {
+                            context.read<StatsBloc>().add(
+                                DatePeriodChosenEvent(DatePeriodChosen.yearly));
+                          },
+                          selectedColor: Colors.yellow,
+                          selected:
+                              state.datePeriodChosen == DatePeriodChosen.yearly,
+                        ),
+                        InputChip(
+                          label: Text('Monthly'),
+                          onPressed: () {
+                            context.read<StatsBloc>().add(DatePeriodChosenEvent(
+                                DatePeriodChosen.monthly));
+                          },
+                          selectedColor: Colors.red,
+                          selected: state.datePeriodChosen ==
+                              DatePeriodChosen.monthly,
+                        ),
+                      ],
                     ),
                   ),
-                ]),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: state.categories.length,
-                  itemBuilder: (context, index) {
-                    if (state.isDisplayExpenses &&
-                        state.categories[index].totalExpenseAmount > 0) {
-                      return InputChip(
-                        onPressed: () {},
-                        label: Text(
-                            style: TextStyle(
-                              color: Colors.white,
-                              overflow: TextOverflow.visible,
-                            ),
-                            '${state.categories[index].name} '
-                            ' ${state.categories[index].expensePercentage} %'),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                        ),
+                        switch (state.datePeriodChosen) {
+                          DatePeriodChosen.allTime => Container(),
+                          DatePeriodChosen.yearly => YearDropdownMenu(),
+                          DatePeriodChosen.monthly => Row(
+                              children: [
+                                YearDropdownMenu(),
+                                SizedBox(width: 25),
+                                DateDropdownMenu(),
+                              ],
+                            )
+                        },
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width / 1.5,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        state.isDisplayExpenses &&
+                                state.sortedCategories.isNotEmpty
+                            ? Text(
+                                'Expenses\n' +
+                                    r'$ ' +
+                                    state.expenseTransactionTotals
+                                        .toStringAsFixed(1),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              )
+                            : Text(''),
+                        state.isDisplayIncome &&
+                                state.sortedCategories.isNotEmpty
+                            ? Text(
+                                'Income\n' +
+                                    r'$ ' +
+                                    state.incomeTransactionTotals
+                                        .toStringAsFixed(1),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              )
+                            : Text(''),
+                        state.sortedCategories.isNotEmpty
+                            ? PieChart(
+                                PieChartData(
+                                  titleSunbeamLayout: true,
+                                  sections: List.generate(
+                                    state.sortedCategories.length,
+                                    (index) {
+                                      return PieChartSectionData(
+                                          radius: 50,
+                                          color: colorMapper[state
+                                              .sortedCategories[index]
+                                              .colorName],
+                                          titleStyle: const TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                          value: state.isDisplayExpenses
+                                              ? state.sortedCategories[index]
+                                                  .totalExpenseAmount
+                                                  .toDouble()
+                                              : state.sortedCategories[index]
+                                                  .totalIncomeAmount
+                                                  .toDouble());
+                                      // title: state.isDisplayExpenses
+                                      //     // ? '${state.sortedCategories[index].name}\n'
+                                      //     ? '\$${state.sortedCategories[index].totalExpenseAmount}'
+                                      //     // : '${state.sortedCategories[index].name}\n'
+                                      //     : '\$${state.sortedCategories[index].totalIncomeAmount}');
+                                    },
+                                  ),
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  'There is no Data for this period',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    // Variable to store the total
+                    // Iterating over the list using a for loop
+                    //              for (double amount in amounts) {
+                    //    total += amount;
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: state.sortedCategories.length,
+                      itemBuilder: (context, index) {
+                        if (state.isDisplayExpenses &&
+                            state.sortedCategories[index].totalExpenseAmount >
+                                0) {
+                          return InputChip(
+                            onPressed: () {},
+                            label: Text(
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                '${state.sortedCategories[index].name} '
+                                ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)}%'),
+
+                            //
+                            backgroundColor: colorMapper[
+                                state.sortedCategories[index].colorName],
+                          );
+                        }
+                        if (state.isDisplayIncome &&
+                            state.sortedCategories[index].totalIncomeAmount >
+                                0) {
+                          return InputChip(
+                            onPressed: () {},
+                            label: Text(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                '${state.sortedCategories[index].name} '
+                                ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)}%'),
+                            //
+                            backgroundColor: colorMapper[
+                                state.sortedCategories[index].colorName],
+                          );
+                        }
+                        return Container();
+
                         //
-                        backgroundColor:
-                            colorMapper[state.categories[index].colorName],
-                      );
-                    } else if (state.isDisplayIncome &&
-                        state.categories[index].totalIncomeAmount > 0) {
-                      return InputChip(
-                        onPressed: () {},
-                        label: Text(
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              overflow: TextOverflow.visible,
-                            ),
-                            '${state.categories[index].name} '
-                            ' ${state.categories[index].incomePercentage} %'),
-                        //
-                        backgroundColor:
-                            colorMapper[state.categories[index].colorName],
-                      );
-                    } else {
-                      return Container();
-                    }
-                    //
-                  },
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height / 5)),
-                ),
+                      },
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 5)),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            );
+          },
+        ));
+  }
+}
+
+extension Ex on double {
+  double toPrecision(int n) => double.parse(toStringAsFixed(n));
+}
+
+//colorMapper = <String, Color>{
+//   'red': Colors.red,
+//   'yellow': Colors.yellow,
+//   'blue': Colors.blue,
+//   'white': Colors.white,
+class DateDropdownMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<StatsBloc, StatsState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: DropdownButton<DateLabel>(
+            value: state.selectedMonth, // Set the initial selection
+            onChanged: (DateLabel? newValue) {
+              // Handle the selected value here
+              context.read<StatsBloc>().add(SelectedMonthChanged(newValue!));
+            },
+            items: DateLabel.values
+                .map<DropdownMenuItem<DateLabel>>((DateLabel dateLabel) {
+              return DropdownMenuItem<DateLabel>(
+                value: dateLabel,
+                child: Text('${dateLabel.label} '),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class YearDropdownMenu extends StatelessWidget {
+  final List<int> years =
+      List<int>.generate(10, (int index) => (DateTime.now().year - 2) + index);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<StatsBloc, StatsState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: DropdownButton<int>(
+            hint: Text('Select a year'),
+            value: state.selectedYear,
+            onChanged: (int? newValue) {
+              context.read<StatsBloc>().add(SelectedYearChanged(newValue!));
+              // if (newValue != null) {
+              //   context.read<StatsBloc>().add(YearSelected(newValue));
+              // }
+            },
+            items: years.map<DropdownMenuItem<int>>((int year) {
+              return DropdownMenuItem<int>(
+                value: year,
+                child: Text(year.toString()),
+              );
+            }).toList(),
           ),
         );
       },
