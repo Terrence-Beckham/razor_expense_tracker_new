@@ -217,7 +217,7 @@ class StatsSuccessView extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         state.isDisplayExpenses &&
-                                state.sortedCategories.isNotEmpty
+                                state.expenseTransactionTotals >0
                             ? Text(
                                 'Expenses\n' +
                                     r'$ ' +
@@ -228,7 +228,7 @@ class StatsSuccessView extends StatelessWidget {
                               )
                             : Text(''),
                         state.isDisplayIncome &&
-                                state.sortedCategories.isNotEmpty
+                                state.incomeTransactionTotals >0
                             ? Text(
                                 'Income\n' +
                                     r'$ ' +

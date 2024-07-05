@@ -49,10 +49,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       ///todo I have to sort the transactions here, then I have to add up the expense amount totals
       ///to get the percentages
       final (expenseTotals, incomeTotals) =
-          _calculateTotalAmounts(transactions);
+          _calculateTotalAmounts(sortedTransactions);
       return state.copyWith(
         status: () => StatsStatus.success,
         sortedCategories: () => sortedCategories,
+        sortedTransactions: ()=> sortedTransactions,
         expenseTransactionTotals: () => expenseTotals.toDouble(),
         incomeTransactionTotals: () => incomeTotals.toDouble(),
       );
@@ -73,13 +74,9 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
           return element.dateOfTransaction.year == state.selectedYear;
       }
     });
-    _logger.d('transactions by date $transactionsByDate');
+    // _logger.d('transactions by date $transactionsByDate');
     return transactionsByDate.toList();
   }
-
-
-
-
 
   ///This method calculates the total amount of all transactions
   List<TransactionCategory> _calculateTransactionAmountsPerCategory(
@@ -111,14 +108,12 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         }
       }
     }
-    _logger.d('list of piechart categories $pieChartCategories');
+    // _logger.d('list of piechart categories $pieChartCategories');
     return pieChartCategories;
   }
 
   FutureOr<void> _incomeDisplayRequested(
       IncomeDisplayRequested event, Emitter<StatsState> emit) {
-
-
     emit(
       state.copyWith(
         isDisplayIncome: () => true,
@@ -129,7 +124,6 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   FutureOr<void> _expenseDisplayRequested(
       ExpenseDisplayRequested event, Emitter<StatsState> emit) {
-
     emit(
       state.copyWith(
         isDisplayIncome: () => false,
@@ -140,11 +134,15 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   FutureOr<void> _datePeriodChosen(
       DatePeriodChosenEvent event, Emitter<StatsState> emit) {
+    final (expenseTotals, incomeTotals) =
+        _calculateTotalAmounts(state.sortedTransactions);
     switch (event.datePeriodChosen) {
       case DatePeriodChosen.allTime:
         emit(
           state.copyWith(
             datePeriodChosen: () => DatePeriodChosen.allTime,
+            expenseTransactionTotals: () => expenseTotals,
+            incomeTransactionTotals: () => incomeTotals,
           ),
         );
         break;
@@ -153,6 +151,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
           state.copyWith(
             datePeriodChosen: () => DatePeriodChosen.monthly,
             selectedMonth: () => dateLabelMapper[DateTime.now().month]!,
+            expenseTransactionTotals: () => expenseTotals,
+            incomeTransactionTotals: () => incomeTotals,
           ),
         );
         break;
@@ -160,6 +160,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         emit(
           state.copyWith(
             datePeriodChosen: () => DatePeriodChosen.yearly,
+            expenseTransactionTotals: () => expenseTotals,
+            incomeTransactionTotals: () => incomeTotals,
           ),
         );
         break;
@@ -198,18 +200,33 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   }
 
   FutureOr<void> _changeSelectedMonth(
-      SelectedMonthChanged event, Emitter<StatsState> emit) {
-    emit(state.copyWith(
+      SelectedMonthChanged event, Emitter<StatsState> emit)async {
+    final (expenseTotals, incomeTotals) =
+       await _calculateTotalAmounts(state.sortedTransactions);
+    _logger.f('these are the expense totals for ${state.selectedMonth}: $expenseTotals and icometotals:for ${state.selectedMonth}:    $incomeTotals');
+    emit(
+      state.copyWith(
         status: () => StatsStatus.success,
-        selectedMonth: () => event.selectedMonth));
+        selectedMonth: () => event.selectedMonth,
+        incomeTransactionTotals: () => incomeTotals,
+        expenseTransactionTotals: () => expenseTotals,
+      ),
+    );
     _logger.d('This is the  month that was sent ${event.selectedMonth}');
     _logger.d('This is the month that was selected ${state.selectedMonth}');
   }
 
   FutureOr<void> _changeSelectedYear(
       SelectedYearChanged event, Emitter<StatsState> emit) {
-    emit(state.copyWith(
+    final (expenseTotals, incomeTotals) =
+        _calculateTotalAmounts(state.sortedTransactions);
+    emit(
+      state.copyWith(
         status: () => StatsStatus.success,
-        selectedYear: () => event.selectedYear));
+        selectedYear: () => event.selectedYear,
+        incomeTransactionTotals: () => incomeTotals,
+        expenseTransactionTotals: () => expenseTotals,
+      ),
+    );
   }
 }

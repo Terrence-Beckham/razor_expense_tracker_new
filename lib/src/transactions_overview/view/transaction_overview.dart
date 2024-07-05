@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
+import '../../edit_transaction/view/edit_transaction_view.dart';
 import '../../widgets/konstants.dart';
 import '../bloc/transactions_overview_bloc.dart';
 
@@ -344,7 +345,14 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 icon: Icons.delete,
                               ),
                               SlidableAction(
-                                onPressed: (context) {},
+                                onPressed: (context) {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<EditTransactionPage>(
+                                    builder: (context) =>  EditTransactionPage(transaction: state.transactions[index],),
+
+                                  ),);
+                                //
+                                },
                                 backgroundColor: Colors.green,
                                 icon: Icons.edit,
                               ),

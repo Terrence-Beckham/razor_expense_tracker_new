@@ -156,6 +156,9 @@ final class StatsState extends Equatable {
       selectedMonth:
           selectedMonth != null ? selectedMonth() : this.selectedMonth,
       selectedYear: selectedYear != null ? selectedYear() : this.selectedYear,
+      sortedTransactions: sortedTransactions != null
+          ? sortedTransactions()
+          : this.sortedTransactions,
     );
   }
 
