@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/widgets/konstants.dart';
+import 'package:string_validator/string_validator.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -39,6 +40,8 @@ class AddTransactionBloc
     on<AddNewCategory>(_onAddNewCategory);
     on<UpdateTempCategory>(_onUpdateTempCategory);
     on<UpdateNewCategoryColor>(_onUpdateNewCategoryColor);
+    on<ValidateAmountValue>(_onValidateAmountValue);
+    on<CategoryNotSelected>(_onIsCategoryNotSelected);
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -105,23 +108,31 @@ class AddTransactionBloc
 
   FutureOr<void> _onUpdateIsCategoryExpanded(
       UpdateIsCategoryExpanded event, Emitter<AddTransactionState> emit) {
-    emit(state.copyWith(
-        status: () => AddTransactionStatus.success,
-        isCategoryExpanded: () => event.isCategoryExpanded));
+    emit(
+      state.copyWith(
+          status: () => AddTransactionStatus.success,
+          isCategoryExpanded: () => event.isCategoryExpanded),
+    );
   }
 
   FutureOr<void> _onUpdateIsCategorySelected(
       UpdateIsCategorySelected event, Emitter<AddTransactionState> emit) {
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: () => AddTransactionStatus.success,
-        isCategorySelected: () => event.isCategorySelected));
+        isCategorySelected: () => event.isCategorySelected,
+        isCategoryUnselected: () => false,
+      ),
+    );
   }
 
   FutureOr<void> _onUpdateTempCategory(
       UpdateTempCategory event, Emitter<AddTransactionState> emit) {
     emit(state.copyWith(
-        status: () => AddTransactionStatus.success,
-        tempCategory: () => event.category));
+      status: () => AddTransactionStatus.success,
+      tempCategory: () => event.category,
+      isCategoryUnselected: () => false,
+    ));
   }
 
   FutureOr<void> _onUpdateDateTextController(
@@ -172,9 +183,11 @@ class AddTransactionBloc
 
   FutureOr<void> _onUpdateTempDate(
       UpdateTempDate event, Emitter<AddTransactionState> emit) {
-    emit(state.copyWith(
-        status: () => AddTransactionStatus.success,
-        tempDate: () => event.tempDate));
+    emit(
+      state.copyWith(
+          status: () => AddTransactionStatus.success,
+          tempDate: () => event.tempDate),
+    );
   }
 
   FutureOr<void> _onLaunchAddNewCategoryPage(
@@ -222,5 +235,40 @@ class AddTransactionBloc
   FutureOr<void> _onAddNewCategory(
       AddNewCategory event, Emitter<AddTransactionState> emit) {
     _transactionsRepository.addCustomCategory(event.category);
+  }
+
+  FutureOr<void> _onValidateAmountValue(
+      ValidateAmountValue event, Emitter<AddTransactionState> emit) {
+    final String value = event.value;
+    bool isNumericValid = value.isNumeric;
+    if (!isNumericValid) {
+      final tempAmountValidator = AmountValidator(
+          hasError: true, errorMessage: 'Please Enter Numbers Only');
+      _logger.d(
+          'This is the amount validator error message: ${tempAmountValidator.errorMessage}');
+      emit(
+        state.copyWith(
+            amountValidator: () => tempAmountValidator,
+            transactionAmountController: () => event.value),
+      );
+    } else {
+      final tempAmountVaidator =
+          AmountValidator(hasError: false, errorMessage: '');
+      emit(
+        state.copyWith(
+            amountValidator: () => tempAmountVaidator,
+            transactionAmountController: () => event.value),
+      );
+    }
+  }
+
+  FutureOr<void> _onIsCategoryNotSelected(
+      CategoryNotSelected event, Emitter<AddTransactionState> emit) {
+    emit(
+      state.copyWith(
+        status: () => AddTransactionStatus.success,
+        isCategoryUnselected: () => true,
+      ),
+    );
   }
 }

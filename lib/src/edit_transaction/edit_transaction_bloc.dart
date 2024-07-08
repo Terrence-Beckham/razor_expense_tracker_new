@@ -24,6 +24,8 @@ class EditTransactionBloc
     on<TempCategoryUpdated>(_setTempCategory);
     on<UpdateTransactionAmount>(_updateTransactionAmount);
     on<TransactionAmountError>(_showTransactionAmountErrorMessage);
+    on<TransactionDateUpdated>(_updateTransactionDate);
+    on<TransactionUpdateRequested>(_updateTransaction);
   }
 
   final TransactionsRepository _transactionsRepository;
@@ -88,5 +90,22 @@ class EditTransactionBloc
           status: () => EditTransactionStatus.success,
           amountDisplayError: () => event.isError),
     );
+  }
+
+  FutureOr<void> _updateTransactionDate(
+      TransactionDateUpdated event, Emitter<EditTransactionState> emit) {
+    final transaction = state.transaction;
+    transaction.dateOfTransaction = event.dateOfTransaction;
+    emit(
+      state.copyWith(
+          status: () => EditTransactionStatus.success,
+          transaction: () => transaction),
+    );
+  }
+
+  FutureOr<void> _updateTransaction(
+      TransactionUpdateRequested event, Emitter<EditTransactionState> emit) {
+   _transactionsRepository.saveTransaction(event.updatedTransaction);
+
   }
 }

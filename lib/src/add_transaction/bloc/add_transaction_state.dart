@@ -30,6 +30,9 @@ class AddTransactionState extends Equatable {
   final bool isAddNewCategoryExpanded;
   final List<Icon> categoryWidgetIcons;
   final bool isAddNewCategoryColorPickerExpanded;
+  final bool isAmountValidationFailed;
+  final bool isCategoryUnselected;
+  final AmountValidator amountValidator;
 
   AddTransactionState({
     required this.newCustomCategory,
@@ -52,6 +55,9 @@ class AddTransactionState extends Equatable {
     required this.transactionAmount,
     required this.tempTransaction,
     required this.categoryWidgetIcons,
+    required this.isAmountValidationFailed,
+    required this.isCategoryUnselected,
+    required this.amountValidator,
   });
 
   AddTransactionState copyWith({
@@ -75,6 +81,10 @@ class AddTransactionState extends Equatable {
     bool Function()? isColorExpanded,
     DateTime Function()? tempDate,
     Transaction Function()? tempTransaction,
+    bool Function()? isAmountEntered,
+    bool Function()? isCategoryValidated,
+    AmountValidator Function()? amountValidator,
+    bool Function()? isCategoryUnselected,
   }) {
     return AddTransactionState(
       newCustomCategory: newCustomCategory != null
@@ -118,6 +128,14 @@ class AddTransactionState extends Equatable {
       tempDate: tempDate != null ? tempDate() : this.tempDate,
       tempTransaction:
           tempTransaction != null ? tempTransaction() : this.tempTransaction,
+      isAmountValidationFailed: isAmountEntered != null
+          ? isAmountEntered()
+          : this.isAmountValidationFailed,
+      isCategoryUnselected: isCategoryUnselected != null
+          ? isCategoryUnselected()
+          : this.isCategoryUnselected,
+      amountValidator:
+          amountValidator != null ? amountValidator() : this.amountValidator,
     );
   }
 
@@ -138,10 +156,13 @@ class AddTransactionState extends Equatable {
         isAddNewCategoryExpanded = false,
         tempCategory = StoredCategory(),
         dateTextField = 'Choose Date',
-        transactionAmount = '0',
+        transactionAmount = '',
         isDateChosen = false,
         tempDate = DateTime.now(),
-        tempTransaction = Transaction();
+        tempTransaction = Transaction(),
+        isAmountValidationFailed = false,
+        isCategoryUnselected = false,
+        amountValidator = AmountValidator(hasError: false, errorMessage: '');
 
   @override
   List<Object> get props => [
@@ -164,5 +185,18 @@ class AddTransactionState extends Equatable {
         isAddNewCategoryColorPickerExpanded,
         newCustomCategory,
         isColorExpanded,
+        isAmountValidationFailed,
+        isCategoryUnselected,
+        amountValidator,
       ];
+}
+
+class AmountValidator extends Equatable {
+  final bool hasError;
+  final String errorMessage;
+
+  AmountValidator({required this.hasError, required this.errorMessage});
+
+  @override
+  List<Object?> get props => [hasError, errorMessage];
 }

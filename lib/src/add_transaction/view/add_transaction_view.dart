@@ -184,22 +184,23 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: TextField(
+                  child: TextFormField(
                     // controller: _transactionAmountController,
                     onChanged: (value) {
                       context.read<AddTransactionBloc>().add(
-                            UpdateTransactionAmountField(value),
+                            ValidateAmountValue(value),
                           );
                     },
+
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       prefixIcon: state.isExpense
                           ? const Icon(
-                              Symbols.currency_bitcoin,
+                              Icons.money,
                               color: Colors.red,
                             )
                           : const Icon(
-                              Symbols.currency_bitcoin,
+                              Icons.money,
                               color: Colors.green,
                             ),
                       filled: true,
@@ -212,6 +213,13 @@ class AddTransactionSuccessView extends StatelessWidget {
                   ),
                 ),
               ),
+              state.amountValidator.hasError
+                  ? Text(
+                      '${state.amountValidator.errorMessage}',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    )
+                  : Container(),
+
               const SizedBox(
                 height: 24,
               ),
@@ -240,7 +248,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                               color: Colors.white,
                             ),
                       suffixIcon: IconButton(
-                        icon: const Icon(Symbols.add),
+                        icon: const Icon(Icons.edit),
                         onPressed: () {
                           context.read<AddTransactionBloc>().add(
                               UpdateIsCategoryExpanded(
@@ -268,7 +276,12 @@ class AddTransactionSuccessView extends StatelessWidget {
                   ),
                 ),
               ),
-
+              (state.isCategoryUnselected)
+                  ? Text(
+                      'Please Enter a Category',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    )
+                  : Container(),
               if (state.isCategoryExpanded)
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16),
@@ -326,8 +339,12 @@ class AddTransactionSuccessView extends StatelessWidget {
 
                                   ///Need to set the textfield to the name and icon of the category
                                   context.read<AddTransactionBloc>().add(
-                                      UpdateIsCategorySelected(
-                                          !state.isCategorySelected));
+                                        UpdateIsCategorySelected(
+                                            !state.isCategorySelected),
+                                      );
+                                  context.read<AddTransactionBloc>().add(
+                                        CategoryNotSelected(),
+                                      );
                                 },
                               );
                             },
@@ -351,9 +368,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                       onPressed: () {
                         _showAddNewCategoryPicker(context);
                       },
-                      // onPressed: () => context
-                      //     .read<AddTransactionBloc>()
-                      //     .add(LaunchAddNewCategoryPage()),
+
                       child: Text('Add New Category'),
                     )
                   : Container(),
@@ -361,32 +376,34 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: TextFormField(
-                    onChanged: (value) => context
-                        .read<AddTransactionBloc>()
-                        .add(UpdateDateTextField(value)),
-                    onTap: () => buildShowDatePicker(context),
-                    readOnly: true,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      hintText: !state.isDateChosen
-                          ? 'Date'
-                          : state.dateTextField.toString(),
-                      hintStyle:
-                          const TextStyle(color: Colors.white, fontSize: 20),
-                      prefixIcon: const Icon(
-                        Icons.calendar_month,
-                        color: Colors.white,
-                      ),
-                      suffixIcon: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                      filled: true,
-                      fillColor: Colors.blueGrey,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
+                  child: Form(
+                    child: TextFormField(
+                      onChanged: (value) => context
+                          .read<AddTransactionBloc>()
+                          .add(UpdateDateTextField(value)),
+                      onTap: () => buildShowDatePicker(context),
+                      readOnly: true,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        hintText: !state.isDateChosen
+                            ? 'Date'
+                            : state.dateTextField.toString(),
+                        hintStyle:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        prefixIcon: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.white,
+                        ),
+                        suffixIcon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                        filled: true,
+                        fillColor: Colors.blueGrey,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                   ),
@@ -404,7 +421,16 @@ class AddTransactionSuccessView extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      if (state.isIncome) {
+                      if (state.amountValidator.hasError == true ||
+                          state.transactionAmount == '') {
+                        return;
+                      } else if (state.tempCategory.id == null) {
+                        _logger.d('No category has been selected ${state.tempCategory}');
+                        context
+                            .read<AddTransactionBloc>()
+                            .add(CategoryNotSelected());
+                        return;
+                      } else if (state.isIncome) {
                         //Convert the Stored Category object to a TransactionCategory
                         final transactionCategory = TransactionCategory()
                           ..name = state.tempCategory.name
@@ -417,7 +443,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..dateOfTransaction = state.tempDate
                           ..description = ''
                           ..note = ''
-                          ..isExpense = false
+                          // ..isExpense = false
                           ..isIncome = true
                           ..category = transactionCategory;
                         //Add the new transaction to the DB

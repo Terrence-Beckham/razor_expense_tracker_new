@@ -1,6 +1,6 @@
 part of 'add_transaction_bloc.dart';
 
-final class AddTransactionEvent extends Equatable {
+sealed class AddTransactionEvent extends Equatable {
   const AddTransactionEvent();
 
   @override
@@ -14,10 +14,11 @@ final class Initial extends AddTransactionEvent {
   List<Object> get props => [];
 }
 
-final class AddTransaction extends AddTransactionEvent{
+final class AddTransaction extends AddTransactionEvent {
   const AddTransaction(this.transaction);
 
   final Transaction transaction;
+
   @override
   List<Object> get props => [transaction];
 }
@@ -42,8 +43,6 @@ final class UpdateNewCategoryColor extends AddTransactionEvent {
   List<Object> get props => [color];
 }
 
-
-
 /// This class updates the selectedCategory field in the AddTransactionState class
 final class UpdateSelectedCategory extends AddTransactionEvent {
   const UpdateSelectedCategory(this.category);
@@ -53,6 +52,7 @@ final class UpdateSelectedCategory extends AddTransactionEvent {
   @override
   List<Object> get props => [category];
 }
+
 /// This class updates the isExpense field in the AddTransactionState class
 final class UpdateIsExpense extends AddTransactionEvent {
   const UpdateIsExpense(this.isExpense);
@@ -62,6 +62,7 @@ final class UpdateIsExpense extends AddTransactionEvent {
   @override
   List<Object> get props => [isExpense];
 }
+
 /// This class updates the isIncome field in the AddTransactionState class
 final class UpdateIsIncome extends AddTransactionEvent {
   const UpdateIsIncome(this.isIncome);
@@ -71,6 +72,7 @@ final class UpdateIsIncome extends AddTransactionEvent {
   @override
   List<Object> get props => [isIncome];
 }
+
 /// This class updates the isCategoryExpanded field in the AddTransactionState class
 final class UpdateIsCategoryExpanded extends AddTransactionEvent {
   const UpdateIsCategoryExpanded(this.isCategoryExpanded);
@@ -90,6 +92,7 @@ final class UpdateIsColorExpanded extends AddTransactionEvent {
   @override
   List<Object> get props => [isColorExpanded];
 }
+
 /// This class updates the isCategorySelected field in the AddTransactionState class
 final class UpdateIsCategorySelected extends AddTransactionEvent {
   const UpdateIsCategorySelected(this.isCategorySelected);
@@ -99,6 +102,7 @@ final class UpdateIsCategorySelected extends AddTransactionEvent {
   @override
   List<Object> get props => [isCategorySelected];
 }
+
 /// This class updates the tempCategory field in the AddTransactionState class
 final class UpdateTempCategory extends AddTransactionEvent {
   const UpdateTempCategory(this.category);
@@ -118,6 +122,7 @@ final class UpdateTempCustomCategoryName extends AddTransactionEvent {
   @override
   List<Object> get props => [categoryName];
 }
+
 /// This class updates the dateTextController field in the AddTransactionState class
 final class UpdateDateTextField extends AddTransactionEvent {
   const UpdateDateTextField(this.dateTextValue);
@@ -127,6 +132,7 @@ final class UpdateDateTextField extends AddTransactionEvent {
   @override
   List<Object> get props => [dateTextValue];
 }
+
 /// This class updates the transactionAmountController field in the AddTransactionState class
 final class UpdateTransactionAmountField extends AddTransactionEvent {
   const UpdateTransactionAmountField(this.transactionAmount);
@@ -136,6 +142,7 @@ final class UpdateTransactionAmountField extends AddTransactionEvent {
   @override
   List<Object> get props => [transactionAmount];
 }
+
 /// This class updates the isDateChoosen field in the AddTransactionState class
 final class UpdateIsDateChoosen extends AddTransactionEvent {
   const UpdateIsDateChoosen(this.isDateChoosen);
@@ -145,6 +152,7 @@ final class UpdateIsDateChoosen extends AddTransactionEvent {
   @override
   List<Object> get props => [isDateChoosen];
 }
+
 /// This class updates the tempDate field in the AddTransactionState class
 final class UpdateTempDate extends AddTransactionEvent {
   const UpdateTempDate(this.tempDate);
@@ -154,6 +162,7 @@ final class UpdateTempDate extends AddTransactionEvent {
   @override
   List<Object> get props => [tempDate];
 }
+
 /// This class updates the tempTransaction field in the AddTransactionState class
 final class UpdateTempTransaction extends AddTransactionEvent {
   const UpdateTempTransaction(this.tempTransaction);
@@ -173,7 +182,6 @@ final class UpdateStatus extends AddTransactionEvent {
   @override
   List<Object> get props => [status];
 }
-
 
 /// This class updates the categories field in the AddTransactionState class
 final class UpdateCategories extends AddTransactionEvent {
@@ -230,11 +238,22 @@ final class UpdateCustomCategoryIcon extends AddTransactionEvent {
   List<Object> get props => [icon];
 }
 
+final class ValidateAmountValue extends AddTransactionEvent{
+final String value;
+  ValidateAmountValue(this.value);
+
+}
+
 /// Add a new Category
 final class AddNewCategory extends AddTransactionEvent {
   const AddNewCategory(this.category);
-final StoredCategory category;
+
+  final StoredCategory category;
 
   @override
   List<Object> get props => [category];
+}
+final class CategoryNotSelected extends AddTransactionEvent{
+  @override
+  List<Object> get props => [];
 }

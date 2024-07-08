@@ -35,12 +35,27 @@ final class UpdateTransactionAmount extends EditTransactionEvent {
   List<Object?> get props => [transaction, amount];
 }
 
-final class TransactionAmountError extends EditTransactionEvent{
+final class TransactionAmountError extends EditTransactionEvent {
   final bool isError;
 
   TransactionAmountError(this.isError);
+
   @override
   List<Object?> get props => [isError];
+}
 
+final class TransactionDateUpdated extends EditTransactionEvent {
+  final DateTime dateOfTransaction;
 
+  TransactionDateUpdated(this.dateOfTransaction);
+
+  @override
+  List<Object?> get props => [dateOfTransaction];
+}
+final class TransactionUpdateRequested extends EditTransactionEvent{
+  final Transaction updatedTransaction;
+
+  TransactionUpdateRequested(this.updatedTransaction);
+  @override
+  List<Object?> get props =>[updatedTransaction];
 }

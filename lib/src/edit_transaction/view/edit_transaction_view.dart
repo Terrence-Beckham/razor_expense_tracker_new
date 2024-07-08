@@ -271,7 +271,7 @@ class EditTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: TextFormField(
-                    onChanged: (value) => {},
+                    onChanged: (value) => {state.transaction.dateOfTransaction},
                     // context
                     //     .read<AddTransactionBloc>()
                     //     .add(UpdateDateTextField(value)),
@@ -314,6 +314,9 @@ class EditTransactionSuccessView extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
+                      context.read<EditTransactionBloc>().add(
+                            TransactionUpdateRequested(state.transaction),
+                          );
                       Navigator.of(context).pop();
                     },
                     child: const Text(
@@ -329,21 +332,23 @@ class EditTransactionSuccessView extends StatelessWidget {
       },
     );
   }
-}
 
-Future<void> buildShowDatePicker(BuildContext context) async {
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime(2024),
-    lastDate: DateTime.now().add(const Duration(days: 365)),
-  );
-  if (picked != null) {
-    // context.read<AddTransactionBloc>().add(UpdateTempDate(picked));
-    //
-    // context
-    //     .read<AddTransactionBloc>()
-    //     .add(UpdateDateTextField(picked.toString().substring(0, 10)));
-    // context.read<AddTransactionBloc>().add(UpdateIsDateChoosen(true));
+  Future<void> buildShowDatePicker(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2024),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      context.read<EditTransactionBloc>().add(
+            TransactionDateUpdated(picked),
+          );
+
+      // context
+      //     .read<AddTransactionBloc>()
+      //     .add(UpdateDateTextField(picked.toString().substring(0, 10)));
+      // context.read<AddTransactionBloc>().add(UpdateIsDateChoosen(true));
+    }
   }
 }
