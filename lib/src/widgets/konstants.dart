@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 ///Todo This needs to become a list and then stored in a Repo
 ///User categories will be stored here as well.
 final business = TransactionCategory()
@@ -386,4 +387,56 @@ final colorPickerWidgets = <Color>[
 //   ...
 // };
 
+// const  = "salon";
+String translateCategoryName(BuildContext context, String catName){
+final  AppLocalizations? appLocalizations = AppLocalizations.of(context);
+const salon = "salon";
+switch (catName){
+  case salon:
+    return appLocalizations!.salon;
+  default: "default Title";
+}
+return "Category Unkonwn";
+
+
+}
 // final plusIconData = <String, IconData>{"plus_sign": Icons.add};
+// final localCategoryTranslations = <TransactionCategory>[
+// gymMembership, //exercise
+// salon, //styler
+// subscriptions, //subscriptions
+// debt, //credit_score
+// loans, //real_estate_agent
+// credit, //credit_card
+// education, //school
+// business, //storefront
+// mortgage, //real_estate_agent
+// vacations, //holiday_village
+// movies, //theaters
+// games, //toys_and_games
+// entertainment, //attractions
+// charity, //volunteer_activism
+// specialOccasion, //special_character
+// gifts, //featured_seasonal_and_gifts
+// donations, //volunteer_activism
+// transportation, //emoji_transportation
+// investing, //finance_mode
+// food, //fastfood
+// groceries, //grocery
+// restaurants, //restaurant
+// electricity, //water_ec
+// phone, //smartphone
+// cable, //cable
+// internet, //wifi
+// clothing, //apparel
+// medical, //medical_services
+// dental, //dentistry
+// medications, //medication_liquid
+// householdItems, //flatware
+// householdSupplies, //household_supplies
+// cleaningSupplies, //cleaning_bucket
+// tools, //handyman
+// ];
+
+
+

@@ -30,6 +30,7 @@ dependencies:
   uuid: ^4.4.0
   flutter_slidable: ^3.1.0
   string_validator: ^1.1.0
+  easy_localization: ^3.0.7
 
 
 
@@ -44,5 +45,7 @@ dev_dependencies:
 
 
 flutter:
+  assets:
+    - assets/translations/
   uses-material-design: true
   generate: true

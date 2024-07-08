@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -48,8 +49,8 @@ class TransactionsOverviewView extends StatelessWidget {
               case TransactionsOverviewStatus.success:
                 return const ExpenseOverviewSuccessView();
               case TransactionsOverviewStatus.failure:
-                return const Center(
-                  child: Text('Somethig went wrong'),
+                return Center(
+                  child: Text(context.tr('somethingWentWrong'),),
                 );
             }
           },
@@ -76,18 +77,17 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
         messenger.showSnackBar(
           SnackBar(
             content: Text(
-              'Transaction deleted',
+              context.tr('transactionDeleted'),
+              // 'Transaction deleted',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             action: SnackBarAction(
-              label: 'Undo',
+              label: context.tr('undo'),
               onPressed: () {
                 context.read<TransactionsOverviewBloc>().add(
-                      UndoDeleteTransactionEvent(
-                        deletedTransaction!
-                      ),
+                      UndoDeleteTransactionEvent(deletedTransaction!),
                     );
               },
             ),
@@ -99,11 +99,12 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
           children: [
             Container(
               child: ListTile(
-                title: const Text(
-                  'Hello Buddy',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                title: Text(
+                  context.tr('helloUser'),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                subtitle: const Text('User'),
+                // subtitle: const Text('User'),
+
                 leading: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey,
@@ -156,6 +157,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: SizedBox(
@@ -182,8 +184,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 8),
-                        child: Text(
-                          'Total Balance',
+                        child: Text(context.tr(
+                          'totalBalance'),
+                          // 'Total Balance',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 24),
@@ -216,7 +219,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 Column(
                                   children: [
                                     Text(
-                                      'Income',
+                                      context.tr('income'),
                                       style: TextStyle(
                                         fontSize: 18,
                                         color: Theme.of(context).primaryColor,
@@ -251,7 +254,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Expenses',
+                                        context.tr('expenses'),
                                         style: TextStyle(
                                           color: Theme.of(context).primaryColor,
                                           fontSize: 18,
@@ -278,17 +281,17 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 16, left: 16,right: 16),
+              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Transactions',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    context.tr('transactions'),
+                    // 'transactions',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Padding(
-                    padding: EdgeInsets.all( 8),
+                    padding: EdgeInsets.all(8),
                     child: TextButton(
                       style: ButtonStyle(
                           backgroundColor: WidgetStatePropertyAll(
@@ -296,7 +299,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                       onPressed: () {},
                       child: Text(
                         'View All',
-                        style: TextStyle(color: Colors.green, fontSize: 16 ),
+                        style: TextStyle(color: Colors.green, fontSize: 16),
                       ),
                     ),
                   ),
@@ -346,12 +349,14 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                               ),
                               SlidableAction(
                                 onPressed: (context) {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute<EditTransactionPage>(
-                                    builder: (context) =>  EditTransactionPage(transaction: state.transactions[index],),
-
-                                  ),);
-                                //
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<EditTransactionPage>(
+                                      builder: (context) => EditTransactionPage(
+                                        transaction: state.transactions[index],
+                                      ),
+                                    ),
+                                  );
+                                  //
                                 },
                                 backgroundColor: Colors.green,
                                 icon: Icons.edit,
@@ -360,16 +365,18 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                           ),
                           child: ListTile(
                             leading: Icon(
-                              myIcons[state.transactions[index].category?.iconName],
-                              color: colorMapper[
-                                  state.transactions[index].category?.colorName],
+                              myIcons[
+                                  state.transactions[index].category?.iconName],
+                              color: colorMapper[state
+                                  .transactions[index].category?.colorName],
                             ),
                             // leading: Icon(
                             // // myIcons(expense.iconname);
                             // Icons.abc , color: Colors.red,
                             // ),
                             title: Text(
-                                state.transactions[index].category?.name ?? ' '),
+                               context.tr('${state.transactions[index].category?.name?.toLowerCase()}') ??
+                                    ' ',style: TextStyle(fontSize: 20),),
                             subtitle: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 4),
                               child: Text(

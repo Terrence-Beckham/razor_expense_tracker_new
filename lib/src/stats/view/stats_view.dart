@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +29,7 @@ class emptyStatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('No data to display'),
+      child: Text(context.tr('noDataToDisplay'),),
     );
   }
 }
@@ -133,8 +134,8 @@ class StatsSuccessView extends StatelessWidget {
                               .read<StatsBloc>()
                               .add(ExpenseDisplayRequested());
                         },
-                        child: const Text(
-                          'Expenses',
+                        child:  Text(
+                          context.tr('expenses'),
                           style: TextStyle(fontSize: 24),
                         ),
                       ),
@@ -144,8 +145,8 @@ class StatsSuccessView extends StatelessWidget {
                               .read<StatsBloc>()
                               .add(IncomeDisplayRequested());
                         },
-                        child: const Text(
-                          'Income',
+                        child:  Text(
+                          context.tr("income"),
                           style: TextStyle(fontSize: 24),
                         ),
                       ),
@@ -272,7 +273,7 @@ class StatsSuccessView extends StatelessWidget {
                               )
                             : Center(
                                 child: Text(
-                                  'There is no Data for this period',
+                                  context.tr('noDataToDisplay'),
                                   style: TextStyle(
                                     fontSize: 24,
                                     color: Colors.red,
@@ -304,7 +305,7 @@ class StatsSuccessView extends StatelessWidget {
                                   color: Colors.white,
                                   overflow: TextOverflow.visible,
                                 ),
-                                '${state.sortedCategories[index].name} '
+                                context.tr('${state.sortedCategories[index].name?.toLowerCase()}') +
                                 ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)}%'),
 
                             //
@@ -323,7 +324,7 @@ class StatsSuccessView extends StatelessWidget {
                                   color: Colors.white,
                                   overflow: TextOverflow.visible,
                                 ),
-                                '${state.sortedCategories[index].name} '
+                                context.tr('${state.sortedCategories[index].name?.toLowerCase()}') +
                                 ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)}%'),
                             //
                             backgroundColor: colorMapper[

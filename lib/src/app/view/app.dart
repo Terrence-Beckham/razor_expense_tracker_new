@@ -1,9 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:razor_expense_tracker_new/src/transactions_overview/view/transaction_overview.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../home/view/home_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -30,7 +31,6 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF080C36),
@@ -44,8 +44,10 @@ class AppView extends StatelessWidget {
           color: Theme.of(context).colorScheme.onTertiary,
         ),
       ),
-      // localizationsDelegates: AppLocalizations.localizationsDelegates,
-      // supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      // supportedLocales: [Locale('en'), Locale('ar')],
       home: const HomePage(),
     );
   }

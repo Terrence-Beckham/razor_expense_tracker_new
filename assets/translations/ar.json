@@ -1,0 +1,173 @@
+{
+  "@locale": "ar",
+  "counterAppBarTitle": "العداد",
+  "@counterAppBarTitle": {
+    "description": "النص المعروض في شريط تطبيق صفحة العداد"
+  },
+
+  "transactionDeleted": "تم حذف المعاملة",
+  "@transactionDeleted": {
+    "description": "تم حذف المعاملة"
+  },
+  "transactions": "المعاملات",
+  "@transactions": {
+    "description": "قائمة بجميع المعاملات المحددة"
+  },
+  "somethingWentWrong": "حدث خطأ ما!",
+  "@somethingWentWrong": {
+    "description": "هناك مشكلة في عرض البيانات"
+  },
+
+  "totalBalance": "الرصيد الإجمالي",
+  "@totalBalance": {
+    "description": "هذا هو رصيد الحساب الإجمالي" },
+
+  "expenses": "المصروفات",
+  "@expenses": { "description": "هذا هو إجمالي جميع معاملات المصروفات" },
+
+  "income": "الإيرادات",
+  "@income": { "description": "هذا هو إجمالي جميع معاملات الإيرادات" },
+
+  "gymMembership": "عضوية النادي الرياضي",
+  "@gymMembership": { "description": "لفئة 'عضوية النادي الرياضي'" },
+
+  "salon": "صالون",
+  "@salon": { "description": "لفئة 'صالون'" },
+
+  "subscriptions": "الاشتراكات",
+  "@subscriptions": { "description": "لفئة 'الاشتراكات'" },
+
+  "debt": "الديون",
+  "@debt": { "description": "لفئة 'الديون'" },
+
+  "loans": "القروض",
+  "@loans": { "description": "لفئة 'القروض'" },
+
+  "credit": "الائتمان",
+  "@credit": { "description": "لفئة 'الائتمان'" },
+
+  "education": "التعليم",
+  "@education": { "description": "لفئة 'التعليم'" },
+
+  "business": "الأعمال",
+  "@business": { "description": "لفئة 'الأعمال'" },
+
+  "mortgage": "الرهن العقاري",
+  "@mortgage": { "description": "لفئة 'الرهن العقاري'" },
+
+  "vacations": "العطلات",
+  "@vacations": { "description": "لفئة 'العطلات'" },
+
+  "movies": "الأفلام",
+  "@movies": { "description": "لفئة 'الأفلام'" },
+
+  "games": "الألعاب",
+  "@games": { "description": "لفئة 'الألعاب'" },
+
+  "entertainment": "الترفيه",
+  "@entertainment": { "description": "لفئة 'الترفيه'" },
+
+  "charity": "الصدقة",
+  "@charity": { "description": "لفئة 'الصدقة'" },
+
+  "specialOccasion": "مناسبة خاصة",
+  "@specialOccasion": { "description": "لفئة 'مناسبة خاصة'" },
+
+  "gifts": "الهدايا",
+  "@gifts": { "description": "لفئة 'الهدايا'" },
+
+  "donations": "التبرعات",
+  "@donations": { "description": "لفئة 'التبرعات'" },
+
+  "transportation": "المواصلات",
+  "@transportation": { "description": "لفئة 'المواصلات'" },
+
+  "investing": "الاستثمار",
+  "@investing": { "description": "لفئة 'الاستثمار'" },
+
+  "food": "الطعام",
+  "@food": { "description": "لفئة 'الطعام'" },
+
+  "groceries": "البقالة",
+  "@groceries": { "description": "لفئة 'البقالة'" },
+
+  "restaurants": "المطاعم",
+  "@restaurants": { "description": "لفئة 'المطاعم'" },
+
+  "electricity": "الكهرباء",
+  "@electricity": { "description": "لفئة 'الكهرباء'" },
+
+  "phone": "الهاتف",
+  "@phone": { "description": "لفئة 'الهاتف'" },
+
+  "cable": "الكابل",
+  "@cable": { "description": "لفئة 'الكابل'" },
+
+  "internet": "الإنترنت",
+  "@internet": { "description": "لفئة 'الإنترنت'" },
+
+  "clothing": "الملابس",
+  "@clothing": { "description": "لفئة 'الملابس'" },
+
+  "medical": "طبي",
+  "@medical": { "description": "لفئة 'طبي'" },
+
+  "dental": "أسنان",
+  "@dental": { "description": "لفئة 'أسنان'" },
+
+  "medications": "الأدوية",
+  "@medications": { "description": "لفئة 'الأدوية'" },
+
+  "householdItems": "أدوات منزلية",
+  "@householdItems": { "description": "لفئة 'أدوات منزلية'" },
+
+  "@householdSupplies": { "description": "لفئة 'مستلزمات منزلية'" },
+
+
+  "helloUser": "مرحبا بالمستخدم",
+  "@helloUser": { "description": "تحية عامة للمستخدم" },
+
+  "analytics": "التحليلات",
+  "@analytics": { "description": "صفحة تعرض المعاملات حسب النوع والفترة الزمنية" },
+
+  "monthly": "شهريا",
+  "@monthly": { "description": "عرض المعاملات بناءً على الشهر الذي تمت فيه" },
+
+  "yearly": "سنويا",
+  "@yearly": { "description": "عرض المعاملات بناءً على السنة التي تمت فيه" },
+
+  "allTime": "كل الأوقات",
+  "@allTime": { "description": "عرض جميع المعاملات بغض النظر عن وقت حدوثها" },
+
+  "addTransaction": "إضافة معاملة",
+  "@addTransaction": { "description": "صفحة تدعم إضافة المعاملات" },
+
+  "editTransaction": "تعديل معاملة",
+  "@editTransaction": { "description": "صفحة تدعم تعديل المعاملات" },
+
+  "updateTransaction": "تحديث معاملة",
+  "@updateTransaction": { "description": "صفحة تدعم تحديث المعاملات" },
+
+  "category": "الفئة",
+  "@category": { "description": "اختيار الفئة" },
+
+  "date": "التاريخ",
+  "@date": { "description": "اختيار التاريخ" },
+
+  "saveExpense": "حفظ المصروفات",
+  "@saveExpense": { "description": "زر يحفظ معاملة المصروفات في قاعدة البيانات" },
+
+  "saveIncome": "حفظ الإيرادات",
+  "@saveIncome": { "description": "زر يحفظ معاملات الإيرادات في قاعدة البيانات" },
+
+  "undo": "تراجع",
+  "@undo": {
+    "description": "التراجع عن حذف معاملة"
+  },
+
+  "noDataToDisplay": "لا توجد بيانات لعرضها لهذه الفترة",
+  "@noDataToDisplay": {
+    "description": "يتم عرض هذه الرسالة عندما لا تكون هناك معاملات لفترة زمنية محددة"
+  }
+
+}

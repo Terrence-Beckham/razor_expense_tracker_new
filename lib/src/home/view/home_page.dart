@@ -5,10 +5,10 @@ import 'package:razor_expense_tracker_new/src/add_transaction/view/add_transacti
 import 'package:razor_expense_tracker_new/src/home/cubit/home_cubit.dart';
 import 'package:razor_expense_tracker_new/src/stats/view/stats_view.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-
 import '../../stats/bloc/stats_bloc.dart';
 import '../../transactions_overview/bloc/transactions_overview_bloc.dart';
 import '../../transactions_overview/view/transaction_overview.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

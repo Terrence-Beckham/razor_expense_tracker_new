@@ -1,0 +1,158 @@
+{
+    "@locale": "en",
+
+    "transactions": "Transactions",
+    "@transactions":{"description": "A list of all selected transactions"},
+
+    "somethingWentWrong":"Something Went Wrong!",
+    "@somethingWentWrong":{"description": "The is an issue displaying the data"},
+
+    "totalBalance": "Total Balance",
+    "@totalBalance": {"description": "This is the total account balance"},
+
+    "expenses": "Expenses",
+    "@expenses": {"description": "This is the total amount of all of the expense transactions"},
+
+    "income": "Income",
+    "@income": {"description": "This is the total amount of all of the expense transactions "},
+
+  "income": "Income",
+  "@income": {"description": "This is the total amount of all of the expense transactions"},
+
+  "gymMembership": "GymMembership",
+  "@gymMembership": {"description": "for 'gymMembership' category"},
+
+  "salon": "Salon",
+  "@salon": {"description": "for 'salon' category"},
+
+  "subscriptions": "Subscriptions",
+  "@subscriptions": { "description": "for 'subscriptions' category"},
+
+  "debt": "Debt",
+  "@debt": {
+    "description": "for 'debt' category" },
+  "loans": "Loans",
+  "@loans": {"description": "for 'loans' category" },
+
+  "credit": "Credit",
+  "@credit": {"description": "for 'credit' category" },
+
+  "education": "Education",
+  "@education": { "description": "for 'education' category"},
+
+  "business": "Business",
+  "@business": {"description": "for 'business' category" },
+
+  "mortgage": "Mortgage",
+  "@mortgage": {"description": "for 'mortgage' category" },
+
+  "vacations": "Vacations",
+  "@vacations": {"description": "for 'vacations' category" },
+
+  "movies": "Movies",
+  "@movies": {"description": "for 'movies' category"},
+
+  "games": "Games",
+  "@games": {"description": "for 'games' category"},
+
+  "entertainment": "Entertainment",
+  "@entertainment": {"description": "for 'entertainment' category"},
+
+  "charity": "Charity",
+  "@charity": {"description": "for 'charity' category" },
+
+  "specialOccasion": "SpecialOccasion",
+  "@specialOccasion": {"description": "for 'specialOccasion' category" },
+
+  "gifts": "Gifts",
+  "@gifts": {"description": "for 'gifts' category"},
+
+  "donations": "Donations",
+  "@donations": {"description": "for 'donations' category" },
+
+  "transportation": "Transportation",
+  "@transportation": {"description": "for 'transportation' category" },
+
+  "investing": "Investing",
+  "@investing": {"description": "for 'investing' category" },
+
+  "food": "Food",
+  "@food": {"description": "for 'food' category" },
+
+  "groceries": "Groceries",
+  "@groceries": {"description": "for 'groceries' category" },
+
+  "restaurants": "Restaurants",
+  "@restaurants": {"description": "for 'restaurants' category" },
+
+  "electricity": "Electricity",
+  "@electricity": {"description": "for 'electricity' category"},
+
+  "phone": "Phone",
+  "@phone": {"description": "for 'phone' category" },
+
+  "cable": "Cable",
+  "@cable": {"description": "for 'cable' category" },
+
+  "internet": "Internet",
+  "@internet": { "description": "for internet category" },
+
+  "clothing": "Clothing",
+  "@clothing": {"description": "for 'clothing' category" },
+
+  "medical": "Medical",
+  "@medical": {"description": "for 'medical' category" },
+
+  "dental": "Dental",
+  "@dental": {"description": "for 'dental' category" },
+
+  "medications": "Medications",
+  "@medications": {"description": "for 'medications' category" },
+
+  "householdItems": "HouseholdItems",
+  "@householdItems": {"description": "for 'householdItems' category"  },
+
+  "householdSupplies": "HouseholdSupplies",
+  "@householdSupplies": {"description": "for 'householdSupplies' category" },
+
+  "cleaningSupplies": "CleaningSupplies",
+  "@cleaningSupplies":{"description":" Cleaning Supplies Category"},
+
+  "helloUser":"Hello User",
+    "@helloUser":{"description":"Generic User greeting"},
+
+    "analytics": "Analytics",
+    "@analytics":{"description":"Page that shows transactions by type and time perios"},
+
+    "monthly":"Monthly",
+    "@monthly":{"description":"Display transactions based on the month in which they were made"},
+
+    "yearly": "Yearly",
+    "@yearly":{"description":"Display transactions based on the year in which they were made"},
+
+   "allTime": "All Time",
+   "@allTime": {"description":"Display all transaction regardless of when they occurred"},
+
+"addTransaction": "Add Transaction",
+"@addTransaction": {"description":"Page that supports adding transactions"},
+
+"editTransaction": "Edit Transaction",
+"@editTransaction": {"description":"Page that supports editing transactions"},
+
+"updateTransaction": "Update Transaction",
+"@updateTransaction": {"description":"Page that supports updating transactions"},
+
+"category": "Category",
+"@category": {"description": "Category Picker"},
+
+"date": "Date",
+"@date":{"description":"Date Picker"},
+
+"saveExpense": "Save Expense",
+"@saveExpense": {"description":"Button that saves expense transaction to Database"},
+
+"saveIncome": "Save Income",
+"@saveIncome": {"description":"Button that saves income transactions to Database"}
+
+}
+
