@@ -222,6 +222,9 @@
 
  "addANewCategory": "Add a New Category",
   "@addANewCategory":{"description": "Allows the user to add a custom category to the Database"}
+,
 
+  "onlyNumbers": "Only numbers are allowed in this field",
+  "@onlyNumbers": {"description": "Warns the user that this field only takes nummerical characters"}
 }
 

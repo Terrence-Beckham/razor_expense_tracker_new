@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -35,7 +36,7 @@ class EditTransactionView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          title: Text('Edit Transaction'),
+          title: Text(context.tr('editTransaction')),
         ),
         body: BlocBuilder<EditTransactionBloc, EditTransactionState>(
           builder: (context, state) {
@@ -50,8 +51,8 @@ class EditTransactionView extends StatelessWidget {
               case EditTransactionStatus.success:
                 return EditTransactionSuccessView();
               case EditTransactionStatus.failure:
-                return const Center(
-                  child: Text('Somethig went wrong'),
+                return  Center(
+                  child: Text(context.tr('somethingWentWrong'),),
                 );
             }
           },
@@ -137,7 +138,7 @@ class EditTransactionSuccessView extends StatelessWidget {
               ),
               state.amountDisplayError
                   ? Text(
-                      'Only numbers are allowed in this field',
+                      context.tr('onlyNumbers'),
                       style: TextStyle(color: Colors.red, fontSize: 18),
                     )
                   : Container(),
@@ -155,7 +156,7 @@ class EditTransactionSuccessView extends StatelessWidget {
                     readOnly: true,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      hintText: state.transaction.category?.name,
+                      hintText: context.tr('${state.transaction.category?.name?.toLowerCase()}'),
                       // hintText: state.isCategorySelected
                       //     ? state.tempCategory.name
                       //     : 'Category',
@@ -319,8 +320,8 @@ class EditTransactionSuccessView extends StatelessWidget {
                           );
                       Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      'Update Transaction',
+                    child:  Text(
+                      context.tr('updateTransaction'),
                       style: TextStyle(fontSize: 24),
                     ),
                   ),

@@ -173,6 +173,8 @@
   "@pleaseEnterACategory": { "description": "تذكير باختيار فئة للمعاملة" },
 
   "addANewCategory": "إضافة فئة جديدة",
-  "@addANewCategory": { "description": "يسمح للمستخدم بإضافة فئة مخصصة إلى قاعدة البيانات" }
+  "@addANewCategory": { "description": "يسمح للمستخدم بإضافة فئة مخصصة إلى قاعدة البيانات" },
 
+  "onlyNumbers": "يُسمح فقط بالأرقام في هذا الحقل",
+  "@onlyNumbers": { "description": "يحذر المستخدم من أن هذا الحقل يقبل الأحرف الرقمية فقط" }
 }
