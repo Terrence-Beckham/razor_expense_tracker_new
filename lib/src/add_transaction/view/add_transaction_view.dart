@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,15 +35,17 @@ class AddTransactionPage extends StatelessWidget {
           create: (_) => StatsBloc(context.read<TransactionsRepository>()),
         ),
       ],
-      child: const AddTransactionView(),
+      child: AddTransactionView(),
     );
   }
 }
 
 class AddTransactionView extends StatelessWidget {
-  const AddTransactionView({
+  AddTransactionView({
     super.key,
   });
+
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class AddTransactionView extends StatelessWidget {
                 case AddTransactionStatus.addNewCategory:
                   _showAddNewCategoryPicker(context);
                 default:
-                  print('This is the default case');
+                  _logger.d('This is the default case');
               }
             },
             builder: (context, state) {
@@ -70,8 +73,10 @@ class AddTransactionView extends StatelessWidget {
                 case AddTransactionStatus.success:
                   return AddTransactionSuccessView();
                 case AddTransactionStatus.failure:
-                  return const Center(
-                    child: Text('something went wrong'),
+                  return Center(
+                    child: Text(
+                      context.tr('somethingWentWrong'),
+                    ),
                   );
                 case AddTransactionStatus.addNewCategory:
                 // TODO: Handle this case.
@@ -103,7 +108,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    'Add Transaction',
+                    context.tr('addTransaction'),
                     style: TextStyle(
                       fontSize: 32,
                       color: Theme.of(context).colorScheme.primary,
@@ -144,7 +149,10 @@ class AddTransactionSuccessView extends StatelessWidget {
                                   4, // Border width when button is not pressed
                             ),
                           ),
-                    child: const Text('Expense'),
+                    child: Text(
+                      context.tr('expenses'),
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                   OutlinedButton(
                     onPressed: () {
@@ -174,7 +182,10 @@ class AddTransactionSuccessView extends StatelessWidget {
                                   4, // Border width when button is not pressed
                             ),
                           ),
-                    child: const Text('Income'),
+                    child: Text(
+                      context.tr('income'),
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ],
               ),
@@ -230,14 +241,16 @@ class AddTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: TextFormField(
+                    style: TextStyle(fontSize: 18),
                     onTap: () => context.read<AddTransactionBloc>().add(
                         UpdateIsCategoryExpanded(!state.isCategoryExpanded)),
                     readOnly: true,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                       hintText: state.isCategorySelected
-                          ? state.tempCategory.name
-                          : 'Category',
+                          ? context
+                              .tr('${state.tempCategory.name?.toLowerCase()}')
+                          : context.tr('category'),
                       prefixIcon: state.isCategorySelected
                           ? Icon(
                               myIcons[state.tempCategory.iconName.toString()],
@@ -278,7 +291,7 @@ class AddTransactionSuccessView extends StatelessWidget {
               ),
               (state.isCategoryUnselected)
                   ? Text(
-                      'Please Enter a Category',
+                      context.tr('pleaseEnterACategory'),
                       style: TextStyle(color: Colors.red, fontSize: 18),
                     )
                   : Container(),
@@ -368,8 +381,10 @@ class AddTransactionSuccessView extends StatelessWidget {
                       onPressed: () {
                         _showAddNewCategoryPicker(context);
                       },
-
-                      child: Text('Add New Category'),
+                      child: Text(
+                        context.tr('addANewCategory'),
+                        style: TextStyle(fontSize: 18),
+                      ),
                     )
                   : Container(),
               Padding(
@@ -386,7 +401,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
                         hintText: !state.isDateChosen
-                            ? 'Date'
+                            ? context.tr('date')
                             : state.dateTextField.toString(),
                         hintStyle:
                             const TextStyle(color: Colors.white, fontSize: 20),
@@ -425,7 +440,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                           state.transactionAmount == '') {
                         return;
                       } else if (state.tempCategory.id == null) {
-                        _logger.d('No category has been selected ${state.tempCategory}');
+                        _logger.d(
+                            'No category has been selected ${state.tempCategory}');
                         context
                             .read<AddTransactionBloc>()
                             .add(CategoryNotSelected());
@@ -469,7 +485,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..isIncome = false
                           ..category = transactionCategory;
 
-                        print(
+                        _logger.d(
                           'This is the temporary Expense object: $newTransaction',
                         );
                         //Add the new transaction to the DB
@@ -483,12 +499,12 @@ class AddTransactionSuccessView extends StatelessWidget {
                       }
                     },
                     child: state.isExpense
-                        ? const Text(
-                            'Save Expense',
+                        ?  Text(
+                            context.tr('saveExpense'),
                             style: TextStyle(fontSize: 24),
                           )
-                        : const Text(
-                            'Save Income',
+                        :  Text(
+                            context.tr('saveIncome'),
                             style: TextStyle(fontSize: 24),
                           ),
                   ),

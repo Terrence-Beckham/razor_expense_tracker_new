@@ -215,6 +215,13 @@
   "noDataToDisplay": "No Data To Display For This Period",
   "@noDataToDisplay": {
     "description": "This message is displayed when there are no transactions for a given time period"
-  }
+  },
+
+  "pleaseEnterACategory": "Please Enter a Category",
+  "@pleaseEnterACategory": {"description":"Reminder to choose a category for the transaction"},
+
+ "addANewCategory": "Add a New Category",
+  "@addANewCategory":{"description": "Allows the user to add a custom category to the Database"}
+
 }
 

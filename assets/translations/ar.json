@@ -168,6 +168,11 @@
   "noDataToDisplay": "لا توجد بيانات لعرضها لهذه الفترة",
   "@noDataToDisplay": {
     "description": "يتم عرض هذه الرسالة عندما لا تكون هناك معاملات لفترة زمنية محددة"
-  }
+  },
+  "pleaseEnterACategory": "الرجاء إدخال فئة",
+  "@pleaseEnterACategory": { "description": "تذكير باختيار فئة للمعاملة" },
+
+  "addANewCategory": "إضافة فئة جديدة",
+  "@addANewCategory": { "description": "يسمح للمستخدم بإضافة فئة مخصصة إلى قاعدة البيانات" }
 
 }
