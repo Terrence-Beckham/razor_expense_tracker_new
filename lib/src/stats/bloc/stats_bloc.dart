@@ -90,7 +90,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
         if (categoryIndex == -1) {
           pieChartCategories.add(
-            TransactionCategory()
+            TransactionCategory()..iconName = category.iconName
               ..name = category.name
               ..colorName = category.colorName
               ..totalAmount = transaction.amount

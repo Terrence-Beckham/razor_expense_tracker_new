@@ -459,7 +459,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..dateOfTransaction = state.tempDate
                           ..description = ''
                           ..note = ''
-                          // ..isExpense = false
+                          ..isExpense = false
                           ..isIncome = true
                           ..category = transactionCategory;
                         //Add the new transaction to the DB

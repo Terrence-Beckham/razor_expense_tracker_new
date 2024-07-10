@@ -29,7 +29,9 @@ class emptyStatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(context.tr('noDataToDisplay'),),
+      child: Text(
+        context.tr('noDataToDisplay'),
+      ),
     );
   }
 }
@@ -39,28 +41,30 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BlocBuilder<StatsBloc, StatsState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case StatsStatus.success:
-              return StatsSuccessView();
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<StatsBloc, StatsState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case StatsStatus.success:
+                return StatsSuccessView();
 
-            case StatsStatus.loading:
-              return const Center(
-                child: Text('Loading'),
-              );
-            case StatsStatus.initial:
-              return const Center(
-                child: Text('Initial'),
-              );
+              case StatsStatus.loading:
+                return const Center(
+                  child: Text('Loading'),
+                );
+              case StatsStatus.initial:
+                return const Center(
+                  child: Text('Initial'),
+                );
 
-            case StatsStatus.failure:
-              return Center(
-                child: emptyStatsView(),
-              );
-          }
-        },
+              case StatsStatus.failure:
+                return Center(
+                  child: emptyStatsView(),
+                );
+            }
+          },
+        ),
       ),
     );
   }
@@ -73,279 +77,349 @@ class StatsSuccessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
-        listeners: [
-          BlocListener<StatsBloc, StatsState>(
-            listenWhen: (previous, current) =>
-                previous.datePeriodChosen != current.datePeriodChosen,
-            listener: (context, state) {
-              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
-            },
-          ),
-          BlocListener<StatsBloc, StatsState>(
-            listenWhen: (previous, current) =>
-                previous.selectedMonth != current.selectedMonth,
-            listener: (context, state) {
-              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
-            },
-          ),
-          BlocListener<StatsBloc, StatsState>(
-            listenWhen: (previous, current) =>
-                previous.selectedYear != current.selectedYear,
-            listener: (context, state) {
-              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
-            },
-          ),
-          BlocListener<StatsBloc, StatsState>(
-            listenWhen: (previous, current) =>
-                previous.incomeTransactionTotals !=
-                current.incomeTransactionTotals,
-            listener: (context, state) {
-              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
-            },
-          ),
-          BlocListener<StatsBloc, StatsState>(
-            listenWhen: (previous, current) =>
-                previous.expenseTransactionTotals !=
-                current.expenseTransactionTotals,
-            listener: (context, state) {
-              context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
-            },
-          ),
-        ],
-        child: BlocBuilder<StatsBloc, StatsState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text('Analytics',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    )),
+      listeners: [
+        BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+              previous.datePeriodChosen != current.datePeriodChosen,
+          listener: (context, state) {
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),
+        BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+              previous.selectedMonth != current.selectedMonth,
+          listener: (context, state) {
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),
+        BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+              previous.selectedYear != current.selectedYear,
+          listener: (context, state) {
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),
+        BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+              previous.incomeTransactionTotals !=
+              current.incomeTransactionTotals,
+          listener: (context, state) {
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),
+        BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+              previous.expenseTransactionTotals !=
+              current.expenseTransactionTotals,
+          listener: (context, state) {
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),
+      ],
+      child: BlocBuilder<StatsBloc, StatsState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(context.tr('analytics')
+                ,style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
-              body: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          context
-                              .read<StatsBloc>()
-                              .add(ExpenseDisplayRequested());
-                        },
-                        child:  Text(
-                          context.tr('expenses'),
-                          style: TextStyle(fontSize: 24),
-                        ),
+            ),
+            body: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<StatsBloc>()
+                            .add(ExpenseDisplayRequested());
+                      },
+                      child: Text(
+                        context.tr('expenses'),
+                        style: TextStyle(fontSize: 24),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          context
-                              .read<StatsBloc>()
-                              .add(IncomeDisplayRequested());
-                        },
-                        child:  Text(
-                          context.tr("income"),
-                          style: TextStyle(fontSize: 24),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<StatsBloc>().add(IncomeDisplayRequested());
+                      },
+                      child: Text(
+                        context.tr("income"),
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      InputChip(
+                        label: Text(
+                          context.tr('allTime'),
+                          style: TextStyle(fontSize: 18),
                         ),
+                        onPressed: () {
+                          context.read<StatsBloc>().add(
+                              DatePeriodChosenEvent(DatePeriodChosen.allTime));
+                        },
+                        selectedColor: Colors.green,
+                        selected:
+                            state.datePeriodChosen == DatePeriodChosen.allTime,
+                      ),
+                      InputChip(
+                        label: Text(context.tr('yearly'),
+                            style: TextStyle(fontSize: 18)),
+                        onPressed: () {
+                          context.read<StatsBloc>().add(
+                              DatePeriodChosenEvent(DatePeriodChosen.yearly));
+                        },
+                        selectedColor: Colors.yellow,
+                        selected:
+                            state.datePeriodChosen == DatePeriodChosen.yearly,
+                      ),
+                      InputChip(
+                        label: Text(context.tr('monthly'),
+                            style: TextStyle(fontSize: 18)),
+                        onPressed: () {
+                          context.read<StatsBloc>().add(
+                              DatePeriodChosenEvent(DatePeriodChosen.monthly));
+                        },
+                        selectedColor: Colors.red,
+                        selected:
+                            state.datePeriodChosen == DatePeriodChosen.monthly,
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InputChip(
-                          label: Text('All Time'),
-                          onPressed: () {
-                            context.read<StatsBloc>().add(DatePeriodChosenEvent(
-                                DatePeriodChosen.allTime));
-                          },
-                          selectedColor: Colors.green,
-                          selected: state.datePeriodChosen ==
-                              DatePeriodChosen.allTime,
-                        ),
-                        InputChip(
-                          label: Text(' Yearly'),
-                          onPressed: () {
-                            context.read<StatsBloc>().add(
-                                DatePeriodChosenEvent(DatePeriodChosen.yearly));
-                          },
-                          selectedColor: Colors.yellow,
-                          selected:
-                              state.datePeriodChosen == DatePeriodChosen.yearly,
-                        ),
-                        InputChip(
-                          label: Text('Monthly'),
-                          onPressed: () {
-                            context.read<StatsBloc>().add(DatePeriodChosenEvent(
-                                DatePeriodChosen.monthly));
-                          },
-                          selectedColor: Colors.red,
-                          selected: state.datePeriodChosen ==
-                              DatePeriodChosen.monthly,
-                        ),
-                      ],
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                      ),
+                      if (state.datePeriodChosen ==
+                          DatePeriodChosen.yearly) ...[
+                        YearDropdownMenu()
+                      ] else if (state.datePeriodChosen ==
+                          DatePeriodChosen.monthly) ...[
+                        YearDropdownMenu(),
+                        const SizedBox(width: 25),
+                        DateDropdownMenu()
+                      ]
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 100,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width / 1.5,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (state.isDisplayExpenses &&
+                          state.expenseTransactionTotals > 0)
+                        Text(
+                          context.tr('expenses') +
+                              '\n\$ ' +
+                              state.expenseTransactionTotals.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize:24 ,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        switch (state.datePeriodChosen) {
-                          DatePeriodChosen.allTime => Container(),
-                          DatePeriodChosen.yearly => YearDropdownMenu(),
-                          DatePeriodChosen.monthly => Row(
-                              children: [
-                                YearDropdownMenu(),
-                                SizedBox(width: 25),
-                                DateDropdownMenu(),
-                              ],
-                            )
-                        },
-                      ],
-                    ),
+                      if (state.isDisplayIncome &&
+                          state.incomeTransactionTotals > 0)
+                        Text(
+                          context.tr('income') +
+                              '\n\$ ' +
+                              state.incomeTransactionTotals.toStringAsFixed(1),
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                      if (state.sortedCategories.isNotEmpty)
+                        PieChart(
+                          PieChartData(
+                            titleSunbeamLayout: true,
+                            sections: List.generate(
+                              state.sortedCategories.length,
+                              (index) {
+                                return PieChartSectionData(
+                                    radius: 50,
+                                    color: colorMapper[state
+                                        .sortedCategories[index].colorName],
+                                    titleStyle: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                    value: state.isDisplayExpenses
+                                        ? state.sortedCategories[index]
+                                            .totalExpenseAmount
+                                            .toDouble()
+                                        : state.sortedCategories[index]
+                                            .totalIncomeAmount
+                                            .toDouble());
+                                // title: state.isDisplayExpenses
+                                //     // ? '${state.sortedCategories[index].name}\n'
+                                //     ? '\$${state.sortedCategories[index].totalExpenseAmount}'
+                                //     // : '${state.sortedCategories[index].name}\n'
+                                //     : '\$${state.sortedCategories[index].totalIncomeAmount}');
+                              },
+                            ),
+                          ),
+                        )
+                      else
+                        Center(
+                          child: Text(
+                            context.tr('noDataToDisplay'),
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width / 1.5,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        state.isDisplayExpenses &&
-                                state.expenseTransactionTotals >0
-                            ? Text(
-                                'Expenses\n' +
-                                    r'$ ' +
-                                    state.expenseTransactionTotals
-                                        .toStringAsFixed(1),
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              )
-                            : Text(''),
-                        state.isDisplayIncome &&
-                                state.incomeTransactionTotals >0
-                            ? Text(
-                                'Income\n' +
-                                    r'$ ' +
-                                    state.incomeTransactionTotals
-                                        .toStringAsFixed(1),
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              )
-                            : Text(''),
-                        state.sortedCategories.isNotEmpty
-                            ? PieChart(
-                                PieChartData(
-                                  titleSunbeamLayout: true,
-                                  sections: List.generate(
-                                    state.sortedCategories.length,
-                                    (index) {
-                                      return PieChartSectionData(
-                                          radius: 50,
-                                          color: colorMapper[state
-                                              .sortedCategories[index]
-                                              .colorName],
-                                          titleStyle: const TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold),
-                                          value: state.isDisplayExpenses
-                                              ? state.sortedCategories[index]
-                                                  .totalExpenseAmount
-                                                  .toDouble()
-                                              : state.sortedCategories[index]
-                                                  .totalIncomeAmount
-                                                  .toDouble());
-                                      // title: state.isDisplayExpenses
-                                      //     // ? '${state.sortedCategories[index].name}\n'
-                                      //     ? '\$${state.sortedCategories[index].totalExpenseAmount}'
-                                      //     // : '${state.sortedCategories[index].name}\n'
-                                      //     : '\$${state.sortedCategories[index].totalIncomeAmount}');
-                                    },
-                                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      // shrinkWrap: true,
+                      itemCount: state.sortedCategories.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
+                        if (state.isDisplayExpenses &&
+                            state.sortedCategories[index].totalExpenseAmount >
+                                0) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(8, 8),
+                                      blurRadius: 15,
+                                      spreadRadius: 1),
+                                  BoxShadow(
+                                      color: Colors.white,
+                                      offset: Offset(-8, -8),
+                                      blurRadius: 15,
+                                      spreadRadius: 1)
+                                ],
+                              ),
+                              child: ListTile(
+                                leading: Icon(
+                                  myIcons[
+                                      state.sortedCategories[index].iconName],
+                                  color: colorMapper[
+                                      state.sortedCategories[index].colorName],
                                 ),
-                              )
-                            : Center(
-                                child: Text(
-                                  context.tr('noDataToDisplay'),
-                                  style: TextStyle(
-                                    fontSize: 24,
+                                title: Text(
+                                  context.tr(
+                                          '${state.sortedCategories[index].name?.toLowerCase()}') ??
+                                      ' ',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                subtitle: Text(
+                                  '\$' +
+                                      '' +
+                                      state.sortedCategories[index]
+                                          .totalExpenseAmount
+                                          .toString(),
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                trailing: Text(
+                                  ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)}%',
+                                  style: const TextStyle(
+                                    fontSize: 18,
                                     color: Colors.red,
                                   ),
                                 ),
                               ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Expanded(
-                    // Variable to store the total
-                    // Iterating over the list using a for loop
-                    //              for (double amount in amounts) {
-                    //    total += amount;
-                    child: GridView.builder(
-                      padding: const EdgeInsets.all(8),
-                      itemCount: state.sortedCategories.length,
-                      itemBuilder: (context, index) {
-                        if (state.isDisplayExpenses &&
-                            state.sortedCategories[index].totalExpenseAmount >
-                                0) {
-                          return InputChip(
-                            onPressed: () {},
-                            label: Text(
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                context.tr('${state.sortedCategories[index].name?.toLowerCase()}') +
-                                ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)}%'),
-
-                            //
-                            backgroundColor: colorMapper[
-                                state.sortedCategories[index].colorName],
+                            ),
                           );
-                        }
-                        if (state.isDisplayIncome &&
+                        } else if (state.isDisplayIncome &&
                             state.sortedCategories[index].totalIncomeAmount >
                                 0) {
-                          return InputChip(
-                            onPressed: () {},
-                            label: Text(
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.visible,
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(8, 8),
+                                      blurRadius: 15,
+                                      spreadRadius: 1),
+                                  BoxShadow(
+                                      color: Colors.white,
+                                      offset: Offset(-8, -8),
+                                      blurRadius: 15,
+                                      spreadRadius: 1)
+                                ],
+                              ),
+                              child: ListTile(
+                                leading: Icon(
+                                  myIcons[
+                                      state.sortedCategories[index].iconName],
+                                  color: colorMapper[
+                                      state.sortedCategories[index].colorName],
                                 ),
-                                context.tr('${state.sortedCategories[index].name?.toLowerCase()}') +
-                                ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)}%'),
-                            //
-                            backgroundColor: colorMapper[
-                                state.sortedCategories[index].colorName],
-                          );
-                        }
-                        return Container();
+                                title: Text(
+                                  context.tr(
+                                          '${state.sortedCategories[index].name?.toLowerCase()}') ??
+                                      ' ',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                subtitle: Text(
+                                  '\$' +
+                                      '' +
+                                      state.sortedCategories[index]
+                                          .totalIncomeAmount
+                                          .toString(),
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                trailing: Text(
+                                  // '\$ ${state.sortedCategories[index].incomePercentage}',
 
-                        //
+                                  ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)}%',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return SizedBox.shrink();
+                        }
+                        ;
                       },
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 5)),
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        ));
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
