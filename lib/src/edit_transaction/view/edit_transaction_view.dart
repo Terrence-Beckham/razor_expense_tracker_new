@@ -155,7 +155,7 @@ class EditTransactionSuccessView extends StatelessWidget {
                     onTap: () => {},
                     readOnly: true,
                     textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
+                    decoration:InputDecoration(
                       hintText: context.tr('${state.transaction.category?.name?.toLowerCase()}'),
                       // hintText: state.isCategorySelected
                       //     ? state.tempCategory.name

@@ -7,7 +7,7 @@ enum DatePeriodChosen { allTime, yearly, monthly }
 // DropdownMenuEntry labels and values for the first dropdown menu.
 enum DateLabel {
   january('January', 1),
-  febuary('Febuary', 2),
+  february('Febuary', 2),
   march('March', 3),
   april('April', 4),
   may('May', 5),
@@ -27,7 +27,7 @@ enum DateLabel {
 
 final dateLabelMapper = <int, DateLabel>{
   1: DateLabel.january,
-  2: DateLabel.febuary,
+  2: DateLabel.february,
   3: DateLabel.march,
   4: DateLabel.april,
   5: DateLabel.may,
@@ -108,6 +108,7 @@ final class StatsState extends Equatable {
 
   ///This is the calculate total of all of the current income transaction amounts
   final double incomeTransactionTotals;
+
 
   StatsState copyWith({
     List<Transaction> Function()? transactions,

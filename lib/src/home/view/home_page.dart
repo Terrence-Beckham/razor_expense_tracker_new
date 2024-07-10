@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
           // shape: const CircleBorder(),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.grey,
 
           onPressed: () {
              Navigator.of(context)
@@ -68,7 +68,7 @@ class HomeView extends StatelessWidget {
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: Colors.grey[50],
             borderRadius: BorderRadius.circular(12),
             boxShadow: const [
               BoxShadow(
@@ -84,7 +84,7 @@ class HomeView extends StatelessWidget {
             ],
           ),
           child: BottomAppBar(
-            color: Colors.grey[200],
+            color: Colors.grey[50],
             shape: const CircularNotchedRectangle(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -125,7 +125,7 @@ class _HomeTabButton extends StatelessWidget {
       onPressed: () => context.read<HomeCubit>().setTab(value),
       iconSize: 32,
       color:
-      groupValue != value ? null : Theme
+      groupValue == value ? null : Theme
           .of(context)
           .colorScheme
           .secondary,

@@ -400,43 +400,26 @@ return "Category Unkonwn";
 
 
 }
-// final plusIconData = <String, IconData>{"plus_sign": Icons.add};
-// final localCategoryTranslations = <TransactionCategory>[
-// gymMembership, //exercise
-// salon, //styler
-// subscriptions, //subscriptions
-// debt, //credit_score
-// loans, //real_estate_agent
-// credit, //credit_card
-// education, //school
-// business, //storefront
-// mortgage, //real_estate_agent
-// vacations, //holiday_village
-// movies, //theaters
-// games, //toys_and_games
-// entertainment, //attractions
-// charity, //volunteer_activism
-// specialOccasion, //special_character
-// gifts, //featured_seasonal_and_gifts
-// donations, //volunteer_activism
-// transportation, //emoji_transportation
-// investing, //finance_mode
-// food, //fastfood
-// groceries, //grocery
-// restaurants, //restaurant
-// electricity, //water_ec
-// phone, //smartphone
-// cable, //cable
-// internet, //wifi
-// clothing, //apparel
-// medical, //medical_services
-// dental, //dentistry
-// medications, //medication_liquid
-// householdItems, //flatware
-// householdSupplies, //household_supplies
-// cleaningSupplies, //cleaning_bucket
-// tools, //handyman
-// ];
+String translateDigits(String input, Locale locale) {
+  final digitMaps = {
+    'en': '0123456789',
+    'ar': '٠١٢٣٤٥٦٧٨٩',
+    'hi': '०१२३४५६७८९',
+    'fa': '۰۱۲۳۴۵۶۷۸۹',
+  };
+
+  final sourceDigits = digitMaps['en'];
+  final targetDigits = digitMaps[locale.languageCode];
+
+  if (sourceDigits == null || targetDigits == null) {
+    return input; // Return the original input if locale is not supported
+  }
+
+  return input.split('').map((char) {
+    final index = sourceDigits.indexOf(char);
+    return index == -1 ? char : targetDigits[index];
+  }).join('');
+}
 
 
 

@@ -42,6 +42,7 @@ class StatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
         child: BlocBuilder<StatsBloc, StatsState>(
           builder: (context, state) {
@@ -118,10 +119,13 @@ class StatsSuccessView extends StatelessWidget {
       ],
       child: BlocBuilder<StatsBloc, StatsState>(
         builder: (context, state) {
+          final locale = context.locale;
+          _logger.d('This is the current locale: $locale');
           return Scaffold(
             appBar: AppBar(
-              title: Text(context.tr('analytics')
-                ,style: TextStyle(
+              title: Text(
+                context.tr('analytics'),
+                style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
@@ -133,7 +137,27 @@ class StatsSuccessView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(
+                    OutlinedButton(
+                      style: state.isDisplayExpenses
+                          ? OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.grey,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            )
+                          :
+
+                          ///Button to change the transaction type to Income
+                          OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.white,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            ),
                       onPressed: () {
                         context
                             .read<StatsBloc>()
@@ -144,7 +168,27 @@ class StatsSuccessView extends StatelessWidget {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
-                    ElevatedButton(
+                    OutlinedButton(
+                      style: state.isDisplayIncome
+                          ? OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.grey,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            )
+                          :
+
+                          ///Button to change the transaction type to Income
+                          OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.white,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            ),
                       onPressed: () {
                         context.read<StatsBloc>().add(IncomeDisplayRequested());
                       },
@@ -219,29 +263,54 @@ class StatsSuccessView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 1.5,
+                  height: MediaQuery.of(context).size.width / 1.8,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       if (state.isDisplayExpenses &&
                           state.expenseTransactionTotals > 0)
-                        Text(
-                          context.tr('expenses') +
-                              '\n\$ ' +
-                              state.expenseTransactionTotals.toStringAsFixed(1),
-                          style: TextStyle(
-                            fontSize:24 ,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              context.tr('expenses'),
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              translateDigits(
+                                  state.expenseTransactionTotals
+                                      .toStringAsFixed(1),
+                                  locale),
+                              // state.expenseTransactionTotals.toStringAsFixed(1),
+                              style: TextStyle(
+                                fontSize: 24,
+                              ),
+                            ),
+                          ],
                         ),
                       if (state.isDisplayIncome &&
                           state.incomeTransactionTotals > 0)
-                        Text(
-                          context.tr('income') +
-                              '\n\$ ' +
-                              state.incomeTransactionTotals.toStringAsFixed(1),
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              context.tr('income'),
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              translateDigits(
+                                  state.incomeTransactionTotals
+                                      .toStringAsFixed(1),
+                                  locale),
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
                         ),
                       if (state.sortedCategories.isNotEmpty)
                         PieChart(
@@ -251,7 +320,7 @@ class StatsSuccessView extends StatelessWidget {
                               state.sortedCategories.length,
                               (index) {
                                 return PieChartSectionData(
-                                    radius: 50,
+                                    radius: 40,
                                     color: colorMapper[state
                                         .sortedCategories[index].colorName],
                                     titleStyle: const TextStyle(
@@ -290,6 +359,10 @@ class StatsSuccessView extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
+                Divider(
+                  color: Colors.grey,
+                  thickness: 2,
+                ),
                 Expanded(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
@@ -297,7 +370,6 @@ class StatsSuccessView extends StatelessWidget {
                       // shrinkWrap: true,
                       itemCount: state.sortedCategories.length,
                       itemBuilder: (BuildContext context, int index) {
-                        // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
                         if (state.isDisplayExpenses &&
                             state.sortedCategories[index].totalExpenseAmount >
                                 0) {
@@ -305,7 +377,7 @@ class StatsSuccessView extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                                color: Colors.grey[50],
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
                                   BoxShadow(
@@ -321,28 +393,68 @@ class StatsSuccessView extends StatelessWidget {
                                 ],
                               ),
                               child: ListTile(
-                                leading: Icon(
-                                  myIcons[
-                                      state.sortedCategories[index].iconName],
-                                  color: colorMapper[
-                                      state.sortedCategories[index].colorName],
+                                leading: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(8, 8),
+                                          blurRadius: 15,
+                                          spreadRadius: 1),
+                                      BoxShadow(
+                                          color: Colors.white,
+                                          offset: Offset(-8, -8),
+                                          blurRadius: 15,
+                                          spreadRadius: 1)
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 24,
+                                    backgroundColor: Colors.grey[50],
+                                    child: Icon(
+                                      myIcons[state
+                                          .sortedCategories[index].iconName],
+                                      color: colorMapper[state
+                                          .sortedCategories[index].colorName],
+                                    ),
+                                  ),
                                 ),
                                 title: Text(
                                   context.tr(
                                           '${state.sortedCategories[index].name?.toLowerCase()}') ??
                                       ' ',
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
-                                  '\$' +
-                                      '' +
-                                      state.sortedCategories[index]
-                                          .totalExpenseAmount
-                                          .toString(),
-                                  style: TextStyle(fontSize: 14),
-                                ),
+                                subtitle: locale.languageCode == 'ar'
+                                    ? Text(
+                                        ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalExpenseAmount
+                                                    .toString(),
+                                                locale) +
+                                            ' ' +
+                                            '£',
+                                        style: TextStyle(fontSize: 18),
+                                      )
+                                    : Text(
+                                        '\$' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalExpenseAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(fontSize: 18),
+                                      ),
                                 trailing: Text(
-                                  ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)}%',
+                                  translateDigits(
+                                      ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)} %',
+                                      locale),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     color: Colors.red,
@@ -358,7 +470,7 @@ class StatsSuccessView extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                                color: Colors.grey[50],
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
                                   BoxShadow(
@@ -374,30 +486,71 @@ class StatsSuccessView extends StatelessWidget {
                                 ],
                               ),
                               child: ListTile(
-                                leading: Icon(
-                                  myIcons[
-                                      state.sortedCategories[index].iconName],
-                                  color: colorMapper[
-                                      state.sortedCategories[index].colorName],
+                                leading: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(8, 8),
+                                          blurRadius: 15,
+                                          spreadRadius: 1),
+                                      BoxShadow(
+                                          color: Colors.white,
+                                          offset: Offset(-8, -8),
+                                          blurRadius: 15,
+                                          spreadRadius: 1)
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 24,
+                                    backgroundColor: Colors.grey[50],
+                                    child: Icon(
+                                      myIcons[state
+                                          .sortedCategories[index].iconName],
+                                      color: colorMapper[state
+                                          .sortedCategories[index].colorName],
+                                    ),
+                                  ),
                                 ),
                                 title: Text(
                                   context.tr(
                                           '${state.sortedCategories[index].name?.toLowerCase()}') ??
                                       ' ',
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
-                                  '\$' +
-                                      '' +
-                                      state.sortedCategories[index]
-                                          .totalIncomeAmount
-                                          .toString(),
-                                  style: TextStyle(fontSize: 14),
-                                ),
+                                subtitle: locale.languageCode == 'ar'
+                                    ? Text(
+                                        '£' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalIncomeAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(fontSize: 18),
+                                      )
+                                    : Text(
+                                        '\$' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalIncomeAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
                                 trailing: Text(
                                   // '\$ ${state.sortedCategories[index].incomePercentage}',
 
-                                  ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)}%',
+                                  translateDigits(
+                                      ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)} %',
+                                      locale),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     color: Colors.green,
@@ -449,7 +602,10 @@ class DateDropdownMenu extends StatelessWidget {
                 .map<DropdownMenuItem<DateLabel>>((DateLabel dateLabel) {
               return DropdownMenuItem<DateLabel>(
                 value: dateLabel,
-                child: Text('${dateLabel.label} '),
+                child: Text(
+                  context.tr('${dateLabel.name}'),
+                  style: TextStyle(fontSize: 20),
+                ),
               );
             }).toList(),
           ),
@@ -465,6 +621,7 @@ class YearDropdownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.locale;
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return Padding(
@@ -481,12 +638,45 @@ class YearDropdownMenu extends StatelessWidget {
             items: years.map<DropdownMenuItem<int>>((int year) {
               return DropdownMenuItem<int>(
                 value: year,
-                child: Text(year.toString()),
+                child: Text(
+                  translateDigits(year.toString(), locale),
+                  style: TextStyle(fontSize: 20),
+                ),
+                // child: Text(year.toString()),
               );
             }).toList(),
           ),
         );
       },
+    );
+  }
+}
+
+class NeomorphicContainer extends StatelessWidget {
+  final Widget child;
+
+  const NeomorphicContainer({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: child,
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const [
+          BoxShadow(
+              color: Colors.grey,
+              offset: Offset(8, 8),
+              blurRadius: 15,
+              spreadRadius: 1),
+          BoxShadow(
+              color: Colors.white,
+              offset: Offset(-8, -8),
+              blurRadius: 15,
+              spreadRadius: 1)
+        ],
+      ),
     );
   }
 }

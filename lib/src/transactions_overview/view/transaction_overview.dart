@@ -29,7 +29,7 @@ class TransactionsOverviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: Text(
             'Razor Expense Tracker',
@@ -50,7 +50,9 @@ class TransactionsOverviewView extends StatelessWidget {
                 return const ExpenseOverviewSuccessView();
               case TransactionsOverviewStatus.failure:
                 return Center(
-                  child: Text(context.tr('somethingWentWrong'),),
+                  child: Text(
+                    context.tr('somethingWentWrong'),
+                  ),
                 );
             }
           },
@@ -95,6 +97,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
         );
       },
       builder: (context, state) {
+        final locale = context.locale;
         return Column(
           children: [
             Container(
@@ -107,7 +110,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
 
                 leading: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: const [
                       BoxShadow(
@@ -123,36 +126,11 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                     ],
                   ),
                   child: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: Colors.grey[50],
                     child: Icon(
                       Icons.person_2_outlined,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                  ),
-                ),
-                trailing: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(8, 8),
-                          blurRadius: 15,
-                          spreadRadius: 1),
-                      BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(-8, -8),
-                          blurRadius: 15,
-                          spreadRadius: 1),
-                    ],
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: Theme.of(context).colorScheme.onTertiary,
-                    ),
-                    onPressed: () {},
                   ),
                 ),
               ),
@@ -165,7 +143,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: const [
                       BoxShadow(
@@ -184,8 +162,8 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 8),
-                        child: Text(context.tr(
-                          'totalBalance'),
+                        child: Text(
+                          context.tr('totalBalance'),
                           // 'Total Balance',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
@@ -194,10 +172,16 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                       ),
                       if (state.transactions.isNotEmpty)
                         Text(
-                          // r' $1,000.00',
-                          '\$ ${state.balance ?? '\$'}'
-                          // '\$'
-                          ,
+                          locale.languageCode == 'en'
+                              ? r'$ ' +
+                                  translateDigits(
+                                      state.balance.toString(), locale) +
+                                  ' '
+                              // r' $1,000.00',
+                              : translateDigits(
+                                      state.balance.toString(), locale) +
+                                  ' ' +
+                                  r'£',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 34,
@@ -212,9 +196,31 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                             padding: EdgeInsets.all(8),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.arrow_upward_rounded,
-                                  color: Colors.green,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(4, 4),
+                                          blurRadius: 15,
+                                          spreadRadius: 1),
+                                      BoxShadow(
+                                          color: Colors.white,
+                                          offset: Offset(-4, -4),
+                                          blurRadius: 15,
+                                          spreadRadius: 1)
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: Colors.green,
+                                    size: 24,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
                                 ),
                                 Column(
                                   children: [
@@ -226,7 +232,18 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '\$ ${state.incomeTotals ?? '\$'}',
+                                      locale.languageCode == 'en'
+                                          ? translateDigits(
+                                                  r'$ ' +
+                                                      state.incomeTotals
+                                                          .toString(),
+                                                  locale) +
+                                              ' '
+                                          : translateDigits(
+                                                  state.incomeTotals.toString(),
+                                                  locale) +
+                                              ' ' +
+                                              r'£',
                                       style: TextStyle(
                                         color: Theme.of(context).primaryColor,
                                         fontSize: 24,
@@ -237,41 +254,68 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 16,
-                              top: 16,
-                              right: 18,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.grey,
+                                        offset: Offset(4, 4),
+                                        blurRadius: 15,
+                                        spreadRadius: 1),
+                                    BoxShadow(
+                                        color: Colors.white,
+                                        offset: Offset(-4, -4),
+                                        blurRadius: 15,
+                                        spreadRadius: 1)
+                                  ],
+                                ),
+                                child: Icon(
                                   Icons.arrow_downward_rounded,
                                   color: Colors.red,
+                                  size: 24,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        context.tr('expenses'),
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 18,
-                                        ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      context.tr('expenses'),
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 18,
                                       ),
-                                      Text(
-                                        '\$ ${state.expenseTotals ?? '\$'}',
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 24,
-                                        ),
+                                    ),
+                                    Text(
+                                      locale.languageCode == 'en'
+                                          ? translateDigits(
+                                                  r'$ ' +
+                                                      state.expenseTotals
+                                                          .toString(),
+                                                  locale) +
+                                              ' '
+                                          : translateDigits(
+                                                  state.expenseTotals
+                                                      .toString(),
+                                                  locale) +
+                                              ' ' +
+                                              r'£',
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 24,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -290,25 +334,15 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                     // 'transactions',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: TextButton(
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                              Theme.of(context).colorScheme.onPrimary)),
-                      onPressed: () {},
-                      child: Text(
-                        'View All',
-                        style: TextStyle(color: Colors.green, fontSize: 16),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 16,
+            ),
             Expanded(
               child: SizedBox(
-                height: 300,
+                height: MediaQuery.of(context).size.width / 50,
                 child: ListView.builder(
                   // shrinkWrap: true,
                   itemCount: state.transactions.length,
@@ -318,7 +352,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Colors.grey[50],
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: const [
                             BoxShadow(
@@ -363,39 +397,75 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: ListTile(
-                            leading: Icon(
-                              myIcons[
-                                  state.transactions[index].category?.iconName],
-                              color: colorMapper[state
-                                  .transactions[index].category?.colorName],
-                            ),
-                            // leading: Icon(
-                            // // myIcons(expense.iconname);
-                            // Icons.abc , color: Colors.red,
-                            // ),
-                            title: Text(
-                               context.tr('${state.transactions[index].category?.name?.toLowerCase()}') ??
-                                    ' ',style: TextStyle(fontSize: 20),),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 4),
-                              child: Text(
-                                state.transactions[index].dateOfTransaction
-                                    .toString()
-                                    .substring(0, 10),
+                          child: Container(
+                            child: ListTile(
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.grey,
+                                        offset: Offset(8, 8),
+                                        blurRadius: 15,
+                                        spreadRadius: 1),
+                                    BoxShadow(
+                                        color: Colors.white,
+                                        offset: Offset(-8, -8),
+                                        blurRadius: 15,
+                                        spreadRadius: 1)
+                                  ],
+                                ),
+                                child: CircleAvatar(
+                                  radius: 24,
+                                  backgroundColor: Colors.grey[50],
+                                  child: Icon(
+                                    myIcons[state.transactions[index].category
+                                        ?.iconName],
+                                    color: colorMapper[state.transactions[index]
+                                        .category?.colorName],
+                                  ),
+                                ),
                               ),
-                            ),
-                            trailing: Text(
-                              '\$ ${state.transactions[index].amount}',
-                              style: state.transactions[index].isExpense
-                                  ? const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.red,
-                                    )
-                                  : const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.green,
-                                    ),
+                              // leading: Icon(
+                              // // myIcons(expense.iconname);
+                              // Icons.abc , color: Colors.red,
+                              // ),
+                              title: Text(
+                                context.tr(
+                                        '${state.transactions[index].category?.name?.toLowerCase()}') ??
+                                    ' ',
+                                style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(left: 8, top: 4),
+                                child: Text(
+                                  state.transactions[index].dateOfTransaction
+                                      .toString()
+                                      .substring(0, 10),
+                                ),
+                              ),
+                              trailing: Text(
+                                locale.languageCode == 'en'
+                                    ? translateDigits(
+                                        '\$'
+                                        ' ${state.transactions[index].amount}',
+                                        locale)
+                                    : translateDigits(
+                                            '${state.transactions[index].amount}',
+                                            locale) +
+                                        ' ' +
+                                        '£',
+                                style: state.transactions[index].isExpense
+                                    ? const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      )
+                                    : const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.green,
+                                      ),
+                              ),
                             ),
                           ),
                         ),

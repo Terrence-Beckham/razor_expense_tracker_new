@@ -216,15 +216,66 @@
   "@noDataToDisplay": {
     "description": "This message is displayed when there are no transactions for a given time period"
   },
-
   "pleaseEnterACategory": "Please Enter a Category",
-  "@pleaseEnterACategory": {"description":"Reminder to choose a category for the transaction"},
-
- "addANewCategory": "Add a New Category",
-  "@addANewCategory":{"description": "Allows the user to add a custom category to the Database"}
-,
-
+  "@pleaseEnterACategory": {
+    "description": "Reminder to choose a category for the transaction"
+  },
+  "addANewCategory": "Add a New Category",
+  "@addANewCategory": {
+    "description": "Allows the user to add a custom category to the Database"
+  },
   "onlyNumbers": "Only numbers are allowed in this field",
-  "@onlyNumbers": {"description": "Warns the user that this field only takes nummerical characters"}
+  "@onlyNumbers": {
+    "description": "Warns the user that this field only takes nummerical characters"
+  },
+  "january": "January",
+  "@january": {
+    "description": "Display The Month of January"
+  },
+  "february": "February",
+  "@february": {
+    "description": "Display The Month of February"
+  },
+  "march": "March",
+  "@march": {
+    "description": "Display The Month of March"
+  },
+  "april": "April",
+  "@april": {
+    "description": "Display The Month of April"
+  },
+  "may": "May",
+  "@may": {
+    "description": "Display The Month of May"
+  },
+  "june": "June",
+  "@june": {
+    "description": "Display The Month of June"
+  },
+  "july": "July",
+  "@july": {
+    "description": "Display The Month of July"
+  },
+  "august": "August",
+  "@august": {
+    "description": "Display The Month of August"
+  },
+  "september": "September",
+  "@september": {
+    "description": "Display The Month of September"
+  },
+  "october": "October",
+  "@october": {
+    "description": "Display The Month of October"
+  },
+  "november": "November",
+  "@november": {
+    "description": "Display The Month of November"
+  },
+  "december": "December",
+  "@december": {
+    "description": "Display The Month of December"
+  }
 }
+
 
