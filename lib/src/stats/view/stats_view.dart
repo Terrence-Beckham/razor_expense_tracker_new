@@ -120,7 +120,8 @@ class StatsSuccessView extends StatelessWidget {
       child: BlocBuilder<StatsBloc, StatsState>(
         builder: (context, state) {
           final locale = context.locale;
-          _logger.d('This is the current locale: $locale');
+          _logger.d(
+              ' These are the expenseTransactionTotals: ${state.expenseTransactionTotals}');
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -453,7 +454,7 @@ class StatsSuccessView extends StatelessWidget {
                                       ),
                                 trailing: Text(
                                   translateDigits(
-                                      ' ${(state.expenseTransactionTotals / state.sortedCategories[index].totalExpenseAmount).toPrecision(1)} %',
+                                      ' ${((state.sortedCategories[index].totalExpenseAmount) / state.expenseTransactionTotals * 100).toPrecision(1)} %',
                                       locale),
                                   style: const TextStyle(
                                     fontSize: 18,
@@ -549,7 +550,7 @@ class StatsSuccessView extends StatelessWidget {
                                   // '\$ ${state.sortedCategories[index].incomePercentage}',
 
                                   translateDigits(
-                                      ' ${(state.incomeTransactionTotals / state.sortedCategories[index].totalIncomeAmount).toPrecision(1)} %',
+                                      ' ${(  (state.sortedCategories[index].totalIncomeAmount) / state.incomeTransactionTotals * 100).toPrecision(1)} %',
                                       locale),
                                   style: const TextStyle(
                                     fontSize: 18,
