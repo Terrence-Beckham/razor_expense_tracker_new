@@ -17,6 +17,7 @@ void main() async {
   // Bloc.observer =  AppBlocObserver();
   await EasyLocalization.ensureInitialized();
   await MobileAds.instance.initialize();
+  print('Mobile Ads Instance: ${MobileAds.instance}');
   final dir = await getApplicationDocumentsDirectory();
   final adsClient = AdsClient();
   final adsRepo = AdsRepo(adsClient: adsClient);

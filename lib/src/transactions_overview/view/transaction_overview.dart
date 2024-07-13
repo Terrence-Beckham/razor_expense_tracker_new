@@ -15,18 +15,21 @@ class TransactionsOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(
-        create: (context) => TransactionsOverviewBloc(
-          context.read<TransactionsRepository>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TransactionsOverviewBloc(
+            context.read<TransactionsRepository>(),
+          )..add(InitialDataEvent()),
         ),
-      ),
-      BlocProvider(
-        create: (context) => AdsBloc(
-          adsRepo: context.read<AdsRepo>(),
+        BlocProvider(
+          create: (context) => AdsBloc(
+            adsRepo: context.read<AdsRepo>(),
+          ),
         ),
-      )
-    ], child: const TransactionsOverviewView());
+      ],
+      child: const TransactionsOverviewView(),
+    );
   }
 }
 
@@ -49,7 +52,6 @@ class TransactionsOverviewView extends StatelessWidget {
             switch (state.status) {
               case TransactionsOverviewStatus.initial:
                 return const Center(child: Text('Initial View'));
-
               case TransactionsOverviewStatus.loading:
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -71,9 +73,7 @@ class TransactionsOverviewView extends StatelessWidget {
 }
 
 class ExpenseOverviewSuccessView extends StatelessWidget {
-  const ExpenseOverviewSuccessView({
-    super.key,
-  });
+  const ExpenseOverviewSuccessView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,6 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
           SnackBar(
             content: Text(
               context.tr('transactionDeleted'),
-              // 'Transaction deleted',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
@@ -96,6 +95,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
             action: SnackBarAction(
               label: context.tr('undo'),
               onPressed: () {
+                // Use the correct context to access the provider
                 context.read<TransactionsOverviewBloc>().add(
                       UndoDeleteTransactionEvent(deletedTransaction!),
                     );
@@ -114,8 +114,6 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                   context.tr('helloUser'),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                // subtitle: const Text('User'),
-
                 leading: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
@@ -172,7 +170,6 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
                           context.tr('totalBalance'),
-                          // 'Total Balance',
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 24),
@@ -185,7 +182,6 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                   translateDigits(
                                       state.balance.toString(), locale) +
                                   ' '
-                              // r' $1,000.00',
                               : translateDigits(
                                       state.balance.toString(), locale) +
                                   ' ' +
@@ -339,23 +335,30 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 children: [
                   Text(
                     context.tr('transactions'),
-                    // 'transactions',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 16,
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                context.read<AdsBloc>().add(
+                  InterstitialAdRequestedEvent(
+                    onAdDismissedFullScreenContent: () {
+                      // Handle ad dismissal here
+                    },
+                  ),
+                );
+              },
+              child: Icon(Icons.dangerous),
             ),
             Expanded(
               child: SizedBox(
                 height: MediaQuery.of(context).size.width / 50,
                 child: ListView.builder(
-                  // shrinkWrap: true,
                   itemCount: state.transactions.length,
                   itemBuilder: (BuildContext context, int index) {
-                    // return SizedBox(child: TransactionTile(expense: state.expenses[index]));
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -398,7 +401,6 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                       ),
                                     ),
                                   );
-                                  //
                                 },
                                 backgroundColor: Colors.green,
                                 icon: Icons.edit,
@@ -435,23 +437,19 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // leading: Icon(
-                              // // myIcons(expense.iconname);
-                              // Icons.abc , color: Colors.red,
-                              // ),
                               title: Text(
                                 context.tr(
                                         '${state.transactions[index].category?.name?.toLowerCase()}') ??
                                     ' ',
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                    fontSize: 19, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Padding(
-                                padding: const EdgeInsets.only(left: 8, top: 4),
+                                padding: const EdgeInsets.only(left: 9, top: 4),
                                 child: Text(
                                   state.transactions[index].dateOfTransaction
                                       .toString()
-                                      .substring(0, 10),
+                                      .substring(1, 10),
                                 ),
                               ),
                               trailing: Text(
@@ -467,11 +465,11 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                         '£',
                                 style: state.transactions[index].isExpense
                                     ? const TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 19,
                                         color: Colors.red,
                                       )
                                     : const TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 19,
                                         color: Colors.green,
                                       ),
                               ),
@@ -484,24 +482,23 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 ),
               ),
             ),
-            BlocBuilder<AdsBloc, AdsState>(
-              builder: (context, state) {
-                return ElevatedButton(
-                  onPressed: () => context.read<AdsBloc>().add(
-                        InterstitialAdRequestedEvent(
-                          onAdDismissedFullScreenContent: () =>
-                              context.read<AdsBloc>().add(
-                                    InterstitialAdDisposed(),
-                                  ),
-                        ),
-                      ),
-                  child: Icon(Icons.abc),
-                );
-              },
-            )
           ],
         );
       },
     );
   }
+}
+String translateDigits(String input, Locale locale) {
+  const englishDigits = '0123456789';
+  const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+
+  if (locale.languageCode == 'ar') {
+    return input.split('').map((char) {
+      if (englishDigits.contains(char)) {
+        return arabicDigits[englishDigits.indexOf(char)];
+      }
+      return char;
+    }).join();
+  }
+  return input;
 }

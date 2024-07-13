@@ -60,6 +60,7 @@ class AdsClient {
   }) async {
     try {
       final adCompleter = Completer<Ad?>();
+      print('this should be the add: $adCompleter');
       await InterstitialAd.load(
         adUnitId: adUnitId,
         request: const AdRequest(),

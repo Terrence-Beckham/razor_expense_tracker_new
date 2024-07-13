@@ -13,29 +13,27 @@ class AdsRepo {
 
   final AdsClient _adsClient;
 
-
   /// Gets an interstitial Ad displayed in the Counter Page
   ///  when users increment the counter to a given positive threshold.
   Future<InterstitialAdPattern> getInterstitialAd({
     required VoidCallback onAdDismissedFullScreenContent,
   }) async {
     try {
-      final interstitialAd =
-      await _adsClient.getInterstitial(
+      final interstitialAd = await _adsClient.getInterstitial(
         onAdDismissedFullScreenContent: onAdDismissedFullScreenContent,
       );
+      await interstitialAd.show();
+     print('This is the interstitial ad: ${interstitialAd.responseInfo}');
       return (failure: null, value: interstitialAd);
     } catch (e, st) {
       return (
-      failure: (
-      error: e,
-      stackTrace: st,
-      optional: 'Exception caught in getCounterPagePlusCheckInterstitialAd',
-      ),
-      value: null,
+        failure: (
+          error: e,
+          stackTrace: st,
+          optional: 'Exception caught in InterstitialAd',
+        ),
+        value: null,
       );
     }
   }
-
-
 }
