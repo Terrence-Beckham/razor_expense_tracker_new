@@ -1,0 +1,22 @@
+name: ads_repo
+description: A Very Good Project created by Very Good CLI.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: "^3.3.0"
+  flutter: "^3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ads_client:
+    path: ../ads_client
+
+  google_mobile_ads: ^5.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.3
+  very_good_analysis: ^5.1.0

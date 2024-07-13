@@ -1,24 +1,31 @@
+import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+
 import '../../home/view/home_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends StatelessWidget {
   const App({
     required TransactionsRepository transactionsRepository,
+    required AdsRepo adsRepo,
     super.key,
-  }) : _transactionsRepository = transactionsRepository;
+  })  : _transactionsRepository = transactionsRepository,
+        _adsRepo = adsRepo;
 
   final TransactionsRepository _transactionsRepository;
+  final AdsRepo _adsRepo;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _transactionsRepository,
-      child: const AppView(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<TransactionsRepository>(
+            create: (context) => _transactionsRepository),
+        RepositoryProvider<AdsRepo>(create: (context) => _adsRepo),
+      ],
+      child: AppView(),
     );
   }
 }

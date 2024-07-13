@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 ///Todo This needs to become a list and then stored in a Repo
 ///User categories will be stored here as well.
 final business = TransactionCategory()
@@ -388,18 +387,7 @@ final colorPickerWidgets = <Color>[
 // };
 
 // const  = "salon";
-String translateCategoryName(BuildContext context, String catName){
-final  AppLocalizations? appLocalizations = AppLocalizations.of(context);
-const salon = "salon";
-switch (catName){
-  case salon:
-    return appLocalizations!.salon;
-  default: "default Title";
-}
-return "Category Unkonwn";
 
-
-}
 String translateDigits(String input, Locale locale) {
   final digitMaps = {
     'en': '0123456789',

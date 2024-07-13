@@ -23,8 +23,17 @@ dependencies:
     path: packages/transactions_api
   transactions_repository:
     path: packages/transactions_repository
+  ads_repo:
+    path: packages/ads_repo
+  ads_client:
+    path: packages/ads_client
+  settings_repo:
+    path: packages/settings_repo
+  settings_api:
+    path: packages/settings_api
   logger: ^2.2.0
   material_symbols_icons: ^4.2719.3
+  google_mobile_ads: ^5.1.0
   url_launcher: ^6.2.6
   path_provider: any
   uuid: ^4.4.0
@@ -42,6 +51,7 @@ dev_dependencies:
   mocktail: ^1.0.0
   mockingjay: ^0.5.0
   very_good_analysis: ^5.1.0
+
 
 
 flutter:

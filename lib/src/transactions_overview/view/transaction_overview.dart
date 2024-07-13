@@ -1,7 +1,9 @@
+import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:razor_expense_tracker_new/src/ads/ads.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../edit_transaction/view/edit_transaction_view.dart';
@@ -13,12 +15,18 @@ class TransactionsOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TransactionsOverviewBloc(
-        context.read<TransactionsRepository>(),
-      )..add(const InitialDataEvent()),
-      child: const TransactionsOverviewView(),
-    );
+    return MultiBlocProvider(providers: [
+      BlocProvider(
+        create: (context) => TransactionsOverviewBloc(
+          context.read<TransactionsRepository>(),
+        ),
+      ),
+      BlocProvider(
+        create: (context) => AdsBloc(
+          adsRepo: context.read<AdsRepo>(),
+        ),
+      )
+    ], child: const TransactionsOverviewView());
   }
 }
 
@@ -435,7 +443,8 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 context.tr(
                                         '${state.transactions[index].category?.name?.toLowerCase()}') ??
                                     ' ',
-                                style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               subtitle: Padding(
                                 padding: const EdgeInsets.only(left: 8, top: 4),
@@ -475,6 +484,21 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 ),
               ),
             ),
+            BlocBuilder<AdsBloc, AdsState>(
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () => context.read<AdsBloc>().add(
+                        InterstitialAdRequestedEvent(
+                          onAdDismissedFullScreenContent: () =>
+                              context.read<AdsBloc>().add(
+                                    InterstitialAdDisposed(),
+                                  ),
+                        ),
+                      ),
+                  child: Icon(Icons.abc),
+                );
+              },
+            )
           ],
         );
       },
