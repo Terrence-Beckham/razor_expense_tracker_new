@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:razor_expense_tracker_new/src/edit_transaction/edit_transaction_bloc.dart';
@@ -51,8 +52,10 @@ class EditTransactionView extends StatelessWidget {
               case EditTransactionStatus.success:
                 return EditTransactionSuccessView();
               case EditTransactionStatus.failure:
-                return  Center(
-                  child: Text(context.tr('somethingWentWrong'),),
+                return Center(
+                  child: Text(
+                    context.tr('somethingWentWrong'),
+                  ),
                 );
             }
           },
@@ -77,11 +80,15 @@ class EditTransactionSuccessView extends StatelessWidget {
                 height: 16,
               ),
               Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  child: Icon(
-                    myIcons[state.transaction.category?.iconName],
-                    color: colorMapper[state.transaction.category?.colorName],
+                child: Container(
+                  decoration:neomorphicBoxDecoration,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey[50],
+                    radius: 40,
+                    child: Icon(
+                      myIcons[state.transaction.category?.iconName],
+                      color: colorMapper[state.transaction.category?.colorName],
+                    ),
                   ),
                 ),
               ),
@@ -92,45 +99,49 @@ class EditTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: TextFormField(
-                    initialValue: state.transaction.amount.toString(),
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    onChanged: (value) {
-                      try {
-                        // code that may cause an exception
-                        context.read<EditTransactionBloc>().add(
-                              UpdateTransactionAmount(
-                                state.transaction,
-                                int.parse(value),
+                  child: Container(
+                    decoration:neomorphicBoxDecoration,
+                    child: TextFormField(
+                      initialValue: state.transaction.amount.toString(),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      onChanged: (value) {
+                        try {
+                          // code that may cause an exception
+                          context.read<EditTransactionBloc>().add(
+                                UpdateTransactionAmount(
+                                  state.transaction,
+                                  int.parse(value),
+                                ),
+                              );
+                          context.read<EditTransactionBloc>().add(
+                                TransactionAmountError(false),
+                              );
+                        } catch (e) {
+                          // code that handles the exception
+                          context.read<EditTransactionBloc>().add(
+                                TransactionAmountError(true),
+                              );
+                          _logger.e(e);
+                        }
+                      },
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixIcon: state.transaction.isExpense
+                            ? const Icon(
+                                Iconsax.card,
+                                color: Colors.red,
+                              )
+                            : const Icon(
+                                Iconsax.card,
+                                color: Colors.green,
                               ),
-                            );
-                        context.read<EditTransactionBloc>().add(
-                              TransactionAmountError(false),
-                            );
-                      } catch (e) {
-                        // code that handles the exception
-                        context.read<EditTransactionBloc>().add(
-                              TransactionAmountError(true),
-                            );
-                        _logger.e(e);
-                      }
-                    },
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: state.transaction.isExpense
-                          ? const Icon(
-                              Icons.money,
-                              color: Colors.red,
-                            )
-                          : const Icon(
-                              Icons.money,
-                              color: Colors.green,
-                            ),
-                      filled: true,
-                      fillColor: Colors.blueGrey,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
+                        filled: true,
+                        fillColor: Colors.grey[400],
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                   ),
@@ -151,47 +162,50 @@ class EditTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: TextFormField(
-                    onTap: () => {},
-                    readOnly: true,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration:InputDecoration(
-                      hintText: context.tr('${state.transaction.category?.name?.toLowerCase()}'),
-                      // hintText: state.isCategorySelected
-                      //     ? state.tempCategory.name
-                      //     : 'Category',
-                      prefixIcon: Icon(
-                        myIcons[
-                            state.transaction.category?.iconName.toString()],
-                        color:
-                            colorMapper[state.transaction.category?.colorName],
-                      ),
+                  child: Container(decoration: neomorphicBoxDecoration,
+                    child: TextFormField(
+                      onTap: () => {},
+                      readOnly: true,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        hintText: context.tr(
+                            '${state.transaction.category?.name?.toLowerCase()}'),
+                        // hintText: state.isCategorySelected
+                        //     ? state.tempCategory.name
+                        //     : 'Category',
+                        prefixIcon: Icon(
+                          myIcons[
+                              state.transaction.category?.iconName.toString()],
+                          color:
+                              colorMapper[state.transaction.category?.colorName],
+                        ),
 
-                      suffixIcon: IconButton(
-                        icon: const Icon(Symbols.add),
-                        onPressed: () {
-                          context.read<EditTransactionBloc>().add(
-                                IsCategoryExpandedUpdated(),
-                              );
-                        },
-                        color: Colors.white,
-                      ),
-                      hintStyle:
-                          const TextStyle(color: Colors.white, fontSize: 20),
-                      filled: true,
-                      fillColor: Colors.blueGrey,
-                      border: state.isCategoryExpanded
-                          ? const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Symbols.add),
+                          onPressed: () {
+                            context.read<EditTransactionBloc>().add(
+                                  IsCategoryExpandedUpdated(),
+                                );
+                          },
+                          color: Colors.white,
+                        ),
+                        hintStyle:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: state.isCategoryExpanded
+                            ? const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              )
+                            : OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            )
-                          : OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -271,33 +285,36 @@ class EditTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: TextFormField(
-                    onChanged: (value) => {state.transaction.dateOfTransaction},
-                    // context
-                    //     .read<AddTransactionBloc>()
-                    //     .add(UpdateDateTextField(value)),
+                  child: Container(
+                    decoration: neomorphicBoxDecoration,
+                    child: TextFormField(
+                      onChanged: (value) => {state.transaction.dateOfTransaction},
+                      // context
+                      //     .read<AddTransactionBloc>()
+                      //     .add(UpdateDateTextField(value)),
 
-                    onTap: () => buildShowDatePicker(context),
-                    readOnly: true,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      // hintText: state.transaction.dateOfTransaction.toString().substring(0, 10),
-                      hintText: state.tempDate.toString().substring(0, 10),
-                      hintStyle:
-                          const TextStyle(color: Colors.white, fontSize: 20),
-                      prefixIcon: const Icon(
-                        Icons.calendar_month,
-                        color: Colors.white,
-                      ),
-                      suffixIcon: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                      filled: true,
-                      fillColor: Colors.blueGrey,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
+                      onTap: () => buildShowDatePicker(context),
+                      readOnly: true,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        // hintText: state.transaction.dateOfTransaction.toString().substring(0, 10),
+                        hintText: state.tempDate.toString().substring(0, 10),
+                        hintStyle:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        prefixIcon: const Icon(
+                          Icons.calendar_month,
+                          color: Colors.white,
+                        ),
+                        suffixIcon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                   ),
@@ -308,21 +325,23 @@ class EditTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   height: 50,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        Theme.of(context).colorScheme.onTertiary,
+                  child: Container(decoration: neomorphicBoxDecoration,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          Theme.of(context).colorScheme.onTertiary,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      context.read<EditTransactionBloc>().add(
-                            TransactionUpdateRequested(state.transaction),
-                          );
-                      Navigator.of(context).pop();
-                    },
-                    child:  Text(
-                      context.tr('updateTransaction'),
-                      style: TextStyle(fontSize: 24),
+                      onPressed: () {
+                        context.read<EditTransactionBloc>().add(
+                              TransactionUpdateRequested(state.transaction),
+                            );
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        context.tr('updateTransaction'),
+                        style: TextStyle(fontSize: 24),
+                      ),
                     ),
                   ),
                 ),

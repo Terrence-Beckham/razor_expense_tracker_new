@@ -95,7 +95,7 @@ class HomeView extends StatelessWidget {
                   groupValue: selectedTab,
                   value: HomeTab.transactions,
                   icon:  Icon(
-                    Iconsax.home_2,
+                    Iconsax.house,
                     size: 42,
                   ),
                 ),

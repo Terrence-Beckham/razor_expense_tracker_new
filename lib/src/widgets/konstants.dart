@@ -150,15 +150,16 @@ const myIcons = <String, IconData>{
   'styler': Symbols.styler,
   'subscriptions': Symbols.subscriptions,
   'debt': Symbols.credit_score,
-  'loans': Symbols.real_estate_agent,
+  'loans': Iconsax.bank,
   'credit': Symbols.credit_card,
   'education': Symbols.school,
   'business': Symbols.storefront,
   'mortgage': Symbols.real_estate_agent,
   'vacations': Symbols.holiday_village,
   'movies': Symbols.theaters,
-  'games': Symbols.toys_and_games,
-  'entertainment': Symbols.attractions,
+  // 'games': Symbols.toys_and_games,
+  'games': Iconsax.game,
+  'entertainment': Iconsax.video_play,
   'charity': Symbols.volunteer_activism,
   'specialOccasion': Symbols.special_character,
   'gifts': Symbols.featured_seasonal_and_gifts,
@@ -179,7 +180,7 @@ const myIcons = <String, IconData>{
   'householdItems': Symbols.flatware,
   'householdSupplies': Symbols.household_supplies,
   'cleaningSupplies': Symbols.cleaning_bucket,
-  'tools': Symbols.handyman,
+  'tools': Iconsax.designtools,
 };
 
 final localCategories = <TransactionCategory>[
@@ -410,4 +411,19 @@ String translateDigits(String input, Locale locale) {
 }
 
 
-
+final BoxDecoration neomorphicBoxDecoration = BoxDecoration(
+  color: Colors.grey[50],
+  borderRadius: BorderRadius.circular(24),
+  boxShadow: const [
+    BoxShadow(
+        color: Colors.grey,
+        offset: Offset(8, 8),
+        blurRadius: 15,
+        spreadRadius: 1),
+    BoxShadow(
+        color: Colors.white,
+        offset: Offset(-8, -8),
+        blurRadius: 15,
+        spreadRadius: 1)
+  ],
+);

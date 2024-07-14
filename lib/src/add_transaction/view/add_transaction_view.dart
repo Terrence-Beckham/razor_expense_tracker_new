@@ -110,8 +110,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                   child: Text(
                     context.tr('addTransaction'),
                     style: TextStyle(
-                      fontSize: 32,
-                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 32,fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -195,32 +194,34 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: TextFormField(
-                    // controller: _transactionAmountController,
-                    onChanged: (value) {
-                      context.read<AddTransactionBloc>().add(
-                            ValidateAmountValue(value),
-                          );
-                    },
+                  child: Container(decoration: neomorphicBoxDecoration,
+                    child: TextFormField(
+                      // controller: _transactionAmountController,
+                      onChanged: (value) {
+                        context.read<AddTransactionBloc>().add(
+                              ValidateAmountValue(value),
+                            );
+                      },
 
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: state.isExpense
-                          ? const Icon(
-                              Iconsax.dollar_square,
-                              color: Colors.red,
-                              size: 35,
-                            )
-                          : const Icon(
-                              Iconsax.dollar_square,
-                              color: Colors.green,
-                              size: 35,
-                            ),
-                      filled: true,
-                      fillColor: Colors.grey[400],
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        prefixIcon: state.isExpense
+                            ? const Icon(
+                                Iconsax.dollar_square,
+                                color: Colors.red,
+                                size: 35,
+                              )
+                            : const Icon(
+                                Iconsax.dollar_square,
+                                color: Colors.green,
+                                size: 35,
+                              ),
+                        filled: true,
+                        fillColor: Colors.grey[400],
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                   ),
@@ -242,51 +243,53 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: TextFormField(
-                    style: TextStyle(fontSize: 18),
-                    onTap: () => context.read<AddTransactionBloc>().add(
-                        UpdateIsCategoryExpanded(!state.isCategoryExpanded)),
-                    readOnly: true,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      hintText: state.didCategoryGetChosen
-                          ? context
-                              .tr('${state.tempCategory?.name?.toLowerCase()}')
-                          : context.tr('category'),
-                      prefixIcon: state.didCategoryGetChosen
-                          ? Icon(
-                              myIcons[state.tempCategory?.iconName.toString()],
-                              color: Colors.white,
-                            )
-                          : const Icon(
-                              Icons.category,
-                              color: Colors.white,
-                            ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          context.read<AddTransactionBloc>().add(
-                              UpdateIsCategoryExpanded(
-                                  !state.isCategoryExpanded));
-                        },
-                        color: Colors.white,
-                      ),
-                      hintStyle:
-                          const TextStyle(color: Colors.white, fontSize: 20),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      border: state.isCategoryExpanded
-                          ? const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
+                  child: Container(decoration: neomorphicBoxDecoration,
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 18),
+                      onTap: () => context.read<AddTransactionBloc>().add(
+                          UpdateIsCategoryExpanded(!state.isCategoryExpanded)),
+                      readOnly: true,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                        hintText: state.didCategoryGetChosen
+                            ? context
+                                .tr('${state.tempCategory?.name?.toLowerCase()}')
+                            : context.tr('category'),
+                        prefixIcon: state.didCategoryGetChosen
+                            ? Icon(
+                                myIcons[state.tempCategory?.iconName.toString()],
+                                color: Colors.white,
+                              )
+                            : const Icon(
+                                Icons.category,
+                                color: Colors.white,
                               ),
-                            )
-                          : OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            context.read<AddTransactionBloc>().add(
+                                UpdateIsCategoryExpanded(
+                                    !state.isCategoryExpanded));
+                          },
+                          color: Colors.white,
+                        ),
+                        hintStyle:
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: state.isCategoryExpanded
+                            ? const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              )
+                            : OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                      ),
                     ),
                   ),
                 ),
@@ -394,32 +397,34 @@ class AddTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: Form(
-                    child: TextFormField(
-                      onChanged: (value) => context
-                          .read<AddTransactionBloc>()
-                          .add(UpdateDateTextField(value)),
-                      onTap: () => buildShowDatePicker(context),
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: !state.isDateChosen
-                            ? context.tr('date')
-                            : state.dateTextField.toString(),
-                        hintStyle:
-                            const TextStyle(color: Colors.white, fontSize: 20),
-                        prefixIcon: const Icon(
-                          Icons.calendar_month,
-                          color: Colors.white,
-                        ),
-                        suffixIcon: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[800],
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
+                    child: Container(decoration: neomorphicBoxDecoration,
+                      child: TextFormField(
+                        onChanged: (value) => context
+                            .read<AddTransactionBloc>()
+                            .add(UpdateDateTextField(value)),
+                        onTap: () => buildShowDatePicker(context),
+                        readOnly: true,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          hintText: !state.isDateChosen
+                              ? context.tr('date')
+                              : state.dateTextField.toString(),
+                          hintStyle:
+                              const TextStyle(color: Colors.white, fontSize: 20),
+                          prefixIcon: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.white,
+                          ),
+                          suffixIcon: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[800],
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
                     ),
@@ -569,28 +574,30 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                 const SizedBox(
                   height: 32,
                 ),
-                TextFormField(
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                  onChanged: (value) => context
-                      .read<AddTransactionBloc>()
-                      .add(UpdateTempCustomCategoryName(value)),
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                    hintText: 'Name',
-                    hintStyle: const TextStyle(
+                Container(decoration: neomorphicBoxDecoration,
+                  child: TextFormField(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                     ),
-                    suffixIcon: const Icon(Symbols.add),
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(
-                        20,
+                    onChanged: (value) => context
+                        .read<AddTransactionBloc>()
+                        .add(UpdateTempCustomCategoryName(value)),
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                      hintText: 'Name',
+                      hintStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                      suffixIcon: const Icon(Symbols.add),
+                      filled: true,
+                      fillColor: Colors.grey[800],
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(
+                          20,
+                        ),
                       ),
                     ),
                   ),

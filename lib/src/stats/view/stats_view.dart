@@ -228,6 +228,7 @@ class StatsSuccessView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InputChip(
+                        elevation: 6,
                         label: Text(
                           context.tr('allTime'),
                           style: TextStyle(fontSize: 18),
@@ -241,6 +242,7 @@ class StatsSuccessView extends StatelessWidget {
                         state.datePeriodChosen == DatePeriodChosen.allTime,
                       ),
                       InputChip(
+                        elevation: 6,
                         label: Text(context.tr('yearly'),
                             style: TextStyle(fontSize: 18)),
                         onPressed: () {
@@ -252,6 +254,7 @@ class StatsSuccessView extends StatelessWidget {
                         state.datePeriodChosen == DatePeriodChosen.yearly,
                       ),
                       InputChip(
+                        elevation: 6,
                         label: Text(context.tr('monthly'),
                             style: TextStyle(fontSize: 18)),
                         onPressed: () {
@@ -347,7 +350,7 @@ class StatsSuccessView extends StatelessWidget {
                               state.sortedCategories.length,
                                   (index) {
                                 return PieChartSectionData(
-                                    radius: 40,
+                                    radius: 50,
                                     color: colorMapper[state
                                         .sortedCategories[index].colorName],
                                     titleStyle: const TextStyle(
