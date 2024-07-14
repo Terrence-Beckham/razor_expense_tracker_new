@@ -346,7 +346,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                 context.read<AdsBloc>().add(
                   InterstitialAdRequestedEvent(
                     onAdDismissedFullScreenContent: () {
-                      // Handle ad dismissal here
+                      context.read().add(
+                            InterstitialAdDisposed(),
+                          ); // Handle ad dismissal here
                     },
                   ),
                 );
@@ -488,6 +490,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
     );
   }
 }
+
 String translateDigits(String input, Locale locale) {
   const englishDigits = '0123456789';
   const arabicDigits = '٠١٢٣٤٥٦٧٨٩';

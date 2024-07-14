@@ -23,7 +23,6 @@ class AdsRepo {
         onAdDismissedFullScreenContent: onAdDismissedFullScreenContent,
       );
       await interstitialAd.show();
-     print('This is the interstitial ad: ${interstitialAd.responseInfo}');
       return (failure: null, value: interstitialAd);
     } catch (e, st) {
       return (

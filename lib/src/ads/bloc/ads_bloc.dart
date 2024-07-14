@@ -26,7 +26,7 @@ class AdsBloc extends Bloc<AdsEvent, AdsState> {
     InterstitialAdRequestedEvent event,
     Emitter<AdsState> emit,
   ) async {
-    if (state.didInterstitialAdAdLoad) return;
+    if (state.didInterstitialAdLoad) return;
     final pattern = await _adsRepo.getInterstitialAd(
       onAdDismissedFullScreenContent: event.onAdDismissedFullScreenContent,
     );
@@ -39,10 +39,10 @@ class AdsBloc extends Bloc<AdsEvent, AdsState> {
   }
 
   FutureOr<void> _InterstitialAdDisposed(
-      InterstitialAdDisposed event,
-      Emitter<AdsState> emit,
-      ) {
+    InterstitialAdDisposed event,
+    Emitter<AdsState> emit,
+  ) {
     state.interstitialAd?.dispose();
-    emit(state.copyWith());
+    emit(state.copyWith( interstitialAd: null));
   }
 }
