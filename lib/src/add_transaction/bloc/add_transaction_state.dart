@@ -20,7 +20,7 @@ class AddTransactionState extends Equatable {
   final bool isCategoryExpanded;
   final bool isColorExpanded;
   final bool isCategorySelected;
-  final StoredCategory tempCategory;
+  final StoredCategory? tempCategory;
   final String dateTextField;
   final String transactionAmount;
   final bool isDateChosen;
@@ -32,7 +32,11 @@ class AddTransactionState extends Equatable {
   final bool isAddNewCategoryColorPickerExpanded;
   final bool isAmountValidationFailed;
   final bool isCategoryUnselected;
+
   final AmountValidator amountValidator;
+  final Icon customCategoryIcon;
+
+  bool get didCategoryGetChosen => tempCategory != null;
 
   AddTransactionState({
     required this.newCustomCategory,
@@ -58,6 +62,7 @@ class AddTransactionState extends Equatable {
     required this.isAmountValidationFailed,
     required this.isCategoryUnselected,
     required this.amountValidator,
+    required this.customCategoryIcon,
   });
 
   AddTransactionState copyWith({
@@ -85,6 +90,7 @@ class AddTransactionState extends Equatable {
     bool Function()? isCategoryValidated,
     AmountValidator Function()? amountValidator,
     bool Function()? isCategoryUnselected,
+    Icon Function()? customCategoryIcon,
   }) {
     return AddTransactionState(
       newCustomCategory: newCustomCategory != null
@@ -136,6 +142,9 @@ class AddTransactionState extends Equatable {
           : this.isCategoryUnselected,
       amountValidator:
           amountValidator != null ? amountValidator() : this.amountValidator,
+      customCategoryIcon: customCategoryIcon != null
+          ? customCategoryIcon()
+          : this.customCategoryIcon,
     );
   }
 
@@ -154,7 +163,7 @@ class AddTransactionState extends Equatable {
         isCategoryExpanded = false,
         isCategorySelected = false,
         isAddNewCategoryExpanded = false,
-        tempCategory = StoredCategory(),
+        tempCategory = null,
         dateTextField = 'Choose Date',
         transactionAmount = '',
         isDateChosen = false,
@@ -162,10 +171,11 @@ class AddTransactionState extends Equatable {
         tempTransaction = Transaction(),
         isAmountValidationFailed = false,
         isCategoryUnselected = false,
-        amountValidator = AmountValidator(hasError: false, errorMessage: '');
+        amountValidator = AmountValidator(hasError: false, errorMessage: ''),
+        customCategoryIcon = Icon(Iconsax.arrow_right,color: Colors.white,);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         status,
         categories,
         selectedIcon,
@@ -188,6 +198,7 @@ class AddTransactionState extends Equatable {
         isAmountValidationFailed,
         isCategoryUnselected,
         amountValidator,
+        customCategoryIcon,
       ];
 }
 

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/widgets/konstants.dart';
 import 'package:string_validator/string_validator.dart';
@@ -217,24 +218,38 @@ class AddTransactionBloc
   _onUpdateCustomCategoryIcon(
       UpdateCustomCategoryIcon event, Emitter<AddTransactionState> emit) {
     _logger.e(event.icon);
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: () => AddTransactionStatus.success,
+        customCategoryIcon: () => event.icon,
         newCustomCategory: () => state.newCustomCategory
-          ..iconName = categoryWidgetsLookupMap[event.icon.icon]));
+          ..iconName = categoryWidgetsLookupMap[event.icon.icon],
+      ),
+    );
   }
 
   FutureOr<void> _onUpdateTempCategoryName(
       UpdateTempCustomCategoryName event, Emitter<AddTransactionState> emit) {
     _logger.e(event.categoryName);
-    emit(state.copyWith(
-        status: () => AddTransactionStatus.success,
-        newCustomCategory: () =>
-            state.newCustomCategory..name = event.categoryName));
+    emit(
+      state.copyWith(
+          status: () => AddTransactionStatus.success,
+          newCustomCategory: () =>
+              state.newCustomCategory..name = event.categoryName),
+    );
   }
 
   FutureOr<void> _onAddNewCategory(
       AddNewCategory event, Emitter<AddTransactionState> emit) {
     _transactionsRepository.addCustomCategory(event.category);
+    final tempCategory = StoredCategory();
+    tempCategory
+      ..colorName = event.category.colorName
+      ..iconName = event.category.colorName
+      ..name = event.category.name;
+    state.copyWith(
+        status: () => AddTransactionStatus.success,
+        tempCategory: () => tempCategory);
   }
 
   FutureOr<void> _onValidateAmountValue(

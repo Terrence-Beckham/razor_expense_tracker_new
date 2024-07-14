@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:razor_expense_tracker_new/src/ads/ads.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -44,7 +46,7 @@ class TransactionsOverviewView extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'Razor Expense Tracker',
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         body: BlocBuilder<TransactionsOverviewBloc, TransactionsOverviewState>(
@@ -88,9 +90,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
           SnackBar(
             content: Text(
               context.tr('transactionDeleted'),
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              style: GoogleFonts.comicNeue(
+                  textStyle: TextStyle(fontSize: 24),
+                  fontWeight: FontWeight.bold),
             ),
             action: SnackBarAction(
               label: context.tr('undo'),
@@ -112,7 +114,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   context.tr('helloUser'),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontSize: 18),
                 ),
                 leading: Container(
                   decoration: BoxDecoration(
@@ -134,7 +136,8 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[50],
                     child: Icon(
-                      Icons.person_2_outlined,
+                      Iconsax.user_square,
+                      size: 30,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -170,9 +173,10 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         padding: EdgeInsets.only(top: 8),
                         child: Text(
                           context.tr('totalBalance'),
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 24),
+                          style:
+                            TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold,),
+
                         ),
                       ),
                       if (state.transactions.isNotEmpty)
@@ -218,7 +222,8 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    Icons.arrow_upward_rounded,
+                                    Iconsax.arrow_up_3,
+                                    // Icons.arrow_upward_rounded,
                                     color: Colors.green,
                                     size: 24,
                                   ),
@@ -278,7 +283,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                   ],
                                 ),
                                 child: Icon(
-                                  Icons.arrow_downward_rounded,
+                                  Iconsax.arrow_down,
                                   color: Colors.red,
                                   size: 24,
                                 ),
@@ -341,20 +346,20 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                context.read<AdsBloc>().add(
-                  InterstitialAdRequestedEvent(
-                    onAdDismissedFullScreenContent: () {
-                      context.read().add(
-                            InterstitialAdDisposed(),
-                          ); // Handle ad dismissal here
-                    },
-                  ),
-                );
-              },
-              child: Icon(Icons.dangerous),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     context.read<AdsBloc>().add(
+            //       InterstitialAdRequestedEvent(
+            //         onAdDismissedFullScreenContent: () {
+            //           context.read().add(
+            //                 InterstitialAdDisposed(),
+            //               ); // Handle ad dismissal here
+            //         },
+            //       ),
+            //     );
+            //   },
+            //   child: Icon(Icons.dangerous),
+            // ),
             Expanded(
               child: SizedBox(
                 height: MediaQuery.of(context).size.width / 50,

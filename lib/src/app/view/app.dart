@@ -50,6 +50,23 @@ class AppView extends StatelessWidget {
         appBarTheme: AppBarTheme(
           color: Theme.of(context).colorScheme.onTertiary,
         ),
+        fontFamily: 'ComicNeue',
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'ComicNeue'),
+          bodyMedium: TextStyle(fontFamily: 'ComicNeue'),
+          displayLarge: TextStyle(fontFamily: 'ComicNeue'),
+          displayMedium: TextStyle(fontFamily: 'ComicNeue'),
+          displaySmall: TextStyle(fontFamily: 'ComicNeue'),
+          headlineMedium: TextStyle(fontFamily: 'ComicNeue'),
+          headlineSmall: TextStyle(fontFamily: 'ComicNeue'),
+          titleLarge: TextStyle(fontFamily: 'ComicNeue'),
+          titleMedium: TextStyle(fontFamily: 'ComicNeue'),
+          titleSmall: TextStyle(fontFamily: 'ComicNeue'),
+          bodySmall: TextStyle(fontFamily: 'ComicNeue'),
+          labelLarge: TextStyle(fontFamily: 'ComicNeue'),
+          labelSmall: TextStyle(fontFamily: 'ComicNeue'),
+        ),
+
       ),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

@@ -3,12 +3,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/ads/ads.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
 import 'package:transactions_repository/transactions_repository.dart';
-
 import '../../widgets/konstants.dart';
+import 'package:iconsax/iconsax.dart';
 
 class StatsOverviewPage extends StatelessWidget {
   const StatsOverviewPage({super.key});
@@ -217,18 +218,8 @@ class StatsSuccessView extends StatelessWidget {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AdsBloc>().add(
-                          InterstitialAdRequestedEvent(
-                            onAdDismissedFullScreenContent: () {
-                              // Handle ad dismissal here
-                            },
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.dangerous),
-                    ),
+
+
                   ],
                 ),
                 Padding(

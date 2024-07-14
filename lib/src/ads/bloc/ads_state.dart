@@ -6,11 +6,12 @@ class AdsState extends Equatable {
   const AdsState({
     this.adsCounter,
     this.interstitialAd,
+    
   });
   final int? adsCounter;
   final InterstitialAd? interstitialAd;
 
-  bool get didInterstitialAdAdLoad => interstitialAd != null;
+  bool get didInterstitialAdLoad => interstitialAd != null;
 
   @override
   List<Object?> get props => [

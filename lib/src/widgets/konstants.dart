@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
-
+import 'package:iconsax/iconsax.dart';
 ///Todo This needs to become a list and then stored in a Repo
 ///User categories will be stored here as well.
 final business = TransactionCategory()

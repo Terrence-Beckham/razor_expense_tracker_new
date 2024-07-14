@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
@@ -207,15 +207,17 @@ class AddTransactionSuccessView extends StatelessWidget {
                     decoration: InputDecoration(
                       prefixIcon: state.isExpense
                           ? const Icon(
-                              Icons.money,
+                              Iconsax.dollar_square,
                               color: Colors.red,
+                              size: 35,
                             )
                           : const Icon(
-                              Icons.money,
+                              Iconsax.dollar_square,
                               color: Colors.green,
+                              size: 35,
                             ),
                       filled: true,
-                      fillColor: Colors.blueGrey,
+                      fillColor: Colors.grey[400],
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(20),
@@ -247,13 +249,13 @@ class AddTransactionSuccessView extends StatelessWidget {
                     readOnly: true,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      hintText: state.isCategorySelected
+                      hintText: state.didCategoryGetChosen
                           ? context
-                              .tr('${state.tempCategory.name?.toLowerCase()}')
+                              .tr('${state.tempCategory?.name?.toLowerCase()}')
                           : context.tr('category'),
-                      prefixIcon: state.isCategorySelected
+                      prefixIcon: state.didCategoryGetChosen
                           ? Icon(
-                              myIcons[state.tempCategory.iconName.toString()],
+                              myIcons[state.tempCategory?.iconName.toString()],
                               color: Colors.white,
                             )
                           : const Icon(
@@ -272,7 +274,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                       hintStyle:
                           const TextStyle(color: Colors.white, fontSize: 20),
                       filled: true,
-                      fillColor: Colors.blueGrey,
+                      fillColor: Colors.grey[800],
                       border: state.isCategoryExpanded
                           ? const OutlineInputBorder(
                               borderSide: BorderSide.none,
@@ -300,8 +302,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16, right: 16),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 50),
-                    decoration: const BoxDecoration(
-                      color: Colors.blueGrey,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                         bottomRight: Radius.circular(20),
@@ -353,11 +355,11 @@ class AddTransactionSuccessView extends StatelessWidget {
                                   ///Need to set the textfield to the name and icon of the category
                                   context.read<AddTransactionBloc>().add(
                                         UpdateIsCategorySelected(
-                                            !state.isCategorySelected),
+                                            state.isCategorySelected),
                                       );
-                                  context.read<AddTransactionBloc>().add(
-                                        CategoryNotSelected(),
-                                      );
+                                  // context.read<AddTransactionBloc>().add(
+                                  //       CategoryNotSelected(),
+                                  //     );
                                 },
                               );
                             },
@@ -414,7 +416,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           color: Colors.white,
                         ),
                         filled: true,
-                        fillColor: Colors.blueGrey,
+                        fillColor: Colors.grey[800],
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(20),
@@ -439,7 +441,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                       if (state.amountValidator.hasError == true ||
                           state.transactionAmount == '') {
                         return;
-                      } else if (state.tempCategory.id == null) {
+                      } else if (state.tempCategory == null) {
                         _logger.d(
                             'No category has been selected ${state.tempCategory}');
                         context
@@ -449,9 +451,9 @@ class AddTransactionSuccessView extends StatelessWidget {
                       } else if (state.isIncome) {
                         //Convert the Stored Category object to a TransactionCategory
                         final transactionCategory = TransactionCategory()
-                          ..name = state.tempCategory.name
-                          ..colorName = state.tempCategory.colorName
-                          ..iconName = state.tempCategory.iconName;
+                          ..name = state.tempCategory?.name
+                          ..colorName = state.tempCategory?.colorName
+                          ..iconName = state.tempCategory?.iconName;
 
                         final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
@@ -472,9 +474,9 @@ class AddTransactionSuccessView extends StatelessWidget {
                       } else {
                         //Convert the Stored Category object to a TransactionCategory
                         final transactionCategory = TransactionCategory()
-                          ..name = state.tempCategory.name
-                          ..colorName = state.tempCategory.colorName
-                          ..iconName = state.tempCategory.iconName;
+                          ..name = state.tempCategory?.name
+                          ..colorName = state.tempCategory?.colorName
+                          ..iconName = state.tempCategory?.iconName;
                         final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
@@ -499,11 +501,11 @@ class AddTransactionSuccessView extends StatelessWidget {
                       }
                     },
                     child: state.isExpense
-                        ?  Text(
+                        ? Text(
                             context.tr('saveExpense'),
                             style: TextStyle(fontSize: 24),
                           )
-                        :  Text(
+                        : Text(
                             context.tr('saveIncome'),
                             style: TextStyle(fontSize: 24),
                           ),
@@ -538,295 +540,296 @@ Future<void> buildShowDatePicker(BuildContext context) async {
 Future<void> _showAddNewCategoryPicker(BuildContext context) async {
   final _logger = Logger();
   showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (innerContext) => BlocProvider.value(
-          value: context.read<AddTransactionBloc>(),
-          child: BlocBuilder<AddTransactionBloc, AddTransactionState>(
-            builder: (context, state) {
-              return SizedBox(
-                height: double.infinity,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 48,
+    isScrollControlled: true,
+    context: context,
+    builder: (innerContext) => BlocProvider.value(
+      value: context.read<AddTransactionBloc>(),
+      child: BlocBuilder<AddTransactionBloc, AddTransactionState>(
+        builder: (context, state) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height - 150,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 48,
+                ),
+                const TextField(
+                  readOnly: true,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    label: Text(
+                      'Add Your Own Category',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                     ),
-                    const TextField(
-                      readOnly: true,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        label: Text(
-                          'Add Your Own Category',
-                          style: TextStyle(fontSize: 32),
-                        ),
-                        // hintText: 'Choose A Category',
+                    // hintText: 'Choose A Category',
+                  ),
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                TextFormField(
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  onChanged: (value) => context
+                      .read<AddTransactionBloc>()
+                      .add(UpdateTempCustomCategoryName(value)),
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    hintText: 'Name',
+                    hintStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                    suffixIcon: const Icon(Symbols.add),
+                    filled: true,
+                    fillColor: Colors.grey[800],
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(
+                        20,
                       ),
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                      onChanged: (value) => context
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+
+                ///Icon Picker FormField
+                TextFormField(
+                  onTap: () {
+                    context
+                        .read<AddTransactionBloc>()
+                        .add(ExpandNewIconPicker());
+
+                    ///todo this has to be fixed in order to collapse the color picker
+                    if (state.isAddNewCategoryColorPickerExpanded) {
+                      context
                           .read<AddTransactionBloc>()
-                          .add(UpdateTempCustomCategoryName(value)),
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: const Icon(Symbols.add),
-                        filled: true,
-                        fillColor: Theme.of(context).primaryColor,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ),
-                        ),
-                      ),
+                          .add(ExpandNewColorPicker());
+                    }
+                  },
+                  readOnly: true,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    hintText: 'Icon',
+                    hintStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(right: 8),
 
-                    ///Icon Picker FormField
-                    TextFormField(
-                      onTap: () {
-                        context
-                            .read<AddTransactionBloc>()
-                            .add(ExpandNewIconPicker());
-
-                        ///todo this has to be fixed in order to collapse the color picker
-                        if (state.isAddNewCategoryColorPickerExpanded) {
-                          context
-                              .read<AddTransactionBloc>()
-                              .add(ExpandNewColorPicker());
-                        }
-                      },
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Icon',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: state.selectedIcon,
-                        ),
-                        // suffixIcon: isCategoryExpanded
-                        //     ? const Icon(
-                        //         CupertinoIcons.chevron_down,
-                        //         color: Colors.white,
-                        //       )
-                        //     : const Icon(
-                        //         CupertinoIcons
-                        //             .chevron_forward,
-                        //         color: Colors.white,
-                        //       ),
-                        filled: true,
-                        fillColor: Theme.of(context).primaryColor,
-                        border: state.isAddNewCategoryExpanded
-                            ? const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              )
-                            : OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                      ),
+                      ///todo I need to show the selected icon for the new custom class
+                      ///and not the one for the regular category.
+                      // child: state.customCategoryIcon,
+                      child: state.customCategoryIcon
                     ),
-                    if (state.isAddNewCategoryExpanded)
-                      Expanded(
-                        child: Container(
-                          height: 300,
-                          decoration:
-                              BoxDecoration(color: Colors.lightBlueAccent
-                                  // color: Theme.of(context).primaryColor,
-                                  ),
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(20),
-                              bottomRight: Radius.circular(20),
+                    filled: true,
+                    fillColor: Colors.grey[800],
+                    border: state.isAddNewCategoryExpanded
+                        ? const OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
                             ),
-                            child: GridView.builder(
-                              itemCount: state.categoryWidgetIcons.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                          (MediaQuery.of(context).size.height /
-                                              4)),
-                              itemBuilder: (context, int i) {
-                                return GestureDetector(
-                                  onTap: () => {
-                                    _logger.d(
-                                        'This is the icon that was selected: ${state.categoryWidgetIcons[i]}'),
-                                    context.read<AddTransactionBloc>().add(
-                                        UpdateCustomCategoryIcon(
-                                            state.categoryWidgetIcons[i]))
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 8,
-                                        color: state.selectedIcon ==
-                                                state.categoryWidgetIcons[i]
-                                            ? Colors.green
-                                            : Colors.blueGrey,
+                          )
+                        : OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                  ),
+                ),
+                if (state.isAddNewCategoryExpanded)
+                  Expanded(
+                    child: Container(
+                      height: 300,
+                      decoration: BoxDecoration(color: Colors.lightBlueAccent
+                          // color: Theme.of(context).primaryColor,
+                          ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        child: GridView.builder(
+                          itemCount: state.categoryWidgetIcons.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                      (MediaQuery.of(context).size.height / 4)),
+                          itemBuilder: (context, int i) {
+                            return GestureDetector(
+                              onTap: () => {
+                                _logger.d(
+                                    'This is the icon that was selected: ${state.categoryWidgetIcons[i]}'),
+                                context.read<AddTransactionBloc>().add(
+                                      UpdateCustomCategoryIcon(
+                                        state.categoryWidgetIcons[i],
                                       ),
                                     ),
-
-                                    ///Todo there is something wrong here.
-                                    child: state.categoryWidgetIcons[i],
-                                  ),
-                                );
                               },
-                            ),
-                          ),
-                        ),
-                      )
-                    else
-                      Container(),
-                    const SizedBox(
-                      height: 16,
-                    ),
-
-                    ///Color Picker FormField
-                    TextFormField(
-                      onTap: () {
-                        context
-                            .read<AddTransactionBloc>()
-                            .add(ExpandNewColorPicker());
-
-                        ///Closes the icon picker if it is open.
-                        ///todo this has to be named better. It's confusing.
-                        if (state.isAddNewCategoryExpanded) {
-                          context
-                              .read<AddTransactionBloc>()
-                              .add(ExpandNewIconPicker());
-                        }
-                      },
-                      readOnly: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      decoration: InputDecoration(
-                        hintText: 'Color',
-                        hintStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                        suffixIcon: state.isAddNewCategoryColorPickerExpanded
-                            ? const Icon(
-                                CupertinoIcons.chevron_down,
-                                color: Colors.white,
-                              )
-                            : const Icon(
-                                CupertinoIcons.chevron_forward,
-                                color: Colors.white,
-                              ),
-                        filled: true,
-
-                        ///Todo this needs to be rewritten the fill color
-                        fillColor: state.selectedColor,
-                        border: state.isAddNewCategoryColorPickerExpanded
-                            ? const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              )
-                            : OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                      ),
-                    ),
-                    if (state.isAddNewCategoryColorPickerExpanded)
-                      SizedBox(
-                        height: 200,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: GridView.builder(
-                            itemCount: colorPickerWidgets.length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                            ),
-                            itemBuilder: (context, int i) {
-                              return GestureDetector(
-                                onTap: () =>
-                                    context.read<AddTransactionBloc>().add(
-                                          UpdateNewCategoryColor(
-                                            colorPickerWidgets[i],
-                                          ),
-                                        ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 6,
-                                      color: state.selectedColor ==
-                                              colorPickerWidgets[i]
-                                          ? Colors.green
-                                          : Colors.blueGrey,
-                                    ),
-                                  ),
-                                  child: ColoredBox(
-                                    color: colorPickerWidgets[i],
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 8,
+                                    color: state.selectedIcon ==
+                                            state.categoryWidgetIcons[i]
+                                        ? Colors.green
+                                        : Colors.blueGrey,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    else
-                      Container(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          Theme.of(context).colorScheme.onTertiary,
-                        ),
-                      ),
-                      onPressed: () {
-                        context.read<AddTransactionBloc>().add(
-                              AddNewCategory(state.tempCategory),
+
+                                ///Todo there is something wrong here.
+                                child: state.categoryWidgetIcons[i],
+                              ),
                             );
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Save New Category',
-                        style: TextStyle(fontSize: 24),
+                          },
+                        ),
                       ),
                     ),
-                  ],
+                  )
+                else
+                  Container(),
+                const SizedBox(
+                  height: 16,
                 ),
-              );
-            },
-          )));
+
+                ///Color Picker FormField
+                TextFormField(
+                  onTap: () {
+                    context
+                        .read<AddTransactionBloc>()
+                        .add(ExpandNewColorPicker());
+
+                    ///Closes the icon picker if it is open.
+                    ///todo this has to be named better. It's confusing.
+                    if (state.isAddNewCategoryExpanded) {
+                      context
+                          .read<AddTransactionBloc>()
+                          .add(ExpandNewIconPicker());
+                    }
+                  },
+                  readOnly: true,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    hintText: 'Color',
+                    hintStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                    suffixIcon: state.isAddNewCategoryColorPickerExpanded
+                        ? const Icon(
+                            Iconsax.arrow_down,
+                            color: Colors.white,
+                          )
+                        : const Icon(
+                            Iconsax.arrow_right,
+                            color: Colors.white,
+                          ),
+                    filled: true,
+
+                    ///Todo this needs to be rewritten the fill color
+                    fillColor: state.selectedColor,
+                    border: state.isAddNewCategoryColorPickerExpanded
+                        ? const OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          )
+                        : OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                  ),
+                ),
+                if (state.isAddNewCategoryColorPickerExpanded)
+                  SizedBox(
+                    height: 200,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      child: GridView.builder(
+                        itemCount: colorPickerWidgets.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                        ),
+                        itemBuilder: (context, int i) {
+                          return GestureDetector(
+                            onTap: () => context.read<AddTransactionBloc>().add(
+                                  UpdateNewCategoryColor(
+                                    colorPickerWidgets[i],
+                                  ),
+                                ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 6,
+                                  color: state.selectedColor ==
+                                          colorPickerWidgets[i]
+                                      ? Colors.green
+                                      : Colors.blueGrey,
+                                ),
+                              ),
+                              child: ColoredBox(
+                                color: colorPickerWidgets[i],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                else
+                  Container(),
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).colorScheme.onTertiary,
+                    ),
+                  ),
+                  onPressed: () {
+                    ///todo I need to make a category specifically for the
+                    ///add New Category
+                    context.read<AddTransactionBloc>().add(
+                          AddNewCategory(state.newCustomCategory),
+                        );
+                    context.read<AddTransactionBloc>().add(
+                          Initial(),
+                        );
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Save New Category',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    ),
+  );
 }
 
 class AddNewCategoryButton extends StatelessWidget {
