@@ -35,3 +35,8 @@ final class TransactionsRequestedEvent extends TransactionsOverviewEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class GetSettingsEvent extends TransactionsOverviewEvent{
+  @override
+  List<Object?> get props => [];
+}

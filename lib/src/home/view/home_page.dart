@@ -23,11 +23,11 @@ class HomePage extends StatelessWidget {
       ),
       BlocProvider<TransactionsOverviewBloc>(
         create: (_) => TransactionsOverviewBloc(
-          context.read<TransactionsRepository>(),
+          context.read<TransactionsRepo>(),
         ),
       ),
       BlocProvider<StatsBloc>(
-        create: (_) => StatsBloc(context.read<TransactionsRepository>()),
+        create: (_) => StatsBloc(context.read<TransactionsRepo>()),
       ),
     ], child: HomeView());
   }
@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
           // shape: const CircleBorder(),
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Colors.grey[800],
           elevation: 10,
           onPressed: () {
             Navigator.of(context).push(

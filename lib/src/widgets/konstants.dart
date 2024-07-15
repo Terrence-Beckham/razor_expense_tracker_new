@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:iconsax/iconsax.dart';
+
 ///Todo This needs to become a list and then stored in a Repo
 ///User categories will be stored here as well.
 final business = TransactionCategory()
@@ -144,6 +145,10 @@ final education = TransactionCategory()
   ..name = 'Education'
   ..iconName = 'education'
   ..colorName = 'deep_purple_accent';
+final salary = TransactionCategory()
+  ..name = 'Salary'
+  ..iconName = 'salary'
+  ..colorName = 'deep_blue';
 
 const myIcons = <String, IconData>{
   'exercise': Symbols.exercise,
@@ -184,6 +189,7 @@ const myIcons = <String, IconData>{
 };
 
 final localCategories = <TransactionCategory>[
+  salary,
   gymMembership, //exercise
   salon, //styler
   subscriptions, //subscriptions
@@ -332,13 +338,12 @@ final categoryWidgets = <Icon>[
 ];
 
 
-
 /// I can use the categoryWidgetsLookupMap.map((key, value) => MapEntry(value, key));
 final colorMapper = <String, Color>{
   'red': Colors.red,
   'yellow': Colors.yellow,
   'blue': Colors.blue,
-  'white': Colors.white,
+  // 'white': Colors.white,
   'green': Colors.green,
   'cyan_accent': Colors.cyanAccent,
   'orange': Colors.orange,

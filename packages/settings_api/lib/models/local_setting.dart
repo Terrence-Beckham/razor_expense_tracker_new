@@ -2,15 +2,13 @@ import 'package:isar/isar.dart';
 
 part 'local_setting.g.dart';
 
-
 ///This is the Settings object from the Database
 @collection
 class LocalSetting {
-
-
   Id id = 1;
-  int adCounterNumber = 0 ;
-  int adCounterThreshold = 30;
+  int adCounterNumber = 0;
+
+  int adCounterThreshold = 40;
 }
 
 //

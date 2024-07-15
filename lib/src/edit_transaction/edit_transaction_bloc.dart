@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
+import 'package:razor_expense_tracker_new/src/transactions_overview/bloc/transactions_overview_bloc.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -12,7 +13,7 @@ part 'edit_transaction_state.dart';
 class EditTransactionBloc
     extends Bloc<EditTransactionEvent, EditTransactionState> {
   EditTransactionBloc(
-      {required TransactionsRepository transactionsRepository,
+      {required TransactionsRepo transactionsRepository,
       required Transaction transaction})
       : _logger = Logger(),
         _transactionsRepository = transactionsRepository,
@@ -28,11 +29,12 @@ class EditTransactionBloc
     on<TransactionUpdateRequested>(_updateTransaction);
   }
 
-  final TransactionsRepository _transactionsRepository;
+  final TransactionsRepo _transactionsRepository;
   final Logger _logger;
 
   FutureOr<void> _loadInitialData(
       InitialDataEvent event, Emitter<EditTransactionState> emit) async {
+    
     await emit.forEach<List<StoredCategory>>(
         _transactionsRepository.sortedCategoryStream(), onData: (categories) {
       // _logger.d('These are the categories in $categories');
@@ -41,6 +43,7 @@ class EditTransactionBloc
         categories: () => categories,
       );
     });
+    
   }
 
   FutureOr<void> _setIsCategoryExpanded(

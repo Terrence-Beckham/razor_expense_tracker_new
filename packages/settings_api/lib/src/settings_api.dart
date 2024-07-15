@@ -8,7 +8,7 @@ abstract class SettingsApi {
   const SettingsApi();
   
   /// Provides a [Stream] of all Settings.
-  Stream<List<LocalSetting>> settingStream();
+  Stream<LocalSetting> settingStream();
 
 
   /// If a [Setting] with the same id already exists, it will be replaced.
@@ -18,13 +18,18 @@ abstract class SettingsApi {
       );
 
   ///Queries transactions and adds them to the stream
-  Future<void> getSettings();
+  Future<void> addSettingsToStream();
 
   /// Closes the client and frees up any resources.
   Future<void> close();
+  
+  
+/// This increments the AddCounter
+  Future<void> incrementAdCounter();
+  
+  ///This method changes the threshold on which ads will be shown
+Future<void> setAdCounterThreshold(int newThreshold);
 }
-
-
 
 
 /// Error thrown when a [Setting] with a given id is not found.

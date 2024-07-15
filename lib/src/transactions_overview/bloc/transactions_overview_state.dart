@@ -9,7 +9,8 @@ final class TransactionsOverviewState extends Equatable {
     this.incomeTotals = 0,
     this.expenseTotals = 0,
     this.balance = 0,
-    this.deletedTransaction ,
+    this.deletedTransaction,
+    this.localSetting = null,
   });
 
   final TransactionsOverviewStatus status;
@@ -18,6 +19,7 @@ final class TransactionsOverviewState extends Equatable {
   final int expenseTotals;
   final int balance;
   final Transaction? deletedTransaction;
+  final LocalSetting? localSetting;
 
   TransactionsOverviewState copyWith({
     TransactionsOverviewStatus Function()? status,
@@ -26,18 +28,20 @@ final class TransactionsOverviewState extends Equatable {
     int Function()? expenseTotals,
     int Function()? balance,
     Transaction? Function()? deletedTransaction,
+    LocalSetting? Function()? localSetting,
   }) {
     return TransactionsOverviewState(
-      status: status != null ? status() : this.status,
-      transactions: transactions != null ? transactions() : this.transactions,
-      incomeTotals: incomeTotals != null ? incomeTotals() : this.incomeTotals,
-      expenseTotals:
-          expenseTotals != null ? expenseTotals() : this.expenseTotals,
-      balance: balance != null ? balance() : this.balance,
-      deletedTransaction: deletedTransaction != null
-          ? deletedTransaction()
-          : this.deletedTransaction,
-    );
+        status: status != null ? status() : this.status,
+        transactions: transactions != null ? transactions() : this.transactions,
+        incomeTotals: incomeTotals != null ? incomeTotals() : this.incomeTotals,
+        expenseTotals:
+            expenseTotals != null ? expenseTotals() : this.expenseTotals,
+        balance: balance != null ? balance() : this.balance,
+        deletedTransaction: deletedTransaction != null
+            ? deletedTransaction()
+            : this.deletedTransaction,
+        localSetting:
+            localSetting != null ? localSetting() : this.localSetting);
   }
 
   @override
@@ -48,5 +52,6 @@ final class TransactionsOverviewState extends Equatable {
         expenseTotals,
         balance,
         deletedTransaction,
+        localSetting,
       ];
 }

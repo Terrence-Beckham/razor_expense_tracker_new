@@ -94,9 +94,8 @@ class LocalStorageTransactionsApi extends TransactionsApi {
   }
 
   @override
-  Future<void> close() {
-    _transactionStreamController.close();
-    return _storedCategoryStreamController.close();
+  Future<void> close() async{
+    await _transactionStreamController.close();
   }
 
   @override

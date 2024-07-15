@@ -29,7 +29,7 @@ void main() async {
     isarDb: isar,
   );
 
-  final transactionRepository = TransactionsRepository(
+  final transactionRepository = TransactionsRepo(
     transactionsApi: transactionsApi,
   );
   runApp(

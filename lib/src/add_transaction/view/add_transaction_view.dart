@@ -21,18 +21,18 @@ class AddTransactionPage extends StatelessWidget {
       providers: [
         BlocProvider<AddTransactionBloc>(
           create: (_) =>
-              AddTransactionBloc(context.read<TransactionsRepository>())
+              AddTransactionBloc(context.read<TransactionsRepo>())
                 ..add(
                   Initial(),
                 ),
         ),
         BlocProvider<TransactionsOverviewBloc>(
           create: (_) => TransactionsOverviewBloc(
-            context.read<TransactionsRepository>(),
+            context.read<TransactionsRepo>(),
           ),
         ),
         BlocProvider<StatsBloc>(
-          create: (_) => StatsBloc(context.read<TransactionsRepository>()),
+          create: (_) => StatsBloc(context.read<TransactionsRepo>()),
         ),
       ],
       child: AddTransactionView(),

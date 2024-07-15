@@ -45,7 +45,7 @@ class AddTransactionBloc
     on<CategoryNotSelected>(_onIsCategoryNotSelected);
   }
 
-  final TransactionsRepository _transactionsRepository;
+  final TransactionsRepo _transactionsRepository;
   final Logger _logger = Logger();
 
   FutureOr<void> _onInitial(

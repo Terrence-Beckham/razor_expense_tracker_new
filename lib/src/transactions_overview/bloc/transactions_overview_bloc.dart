@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
+import 'package:settings_api/models/local_setting.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -11,18 +13,19 @@ part 'transactions_overview_state.dart';
 
 class TransactionsOverviewBloc
     extends Bloc<TransactionsOverviewEvent, TransactionsOverviewState> {
-  TransactionsOverviewBloc(
-    this._transactionsRepository,
-  )   : _logger = Logger(),
+  TransactionsOverviewBloc(this._transactionsRepo, this._settingsRepo)
+      : _logger = Logger(),
         super(const TransactionsOverviewState()) {
     on<TransactionsOverviewEvent>((event, emit) {});
     on<InitialDataEvent>(_loadInitialData);
     on<DeleteTransactionEvent>(_deleteTransaction);
     on<UndoDeleteTransactionEvent>(_undoDeleteTransaction);
     on<TransactionsRequestedEvent>(_requestTransactions);
+    on<GetSettingsEvent>(_getSettingsStream);
   }
 
-  final TransactionsRepository _transactionsRepository;
+  final TransactionsRepo _transactionsRepo;
+  final SettingsRepo _settingsRepo;
 
   final Logger _logger;
 
@@ -33,7 +36,7 @@ class TransactionsOverviewBloc
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
     _logger.d("It should be loading now.");
     await emit.forEach<List<Transaction>>(
-      _transactionsRepository.transactionStream(),
+      _transactionsRepo.transactionStream(),
       onData: (transactions) {
         final reversedTransactions = transactions.reversed.toList();
         return state.copyWith(
@@ -84,7 +87,7 @@ class TransactionsOverviewBloc
 
   FutureOr<void> _deleteTransaction(
       event, Emitter<TransactionsOverviewState> emit) {
-    _transactionsRepository.deleteTransaction(event.transaction);
+    _transactionsRepo.deleteTransaction(event.transaction);
     emit(
       state.copyWith(
         status: () => TransactionsOverviewStatus.success,
@@ -96,7 +99,7 @@ class TransactionsOverviewBloc
   FutureOr<void> _undoDeleteTransaction(UndoDeleteTransactionEvent event,
       Emitter<TransactionsOverviewState> emit) {
     _logger.d('${state.deletedTransaction}');
-    _transactionsRepository.saveTransaction(
+    _transactionsRepo.saveTransaction(
       event.transaction,
     );
     emit(
@@ -111,6 +114,17 @@ class TransactionsOverviewBloc
       Emitter<TransactionsOverviewState> emit) {
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
 
-    _transactionsRepository.getTransactions();
+    _transactionsRepo.getTransactions();
+  }
+
+  FutureOr<void> _getSettingsStream(
+      GetSettingsEvent event, Emitter<TransactionsOverviewState> emit) async {
+    await emit.forEach(
+      _settingsRepo.settingsStream(),
+      onData: (setting) => state.copyWith(
+        localSetting: () => setting,
+        status: () => TransactionsOverviewStatus.success,
+      ),
+    );
   }
 }

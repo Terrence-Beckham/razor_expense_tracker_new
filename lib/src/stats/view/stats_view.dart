@@ -21,7 +21,7 @@ class StatsOverviewPage extends StatelessWidget {
         BlocProvider(
             create: (context) =>
             StatsBloc(
-              context.read<TransactionsRepository>(),
+              context.read<TransactionsRepo>(),
             )
               ..add(const SubscribeToTransactionsEvent())..add(
                 SubscribeToCategoriesEvent()),
@@ -386,13 +386,12 @@ class StatsSuccessView extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Divider(
-                  color: Colors.grey,
-                  thickness: 2,
-                ),
+                // SizedBox(
+                //   height: 30,
+                // ),
+                // Divider(
+                //   color: Colors.grey,
+                //   thickness: 6,),
                 Expanded(
                   child: SizedBox(
                     width: MediaQuery

@@ -8,20 +8,20 @@ import '../../home/view/home_page.dart';
 
 class App extends StatelessWidget {
   const App({
-    required TransactionsRepository transactionsRepository,
+    required TransactionsRepo transactionsRepository,
     required AdsRepo adsRepo,
     super.key,
   })  : _transactionsRepository = transactionsRepository,
         _adsRepo = adsRepo;
 
-  final TransactionsRepository _transactionsRepository;
+  final TransactionsRepo _transactionsRepository;
   final AdsRepo _adsRepo;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<TransactionsRepository>(
+        RepositoryProvider<TransactionsRepo>(
             create: (context) => _transactionsRepository),
         RepositoryProvider<AdsRepo>(create: (context) => _adsRepo),
       ],

@@ -21,7 +21,7 @@ class TransactionsOverviewPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => TransactionsOverviewBloc(
-            context.read<TransactionsRepository>(),
+            context.read<TransactionsRepo>(),
           )..add(InitialDataEvent()),
         ),
         BlocProvider(
@@ -170,7 +170,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 8),
+                        padding: EdgeInsets.only(top: 16),
                         child: Text(
                           context.tr('totalBalance'),
                           style:
@@ -456,7 +456,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 child: Text(
                                   state.transactions[index].dateOfTransaction
                                       .toString()
-                                      .substring(1, 10),
+                                      .substring(0, 10),
                                 ),
                               ),
                               trailing: Text(

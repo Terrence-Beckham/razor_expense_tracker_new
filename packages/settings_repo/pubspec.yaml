@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  settings_api:
+    path: ../settings_api
 
 dev_dependencies:
   flutter_test:

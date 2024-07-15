@@ -4,9 +4,9 @@ import 'package:transactions_api/transactions_api.dart';
 /// A repository that handles transaction related requests.
 /// {@endtemplate}
 
-class TransactionsRepository {
+class TransactionsRepo {
   /// {@macro expense_repository}
-  const TransactionsRepository({required TransactionsApi transactionsApi})
+  const TransactionsRepo({required TransactionsApi transactionsApi})
       : _transactionsApi = transactionsApi;
 
   final TransactionsApi _transactionsApi;

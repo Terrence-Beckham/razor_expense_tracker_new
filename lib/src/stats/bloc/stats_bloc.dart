@@ -23,7 +23,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     on<SelectedYearChanged>(_changeSelectedYear);
   }
 
-  final TransactionsRepository _transactionsRepository;
+  final TransactionsRepo _transactionsRepository;
   final Logger _logger;
 
   FutureOr<void> _subscribeToTransactions(

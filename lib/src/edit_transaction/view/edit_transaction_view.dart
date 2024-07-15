@@ -18,7 +18,7 @@ class EditTransactionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => EditTransactionBloc(
-          transactionsRepository: context.read<TransactionsRepository>(),
+          transactionsRepository: context.read<TransactionsRepo>(),
           transaction: transaction)
         ..add(InitialDataEvent()),
       child: EditTransactionView(),
