@@ -2,6 +2,7 @@ import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../home/view/home_page.dart';
@@ -10,12 +11,15 @@ class App extends StatelessWidget {
   const App({
     required TransactionsRepo transactionsRepository,
     required AdsRepo adsRepo,
+    required SettingsRepo settingsRepo,
     super.key,
   })  : _transactionsRepository = transactionsRepository,
-        _adsRepo = adsRepo;
+        _adsRepo = adsRepo,
+        _settingsRepo = settingsRepo;
 
   final TransactionsRepo _transactionsRepository;
   final AdsRepo _adsRepo;
+  final SettingsRepo _settingsRepo;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,7 @@ class App extends StatelessWidget {
         RepositoryProvider<TransactionsRepo>(
             create: (context) => _transactionsRepository),
         RepositoryProvider<AdsRepo>(create: (context) => _adsRepo),
+        RepositoryProvider<SettingsRepo>(create: (context) => _settingsRepo),
       ],
       child: AppView(),
     );
@@ -66,7 +71,6 @@ class AppView extends StatelessWidget {
           labelLarge: TextStyle(fontFamily: 'ComicNeue'),
           labelSmall: TextStyle(fontFamily: 'ComicNeue'),
         ),
-
       ),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

@@ -1,3 +1,4 @@
+import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
 import 'package:razor_expense_tracker_new/src/transactions_overview/bloc/transactions_overview_bloc.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -20,16 +22,16 @@ class AddTransactionPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AddTransactionBloc>(
-          create: (_) =>
-              AddTransactionBloc(context.read<TransactionsRepo>())
-                ..add(
-                  Initial(),
-                ),
+          create: (_) => AddTransactionBloc(context.read<TransactionsRepo>())
+            ..add(
+              Initial(),
+            ),
         ),
         BlocProvider<TransactionsOverviewBloc>(
           create: (_) => TransactionsOverviewBloc(
-            context.read<TransactionsRepo>(),
-          ),
+              context.read<TransactionsRepo>(),
+              context.read<SettingsRepo>(),
+              context.read<AdsRepo>()),
         ),
         BlocProvider<StatsBloc>(
           create: (_) => StatsBloc(context.read<TransactionsRepo>()),
@@ -109,9 +111,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   child: Text(
                     context.tr('addTransaction'),
-                    style: TextStyle(
-                      fontSize: 32,fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -194,7 +194,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: Container(decoration: neomorphicBoxDecoration,
+                  child: Container(
+                    decoration: neomorphicBoxDecoration,
                     child: TextFormField(
                       // controller: _transactionAmountController,
                       onChanged: (value) {
@@ -243,7 +244,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: Container(decoration: neomorphicBoxDecoration,
+                  child: Container(
+                    decoration: neomorphicBoxDecoration,
                     child: TextFormField(
                       style: TextStyle(fontSize: 18),
                       onTap: () => context.read<AddTransactionBloc>().add(
@@ -252,12 +254,13 @@ class AddTransactionSuccessView extends StatelessWidget {
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
                         hintText: state.didCategoryGetChosen
-                            ? context
-                                .tr('${state.tempCategory?.name?.toLowerCase()}')
+                            ? context.tr(
+                                '${state.tempCategory?.name?.toLowerCase()}')
                             : context.tr('category'),
                         prefixIcon: state.didCategoryGetChosen
                             ? Icon(
-                                myIcons[state.tempCategory?.iconName.toString()],
+                                myIcons[
+                                    state.tempCategory?.iconName.toString()],
                                 color: Colors.white,
                               )
                             : const Icon(
@@ -397,7 +400,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: Form(
-                    child: Container(decoration: neomorphicBoxDecoration,
+                    child: Container(
+                      decoration: neomorphicBoxDecoration,
                       child: TextFormField(
                         onChanged: (value) => context
                             .read<AddTransactionBloc>()
@@ -409,8 +413,8 @@ class AddTransactionSuccessView extends StatelessWidget {
                           hintText: !state.isDateChosen
                               ? context.tr('date')
                               : state.dateTextField.toString(),
-                          hintStyle:
-                              const TextStyle(color: Colors.white, fontSize: 20),
+                          hintStyle: const TextStyle(
+                              color: Colors.white, fontSize: 20),
                           prefixIcon: const Icon(
                             Icons.calendar_month,
                             color: Colors.white,
@@ -574,7 +578,8 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                 const SizedBox(
                   height: 32,
                 ),
-                Container(decoration: neomorphicBoxDecoration,
+                Container(
+                  decoration: neomorphicBoxDecoration,
                   child: TextFormField(
                     style: const TextStyle(
                       color: Colors.white,
@@ -629,13 +634,12 @@ Future<void> _showAddNewCategoryPicker(BuildContext context) async {
                       fontSize: 20,
                     ),
                     suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.only(right: 8),
 
-                      ///todo I need to show the selected icon for the new custom class
-                      ///and not the one for the regular category.
-                      // child: state.customCategoryIcon,
-                      child: state.customCategoryIcon
-                    ),
+                        ///todo I need to show the selected icon for the new custom class
+                        ///and not the one for the regular category.
+                        // child: state.customCategoryIcon,
+                        child: state.customCategoryIcon),
                     filled: true,
                     fillColor: Colors.grey[800],
                     border: state.isAddNewCategoryExpanded

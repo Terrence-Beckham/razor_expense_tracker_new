@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
-import 'package:razor_expense_tracker_new/src/transactions_overview/bloc/transactions_overview_bloc.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -14,9 +15,13 @@ class EditTransactionBloc
     extends Bloc<EditTransactionEvent, EditTransactionState> {
   EditTransactionBloc(
       {required TransactionsRepo transactionsRepository,
-      required Transaction transaction})
+      required Transaction transaction,
+      required SettingsRepo settingsRepo,
+      required AdsRepo adsRepo})
       : _logger = Logger(),
         _transactionsRepository = transactionsRepository,
+        _settingsRepo = settingsRepo,
+        _adsRepo = adsRepo,
         super(
           EditTransactionState(transaction: transaction),
         ) {
@@ -31,10 +36,11 @@ class EditTransactionBloc
 
   final TransactionsRepo _transactionsRepository;
   final Logger _logger;
+  final SettingsRepo _settingsRepo;
+  final AdsRepo _adsRepo;
 
   FutureOr<void> _loadInitialData(
       InitialDataEvent event, Emitter<EditTransactionState> emit) async {
-    
     await emit.forEach<List<StoredCategory>>(
         _transactionsRepository.sortedCategoryStream(), onData: (categories) {
       // _logger.d('These are the categories in $categories');
@@ -43,7 +49,6 @@ class EditTransactionBloc
         categories: () => categories,
       );
     });
-    
   }
 
   FutureOr<void> _setIsCategoryExpanded(
@@ -108,7 +113,6 @@ class EditTransactionBloc
 
   FutureOr<void> _updateTransaction(
       TransactionUpdateRequested event, Emitter<EditTransactionState> emit) {
-   _transactionsRepository.saveTransaction(event.updatedTransaction);
-
+    _transactionsRepository.saveTransaction(event.updatedTransaction);
   }
 }

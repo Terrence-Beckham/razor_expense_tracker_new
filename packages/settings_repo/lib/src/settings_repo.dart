@@ -12,13 +12,17 @@ class SettingsRepo {
   final SettingsApi _settingsApi;
 
   ///Provides a Stream of the Settings object
-  Stream<LocalSetting> settingsStream() => _settingsApi.settingStream();
+  Stream<LocalSetting?> settingsStream() => _settingsApi.settingsStream();
 
   ///Saves the settings object back to the database
   Future<void> saveSettings(LocalSetting settings) =>
       _settingsApi.saveSettings(settings);
 
   ///This increments the ad counter
-  Future<void> incrementAdCounter(int newCounterValue) =>
+  Future<void> incrementAdCounter() =>
       _settingsApi.incrementAdCounter();
+
+
+///Reset the AdCounter to Zero
+Future<void> resetAdCounter()=> _settingsApi.resetAdCounter();
 }

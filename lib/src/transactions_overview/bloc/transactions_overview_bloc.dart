@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
 
+import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
@@ -13,7 +15,8 @@ part 'transactions_overview_state.dart';
 
 class TransactionsOverviewBloc
     extends Bloc<TransactionsOverviewEvent, TransactionsOverviewState> {
-  TransactionsOverviewBloc(this._transactionsRepo, this._settingsRepo)
+  TransactionsOverviewBloc(
+      this._transactionsRepo, this._settingsRepo, this._adsRepo)
       : _logger = Logger(),
         super(const TransactionsOverviewState()) {
     on<TransactionsOverviewEvent>((event, emit) {});
@@ -22,11 +25,17 @@ class TransactionsOverviewBloc
     on<UndoDeleteTransactionEvent>(_undoDeleteTransaction);
     on<TransactionsRequestedEvent>(_requestTransactions);
     on<GetSettingsEvent>(_getSettingsStream);
+    on<IncrementAdCounterEvent>(_incrementAdCounter);
+    on<RequestInterstitialEvent>(_requestInterstitial);
+
+    ///Send these events on startup
+    add(InitialDataEvent());
+    add(GetSettingsEvent());
   }
 
   final TransactionsRepo _transactionsRepo;
   final SettingsRepo _settingsRepo;
-
+  final AdsRepo _adsRepo;
   final Logger _logger;
 
   FutureOr<void> _loadInitialData(
@@ -48,9 +57,6 @@ class TransactionsOverviewBloc
         );
       },
     );
-
-    _logger.d(
-        'This is the list of transactions stored in the db: ${state.transactions}');
   }
 
   int calculateTotalExpenses(List<Transaction> transactions) {
@@ -126,5 +132,20 @@ class TransactionsOverviewBloc
         status: () => TransactionsOverviewStatus.success,
       ),
     );
+    _logger.d(
+        'This is the settings object from the Db: ${state.localSetting}  and this is its adcount${state.localSetting?.adCounterNumber}');
+  }
+
+  FutureOr<void> _incrementAdCounter(
+      event, Emitter<TransactionsOverviewState> emit) async {
+    await _settingsRepo.incrementAdCounter();
+    _logger.f(
+        'Add counter was incremented: ${state.localSetting?.adCounterNumber}');
+  }
+
+  FutureOr<void> _requestInterstitial(
+      RequestInterstitialEvent event, Emitter<TransactionsOverviewState> emit) {
+    _adsRepo.getInterstitialAd(
+        onAdDismissedFullScreenContent: event.onAdDismissedFullScreenContent);
   }
 }

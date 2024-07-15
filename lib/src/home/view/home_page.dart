@@ -1,3 +1,4 @@
+import 'package:ads_repo/ads_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
@@ -5,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/add_transaction/view/add_transaction_view.dart';
 import 'package:razor_expense_tracker_new/src/home/cubit/home_cubit.dart';
 import 'package:razor_expense_tracker_new/src/stats/view/stats_view.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../stats/bloc/stats_bloc.dart';
@@ -16,20 +18,25 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(
-        create: (_) => HomeCubit(),
-        child: HomeView(),
-      ),
-      BlocProvider<TransactionsOverviewBloc>(
-        create: (_) => TransactionsOverviewBloc(
-          context.read<TransactionsRepo>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => HomeCubit(),
+          child: HomeView(),
         ),
-      ),
-      BlocProvider<StatsBloc>(
-        create: (_) => StatsBloc(context.read<TransactionsRepo>()),
-      ),
-    ], child: HomeView());
+        BlocProvider<TransactionsOverviewBloc>(
+          create: (_) => TransactionsOverviewBloc(
+            context.read<TransactionsRepo>(),
+            context.read<SettingsRepo>(),
+            context.read<AdsRepo>(),
+          ),
+        ),
+        BlocProvider<StatsBloc>(
+          create: (_) => StatsBloc(context.read<TransactionsRepo>()),
+        ),
+      ],
+      child: HomeView(),
+    );
   }
 }
 
@@ -64,8 +71,8 @@ class HomeView extends StatelessWidget {
           key: const Key('homeView_addTransaction_floatingActionButton'),
           child: Icon(
             Iconsax.card_add,
-            color: Colors.white, size: 32,
-
+            color: Colors.white,
+            size: 32,
           ),
         ),
         bottomNavigationBar: Container(
@@ -94,7 +101,7 @@ class HomeView extends StatelessWidget {
                 _HomeTabButton(
                   groupValue: selectedTab,
                   value: HomeTab.transactions,
-                  icon:  Icon(
+                  icon: Icon(
                     Iconsax.house,
                     size: 42,
                   ),

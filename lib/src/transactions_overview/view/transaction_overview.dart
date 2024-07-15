@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:razor_expense_tracker_new/src/ads/ads.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../edit_transaction/view/edit_transaction_view.dart';
@@ -21,8 +22,9 @@ class TransactionsOverviewPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => TransactionsOverviewBloc(
-            context.read<TransactionsRepo>(),
-          )..add(InitialDataEvent()),
+              context.read<TransactionsRepo>(),
+              context.read<SettingsRepo>(),
+              context.read<AdsRepo>()),
         ),
         BlocProvider(
           create: (context) => AdsBloc(
@@ -82,29 +84,41 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
     return BlocConsumer<TransactionsOverviewBloc, TransactionsOverviewState>(
       listenWhen: (previous, current) =>
           previous.deletedTransaction != current.deletedTransaction &&
-          current.deletedTransaction != null,
+              current.deletedTransaction != null ||
+          (previous.localSetting?.adCounterNumber !=
+              current.localSetting?.adCounterNumber),
       listener: (context, state) {
-        final deletedTransaction = state.deletedTransaction;
-        final messenger = ScaffoldMessenger.of(context);
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              context.tr('transactionDeleted'),
-              style: GoogleFonts.comicNeue(
-                  textStyle: TextStyle(fontSize: 24),
-                  fontWeight: FontWeight.bold),
+        if (state.deletedTransaction != null) {
+          final deletedTransaction = state.deletedTransaction;
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(
+                context.tr('transactionDeleted'),
+                style: GoogleFonts.comicNeue(
+                    textStyle: TextStyle(fontSize: 24),
+                    fontWeight: FontWeight.bold),
+              ),
+              action: SnackBarAction(
+                label: context.tr('undo'),
+                onPressed: () {
+                  // Use the correct context to access the provider
+                  context.read<TransactionsOverviewBloc>().add(
+                        UndoDeleteTransactionEvent(deletedTransaction!),
+                      );
+                },
+              ),
             ),
-            action: SnackBarAction(
-              label: context.tr('undo'),
-              onPressed: () {
-                // Use the correct context to access the provider
-                context.read<TransactionsOverviewBloc>().add(
-                      UndoDeleteTransactionEvent(deletedTransaction!),
-                    );
-              },
-            ),
-          ),
-        );
+          );
+        }
+        if (state.localSetting!.adCounterNumber >=
+            state.localSetting!.adCounterThreshold) {
+          context.read<TransactionsOverviewBloc>().add(
+                RequestInterstitialEvent(
+                  onAdDismissedFullScreenContent: () => {},
+                ),
+              );
+        }
       },
       builder: (context, state) {
         final locale = context.locale;
@@ -173,10 +187,10 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                         padding: EdgeInsets.only(top: 16),
                         child: Text(
                           context.tr('totalBalance'),
-                          style:
-                            TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold,),
-
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       if (state.transactions.isNotEmpty)
@@ -399,8 +413,13 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 backgroundColor: Colors.red,
                                 icon: Icons.delete,
                               ),
+
+                              ///Edit Button
                               SlidableAction(
                                 onPressed: (context) {
+                                  context
+                                      .read<TransactionsOverviewBloc>()
+                                      .add(IncrementAdCounterEvent());
                                   Navigator.of(context).push(
                                     MaterialPageRoute<EditTransactionPage>(
                                       builder: (context) => EditTransactionPage(

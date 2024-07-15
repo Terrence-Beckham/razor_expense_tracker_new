@@ -36,7 +36,23 @@ final class TransactionsRequestedEvent extends TransactionsOverviewEvent {
   List<Object?> get props => [];
 }
 
-final class GetSettingsEvent extends TransactionsOverviewEvent{
+final class GetSettingsEvent extends TransactionsOverviewEvent {
   @override
   List<Object?> get props => [];
+}
+
+final class IncrementAdCounterEvent extends TransactionsOverviewEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class RequestInterstitialEvent extends TransactionsOverviewEvent {
+  const RequestInterstitialEvent({
+    required this.onAdDismissedFullScreenContent,
+  });
+
+  final VoidCallback onAdDismissedFullScreenContent;
+
+  @override
+  List<Object> get props => [onAdDismissedFullScreenContent];
 }

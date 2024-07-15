@@ -270,5 +270,9 @@
   "december": "ديسمبر",
   "@december": {
     "description": "عرض شهر ديسمبر"
+  },
+  "gym": "gym",
+  "@gym": {
+    "description": "This is the Gym category"
   }
 }

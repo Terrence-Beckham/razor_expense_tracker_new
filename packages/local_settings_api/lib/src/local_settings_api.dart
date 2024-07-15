@@ -18,14 +18,15 @@ class LocalSettingsApi extends SettingsApi {
   final Isar _isarDb;
   final Logger _logger;
   late final _settingsStreamController =
-  BehaviorSubject<LocalSetting?>.seeded(null);
+      BehaviorSubject<LocalSetting?>.seeded(null);
 
   /// Initializes the Settings DataBase
   Future<void> initSettingsDB() async {
-    final settings = await _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+    final settings = await getSettings();
     if (settings == null) {
       final newSettings = LocalSetting()..id = 1;
-      await _isarDb.writeTxn(() async => _isarDb.localSettings.put(newSettings));
+      await _isarDb
+          .writeTxn(() async => _isarDb.localSettings.put(newSettings));
       _settingsStreamController.add(newSettings);
     } else {
       _settingsStreamController.add(settings);
@@ -40,25 +41,25 @@ class LocalSettingsApi extends SettingsApi {
   @override
   Future<void> saveSettings(LocalSetting setting) async {
     await _isarDb.writeTxn(() async => _isarDb.localSettings.put(setting));
-    final updatedSetting = await _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+    final updatedSetting = await getSettings();
     _settingsStreamController.add(updatedSetting);
   }
 
   @override
-  Stream<LocalSetting?> settingStream() {
+  Stream<LocalSetting?> settingsStream() {
     return _settingsStreamController.asBroadcastStream();
   }
 
   @override
   Future<void> addSettingsToStream() async {
-    final settings = await _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+    final settings = await getSettings();
     _settingsStreamController.add(settings);
   }
 
   /// This needs to be added to the repo
   @override
   Future<void> incrementAdCounter() async {
-    final settings = await _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+    final settings = await getSettings();
     if (settings != null) {
       settings.adCounterNumber += 1;
       await saveSettings(settings);
@@ -67,11 +68,22 @@ class LocalSettingsApi extends SettingsApi {
 
   @override
   Future<void> setAdCounterThreshold(int newThreshold) async {
-    final settings = await _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+    final settings = await getSettings();
     if (settings != null) {
       settings.adCounterThreshold = newThreshold;
       await saveSettings(settings);
     }
   }
-}
 
+  @override
+  Future<void> resetAdCounter() async {
+    final setting = await getSettings();
+    setting!.adCounterNumber = 0;
+    await saveSettings(setting);
+  }
+
+  ///Get the setting object from the DB
+  Future<LocalSetting?> getSettings() async {
+    return _isarDb.localSettings.filter().idEqualTo(1).findFirst();
+  }
+}

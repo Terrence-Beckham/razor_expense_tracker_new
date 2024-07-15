@@ -275,6 +275,10 @@
   "december": "December",
   "@december": {
     "description": "Display The Month of December"
+  },
+  "gym": "gym",
+  "@gym": {
+    "description": "This is the Gym category"
   }
 }
 

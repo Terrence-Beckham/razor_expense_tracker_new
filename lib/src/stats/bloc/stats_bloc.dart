@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -11,8 +13,14 @@ part 'stats_event.dart';
 part 'stats_state.dart';
 
 class StatsBloc extends Bloc<StatsEvent, StatsState> {
-  StatsBloc(this._transactionsRepository)
+  StatsBloc(
+      {required TransactionsRepo transactionsRepo,
+      required SettingsRepo settingsRepo,
+      required AdsRepo adsRepo})
       : _logger = Logger(),
+        _transactionsRepository = transactionsRepo,
+        _asdRepo = adsRepo,
+        _settingsRepo = settingsRepo,
         super(StatsState()) {
     on<SubscribeToTransactionsEvent>(_subscribeToTransactions);
     on<IncomeDisplayRequested>(_incomeDisplayRequested);
@@ -25,6 +33,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   final TransactionsRepo _transactionsRepository;
   final Logger _logger;
+  final AdsRepo _asdRepo;
+  final SettingsRepo _settingsRepo;
 
   FutureOr<void> _subscribeToTransactions(
     SubscribeToTransactionsEvent event,
@@ -53,7 +63,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       return state.copyWith(
         status: () => StatsStatus.success,
         sortedCategories: () => sortedCategories,
-        sortedTransactions: ()=> sortedTransactions,
+        sortedTransactions: () => sortedTransactions,
         expenseTransactionTotals: () => expenseTotals.toDouble(),
         incomeTransactionTotals: () => incomeTotals.toDouble(),
       );
@@ -90,7 +100,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         );
         if (categoryIndex == -1) {
           pieChartCategories.add(
-            TransactionCategory()..iconName = category.iconName
+            TransactionCategory()
+              ..iconName = category.iconName
               ..name = category.name
               ..colorName = category.colorName
               ..totalAmount = transaction.amount
@@ -200,10 +211,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   }
 
   FutureOr<void> _changeSelectedMonth(
-      SelectedMonthChanged event, Emitter<StatsState> emit)async {
+      SelectedMonthChanged event, Emitter<StatsState> emit) async {
     final (expenseTotals, incomeTotals) =
-       await _calculateTotalAmounts(state.sortedTransactions);
-    _logger.f('these are the expense totals for ${state.selectedMonth}: $expenseTotals and icometotals:for ${state.selectedMonth}:    $incomeTotals');
+        await _calculateTotalAmounts(state.sortedTransactions);
+    _logger.f(
+        'these are the expense totals for ${state.selectedMonth}: $expenseTotals and icometotals:for ${state.selectedMonth}:    $incomeTotals');
     emit(
       state.copyWith(
         status: () => StatsStatus.success,

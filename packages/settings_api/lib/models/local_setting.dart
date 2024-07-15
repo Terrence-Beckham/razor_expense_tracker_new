@@ -8,7 +8,7 @@ class LocalSetting {
   Id id = 1;
   int adCounterNumber = 0;
 
-  int adCounterThreshold = 40;
+  int adCounterThreshold = 5;
 }
 
 //

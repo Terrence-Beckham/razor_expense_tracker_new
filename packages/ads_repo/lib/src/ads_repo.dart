@@ -1,5 +1,7 @@
 import 'package:ads_client/ads_client.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
+import 'package:settings_repo/settings_repo.dart';
 
 import 'ads_repo_patterns.dart';
 
@@ -9,9 +11,16 @@ import 'ads_repo_patterns.dart';
 /// {@endtemplate}
 class AdsRepo {
   /// {@macro ads_repo}
-  const AdsRepo({required AdsClient adsClient}) : _adsClient = adsClient;
+  AdsRepo({
+    required AdsClient adsClient,
+    required SettingsRepo settingsRepo,
+  })  : _adsClient = adsClient,
+        _logger = Logger(),
+        _settingsRepo = settingsRepo;
 
   final AdsClient _adsClient;
+  final SettingsRepo _settingsRepo;
+  final Logger _logger;
 
   /// Gets an interstitial Ad displayed in the Counter Page
   ///  when users increment the counter to a given positive threshold.
@@ -23,6 +32,8 @@ class AdsRepo {
         onAdDismissedFullScreenContent: onAdDismissedFullScreenContent,
       );
       await interstitialAd.show();
+      await _settingsRepo.resetAdCounter();
+
       return (failure: null, value: interstitialAd);
     } catch (e, st) {
       return (

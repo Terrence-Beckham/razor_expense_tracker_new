@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/widgets/konstants.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
@@ -16,8 +18,14 @@ part 'add_transaction_state.dart';
 
 class AddTransactionBloc
     extends Bloc<AddTransactionEvent, AddTransactionState> {
-  AddTransactionBloc(this._transactionsRepository)
-      : super(AddTransactionState.empty()) {
+  AddTransactionBloc(
+      {required TransactionsRepo transactionsRepo,
+      required AdsRepo adsRepo,
+      required SettingsRepo settingsRepo})
+      : _transactionsRepository = transactionsRepo,
+        _adsRepo = adsRepo,
+        _settingsRepo = settingsRepo,
+        super(AddTransactionState.empty()) {
     on<Initial>(_onInitial);
     on<AddTransaction>(onTransactionAdded);
     on<UpdateSelectedIcon>(_onUpdateSelectedIcon);
@@ -47,6 +55,8 @@ class AddTransactionBloc
 
   final TransactionsRepo _transactionsRepository;
   final Logger _logger = Logger();
+  final SettingsRepo _settingsRepo;
+  final AdsRepo _adsRepo;
 
   FutureOr<void> _onInitial(
       Initial event, Emitter<AddTransactionState> emit) async {

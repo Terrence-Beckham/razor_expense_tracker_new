@@ -3,13 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/ads/ads.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
 import 'package:transactions_repository/transactions_repository.dart';
+
 import '../../widgets/konstants.dart';
-import 'package:iconsax/iconsax.dart';
 
 class StatsOverviewPage extends StatelessWidget {
   const StatsOverviewPage({super.key});
@@ -19,15 +18,16 @@ class StatsOverviewPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (context) =>
-            StatsBloc(
-              context.read<TransactionsRepo>(),
-            )
-              ..add(const SubscribeToTransactionsEvent())..add(
-                SubscribeToCategoriesEvent()),
+          create: (context) => StatsBloc(
+            context.read<TransactionsRepo>(),
+          )
+            ..add(const SubscribeToTransactionsEvent())
+            ..add(SubscribeToCategoriesEvent()),
         ),
         BlocProvider(
-          create: (context) => AdsBloc(adsRepo: context.read<AdsRepo>(),),
+          create: (context) => AdsBloc(
+            adsRepo: context.read<AdsRepo>(),
+          ),
         ),
       ],
       child: StatsView(),
@@ -93,44 +93,39 @@ class StatsSuccessView extends StatelessWidget {
       listeners: [
         BlocListener<StatsBloc, StatsState>(
           listenWhen: (previous, current) =>
-          previous.datePeriodChosen != current.datePeriodChosen,
+              previous.datePeriodChosen != current.datePeriodChosen,
           listener: (context, state) {
-            context.read<StatsBloc>()
-              ..add(SubscribeToTransactionsEvent());
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
         ),
         BlocListener<StatsBloc, StatsState>(
           listenWhen: (previous, current) =>
-          previous.selectedMonth != current.selectedMonth,
+              previous.selectedMonth != current.selectedMonth,
           listener: (context, state) {
-            context.read<StatsBloc>()
-              ..add(SubscribeToTransactionsEvent());
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
         ),
         BlocListener<StatsBloc, StatsState>(
           listenWhen: (previous, current) =>
-          previous.selectedYear != current.selectedYear,
+              previous.selectedYear != current.selectedYear,
           listener: (context, state) {
-            context.read<StatsBloc>()
-              ..add(SubscribeToTransactionsEvent());
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
         ),
         BlocListener<StatsBloc, StatsState>(
           listenWhen: (previous, current) =>
-          previous.incomeTransactionTotals !=
+              previous.incomeTransactionTotals !=
               current.incomeTransactionTotals,
           listener: (context, state) {
-            context.read<StatsBloc>()
-              ..add(SubscribeToTransactionsEvent());
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
         ),
         BlocListener<StatsBloc, StatsState>(
           listenWhen: (previous, current) =>
-          previous.expenseTransactionTotals !=
+              previous.expenseTransactionTotals !=
               current.expenseTransactionTotals,
           listener: (context, state) {
-            context.read<StatsBloc>()
-              ..add(SubscribeToTransactionsEvent());
+            context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
         ),
       ],
@@ -138,8 +133,7 @@ class StatsSuccessView extends StatelessWidget {
         builder: (context, state) {
           final locale = context.locale;
           _logger.d(
-              ' These are the expenseTransactionTotals: ${state
-                  .expenseTransactionTotals}');
+              ' These are the expenseTransactionTotals: ${state.expenseTransactionTotals}');
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -147,9 +141,7 @@ class StatsSuccessView extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -161,24 +153,24 @@ class StatsSuccessView extends StatelessWidget {
                     OutlinedButton(
                       style: state.isDisplayExpenses
                           ? OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.grey,
-                          // Border color when button is not pressed
-                          width:
-                          4, // Border width when button is not pressed
-                        ),
-                      )
+                              side: const BorderSide(
+                                color: Colors.grey,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            )
                           :
 
-                      ///Button to change the transaction type to Income
-                      OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.white,
-                          // Border color when button is not pressed
-                          width:
-                          4, // Border width when button is not pressed
-                        ),
-                      ),
+                          ///Button to change the transaction type to Income
+                          OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.white,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            ),
                       onPressed: () {
                         context
                             .read<StatsBloc>()
@@ -192,24 +184,24 @@ class StatsSuccessView extends StatelessWidget {
                     OutlinedButton(
                       style: state.isDisplayIncome
                           ? OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.grey,
-                          // Border color when button is not pressed
-                          width:
-                          4, // Border width when button is not pressed
-                        ),
-                      )
+                              side: const BorderSide(
+                                color: Colors.grey,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            )
                           :
 
-                      ///Button to change the transaction type to Income
-                      OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Colors.white,
-                          // Border color when button is not pressed
-                          width:
-                          4, // Border width when button is not pressed
-                        ),
-                      ),
+                          ///Button to change the transaction type to Income
+                          OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.white,
+                                // Border color when button is not pressed
+                                width:
+                                    4, // Border width when button is not pressed
+                              ),
+                            ),
                       onPressed: () {
                         context.read<StatsBloc>().add(IncomeDisplayRequested());
                       },
@@ -218,8 +210,6 @@ class StatsSuccessView extends StatelessWidget {
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
-
-
                   ],
                 ),
                 Padding(
@@ -239,7 +229,7 @@ class StatsSuccessView extends StatelessWidget {
                         },
                         selectedColor: Colors.green,
                         selected:
-                        state.datePeriodChosen == DatePeriodChosen.allTime,
+                            state.datePeriodChosen == DatePeriodChosen.allTime,
                       ),
                       InputChip(
                         elevation: 6,
@@ -251,7 +241,7 @@ class StatsSuccessView extends StatelessWidget {
                         },
                         selectedColor: Colors.yellow,
                         selected:
-                        state.datePeriodChosen == DatePeriodChosen.yearly,
+                            state.datePeriodChosen == DatePeriodChosen.yearly,
                       ),
                       InputChip(
                         elevation: 6,
@@ -263,7 +253,7 @@ class StatsSuccessView extends StatelessWidget {
                         },
                         selectedColor: Colors.red,
                         selected:
-                        state.datePeriodChosen == DatePeriodChosen.monthly,
+                            state.datePeriodChosen == DatePeriodChosen.monthly,
                       ),
                     ],
                   ),
@@ -279,21 +269,17 @@ class StatsSuccessView extends StatelessWidget {
                       if (state.datePeriodChosen ==
                           DatePeriodChosen.yearly) ...[
                         YearDropdownMenu()
-                      ] else
-                        if (state.datePeriodChosen ==
-                            DatePeriodChosen.monthly) ...[
-                          YearDropdownMenu(),
-                          const SizedBox(width: 25),
-                          DateDropdownMenu()
-                        ]
+                      ] else if (state.datePeriodChosen ==
+                          DatePeriodChosen.monthly) ...[
+                        YearDropdownMenu(),
+                        const SizedBox(width: 25),
+                        DateDropdownMenu()
+                      ]
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 1.8,
+                  height: MediaQuery.of(context).size.width / 1.8,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -348,7 +334,7 @@ class StatsSuccessView extends StatelessWidget {
                             titleSunbeamLayout: true,
                             sections: List.generate(
                               state.sortedCategories.length,
-                                  (index) {
+                              (index) {
                                 return PieChartSectionData(
                                     radius: 50,
                                     color: colorMapper[state
@@ -359,11 +345,11 @@ class StatsSuccessView extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                     value: state.isDisplayExpenses
                                         ? state.sortedCategories[index]
-                                        .totalExpenseAmount
-                                        .toDouble()
+                                            .totalExpenseAmount
+                                            .toDouble()
                                         : state.sortedCategories[index]
-                                        .totalIncomeAmount
-                                        .toDouble());
+                                            .totalIncomeAmount
+                                            .toDouble());
                                 // title: state.isDisplayExpenses
                                 //     // ? '${state.sortedCategories[index].name}\n'
                                 //     ? '\$${state.sortedCategories[index].totalExpenseAmount}'
@@ -391,13 +377,11 @@ class StatsSuccessView extends StatelessWidget {
                 // ),
                 // Divider(
                 //   color: Colors.grey,
-                //   thickness: 6,),
+                //   thickness: 6,
+                // ),
                 Expanded(
                   child: SizedBox(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
                       // shrinkWrap: true,
                       itemCount: state.sortedCategories.length,
@@ -442,21 +426,48 @@ class StatsSuccessView extends StatelessWidget {
                                           spreadRadius: 1)
                                     ],
                                   ),
-                                  child: CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: Colors.grey[50],
-                                    child: Icon(
-                                      myIcons[state
-                                          .sortedCategories[index].iconName],
-                                      color: colorMapper[state
-                                          .sortedCategories[index].colorName],
+                                  //Center(
+                                  //           child: Container(
+                                  //             decoration: BoxDecoration(
+                                  //               shape: BoxShape.circle,
+                                  //               border: Border.all(color: Colors.grey, width: 2.0),
+                                  //             ),
+                                  //             child: ClipOval(
+                                  //               child: CircleAvatar(
+                                  //                 radius: 50,
+                                  //                 backgroundImage: NetworkImage(
+                                  //                   'https://via.placeholder.com/150',
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         ),
+
+                                  child: Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+
+                                    ),
+                                    child: ClipOval(
+                                      
+                                      child: CircleAvatar(
+                                        radius: 24,
+                                        backgroundColor: Colors.grey[50],
+                                        child: Icon(
+                                          myIcons[state
+                                              .sortedCategories[index].iconName],
+                                          color: colorMapper[state
+                                              .sortedCategories[index].colorName],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                                 title: Text(
                                   context.tr(
-                                      '${state.sortedCategories[index].name
-                                          ?.toLowerCase()}') ??
+                                          '${state.sortedCategories[index].name?.toLowerCase()}') ??
                                       ' ',
                                   style: TextStyle(
                                       fontSize: 20,
@@ -464,32 +475,29 @@ class StatsSuccessView extends StatelessWidget {
                                 ),
                                 subtitle: locale.languageCode == 'ar'
                                     ? Text(
-                                  ' ' +
-                                      translateDigits(
-                                          state.sortedCategories[index]
-                                              .totalExpenseAmount
-                                              .toString(),
-                                          locale) +
-                                      ' ' +
-                                      '£',
-                                  style: TextStyle(fontSize: 18),
-                                )
+                                        ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalExpenseAmount
+                                                    .toString(),
+                                                locale) +
+                                            ' ' +
+                                            '£',
+                                        style: TextStyle(fontSize: 18),
+                                      )
                                     : Text(
-                                  '\$' +
-                                      ' ' +
-                                      translateDigits(
-                                          state.sortedCategories[index]
-                                              .totalExpenseAmount
-                                              .toString(),
-                                          locale),
-                                  style: TextStyle(fontSize: 18),
-                                ),
+                                        '\$' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalExpenseAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(fontSize: 18),
+                                      ),
                                 trailing: Text(
                                   translateDigits(
-                                      ' ${((state.sortedCategories[index]
-                                          .totalExpenseAmount) /
-                                          state.expenseTransactionTotals * 100)
-                                          .toPrecision(1)} %',
+                                      ' ${((state.sortedCategories[index].totalExpenseAmount) / state.expenseTransactionTotals * 100).toPrecision(1)} %',
                                       locale),
                                   style: const TextStyle(
                                     fontSize: 18,
@@ -552,8 +560,7 @@ class StatsSuccessView extends StatelessWidget {
                                 ),
                                 title: Text(
                                   context.tr(
-                                      '${state.sortedCategories[index].name
-                                          ?.toLowerCase()}') ??
+                                          '${state.sortedCategories[index].name?.toLowerCase()}') ??
                                       ' ',
                                   style: TextStyle(
                                       fontSize: 20,
@@ -561,35 +568,32 @@ class StatsSuccessView extends StatelessWidget {
                                 ),
                                 subtitle: locale.languageCode == 'ar'
                                     ? Text(
-                                  '£' +
-                                      ' ' +
-                                      translateDigits(
-                                          state.sortedCategories[index]
-                                              .totalIncomeAmount
-                                              .toString(),
-                                          locale),
-                                  style: TextStyle(fontSize: 18),
-                                )
+                                        '£' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalIncomeAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(fontSize: 18),
+                                      )
                                     : Text(
-                                  '\$' +
-                                      ' ' +
-                                      translateDigits(
-                                          state.sortedCategories[index]
-                                              .totalIncomeAmount
-                                              .toString(),
-                                          locale),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ),
+                                        '\$' +
+                                            ' ' +
+                                            translateDigits(
+                                                state.sortedCategories[index]
+                                                    .totalIncomeAmount
+                                                    .toString(),
+                                                locale),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
                                 trailing: Text(
                                   // '\$ ${state.sortedCategories[index].incomePercentage}',
 
                                   translateDigits(
-                                      ' ${((state.sortedCategories[index]
-                                          .totalIncomeAmount) /
-                                          state.incomeTransactionTotals * 100)
-                                          .toPrecision(1)} %',
+                                      ' ${((state.sortedCategories[index].totalIncomeAmount) / state.incomeTransactionTotals * 100).toPrecision(1)} %',
                                       locale),
                                   style: const TextStyle(
                                     fontSize: 18,
@@ -657,10 +661,7 @@ class DateDropdownMenu extends StatelessWidget {
 
 class YearDropdownMenu extends StatelessWidget {
   final List<int> years =
-  List<int>.generate(10, (int index) =>
-  (DateTime
-      .now()
-      .year - 2) + index);
+      List<int>.generate(10, (int index) => (DateTime.now().year - 2) + index);
 
   @override
   Widget build(BuildContext context) {

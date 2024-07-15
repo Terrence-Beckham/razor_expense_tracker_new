@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:settings_repo/settings_repo.dart';
 
 part 'ads_event.dart';
 part 'ads_state.dart';
@@ -43,6 +44,7 @@ class AdsBloc extends Bloc<AdsEvent, AdsState> {
     Emitter<AdsState> emit,
   ) {
     state.interstitialAd?.dispose();
+
     emit(state.copyWith( interstitialAd: null));
   }
 }
