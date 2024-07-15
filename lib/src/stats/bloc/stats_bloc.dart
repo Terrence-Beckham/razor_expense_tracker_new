@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:settings_api/models/local_setting.dart';
 import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
@@ -19,7 +21,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
       required AdsRepo adsRepo})
       : _logger = Logger(),
         _transactionsRepository = transactionsRepo,
-        _asdRepo = adsRepo,
+        _adsdRepo = adsRepo,
         _settingsRepo = settingsRepo,
         super(StatsState()) {
     on<SubscribeToTransactionsEvent>(_subscribeToTransactions);
@@ -29,11 +31,16 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     on<SubscribeToCategoriesEvent>(_subscribeToCategories);
     on<SelectedMonthChanged>(_changeSelectedMonth);
     on<SelectedYearChanged>(_changeSelectedYear);
+    on<RequestInterstitialEvent>(_requestInterstitial);
+
+    ///Initialization Events
+    add(const SubscribeToTransactionsEvent());
+    add(SubscribeToCategoriesEvent());
   }
 
   final TransactionsRepo _transactionsRepository;
   final Logger _logger;
-  final AdsRepo _asdRepo;
+  final AdsRepo _adsdRepo;
   final SettingsRepo _settingsRepo;
 
   FutureOr<void> _subscribeToTransactions(
@@ -240,5 +247,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         expenseTransactionTotals: () => expenseTotals,
       ),
     );
+  }
+
+  FutureOr<void> _requestInterstitial(
+      RequestInterstitialEvent event, Emitter<StatsState> emit) async {
+    _adsdRepo.getInterstitialAd(
+        onAdDismissedFullScreenContent: event.onAdDismissedFullScreenContent);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:razor_expense_tracker_new/src/edit_transaction/edit_transaction_bloc.dart';
 import 'package:razor_expense_tracker_new/src/widgets/konstants.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_api/transactions_api.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
@@ -18,9 +20,11 @@ class EditTransactionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => EditTransactionBloc(
+          settingsRepo: context.read<SettingsRepo>(),
+          adsRepo: context.read<AdsRepo>(),
           transactionsRepository: context.read<TransactionsRepo>(),
           transaction: transaction),
-        // ..add(InitialDataEvent()),
+      // ..add(InitialDataEvent()),
       child: EditTransactionView(),
     );
   }
@@ -81,7 +85,7 @@ class EditTransactionSuccessView extends StatelessWidget {
               ),
               Center(
                 child: Container(
-                  decoration:neomorphicBoxDecoration,
+                  decoration: neomorphicBoxDecoration,
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[50],
                     radius: 40,
@@ -100,7 +104,7 @@ class EditTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: Container(
-                    decoration:neomorphicBoxDecoration,
+                    decoration: neomorphicBoxDecoration,
                     child: TextFormField(
                       initialValue: state.transaction.amount.toString(),
                       style:
@@ -162,7 +166,8 @@ class EditTransactionSuccessView extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SizedBox(
                   width: double.infinity,
-                  child: Container(decoration: neomorphicBoxDecoration,
+                  child: Container(
+                    decoration: neomorphicBoxDecoration,
                     child: TextFormField(
                       onTap: () => {},
                       readOnly: true,
@@ -176,8 +181,8 @@ class EditTransactionSuccessView extends StatelessWidget {
                         prefixIcon: Icon(
                           myIcons[
                               state.transaction.category?.iconName.toString()],
-                          color:
-                              colorMapper[state.transaction.category?.colorName],
+                          color: colorMapper[
+                              state.transaction.category?.colorName],
                         ),
 
                         suffixIcon: IconButton(
@@ -288,7 +293,8 @@ class EditTransactionSuccessView extends StatelessWidget {
                   child: Container(
                     decoration: neomorphicBoxDecoration,
                     child: TextFormField(
-                      onChanged: (value) => {state.transaction.dateOfTransaction},
+                      onChanged: (value) =>
+                          {state.transaction.dateOfTransaction},
                       // context
                       //     .read<AddTransactionBloc>()
                       //     .add(UpdateDateTextField(value)),
@@ -325,7 +331,8 @@ class EditTransactionSuccessView extends StatelessWidget {
                 child: SizedBox(
                   height: 50,
                   width: double.infinity,
-                  child: Container(decoration: neomorphicBoxDecoration,
+                  child: Container(
+                    decoration: neomorphicBoxDecoration,
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:razor_expense_tracker_new/src/ads/ads.dart';
 import 'package:razor_expense_tracker_new/src/stats/bloc/stats_bloc.dart';
+import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
 import '../../widgets/konstants.dart';
@@ -19,10 +20,11 @@ class StatsOverviewPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => StatsBloc(
-            context.read<TransactionsRepo>(),
+            settingsRepo: context.read<SettingsRepo>(),
+            adsRepo: context.read<AdsRepo>(),
+            transactionsRepo: context.read<TransactionsRepo>(),
           )
-            ..add(const SubscribeToTransactionsEvent())
-            ..add(SubscribeToCategoriesEvent()),
+
         ),
         BlocProvider(
           create: (context) => AdsBloc(
@@ -126,6 +128,17 @@ class StatsSuccessView extends StatelessWidget {
               current.expenseTransactionTotals,
           listener: (context, state) {
             context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
+          },
+        ),  BlocListener<StatsBloc, StatsState>(
+          listenWhen: (previous, current) =>
+          (previous.localSetting?.adCounterNumber !=
+              current.localSetting?.adCounterNumber),
+          listener: (context, state) {
+            context.read<StatsBloc>().add(
+              RequestInterstitialEvent(
+                onAdDismissedFullScreenContent: () => {},
+              ),
+            );
           },
         ),
       ],
@@ -448,18 +461,17 @@ class StatsSuccessView extends StatelessWidget {
                                     width: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-
                                     ),
                                     child: ClipOval(
-                                      
                                       child: CircleAvatar(
                                         radius: 24,
                                         backgroundColor: Colors.grey[50],
                                         child: Icon(
-                                          myIcons[state
-                                              .sortedCategories[index].iconName],
+                                          myIcons[state.sortedCategories[index]
+                                              .iconName],
                                           color: colorMapper[state
-                                              .sortedCategories[index].colorName],
+                                              .sortedCategories[index]
+                                              .colorName],
                                         ),
                                       ),
                                     ),

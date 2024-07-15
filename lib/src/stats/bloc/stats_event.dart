@@ -96,3 +96,14 @@ final class SelectedYearChanged extends StatsEvent {
   @override
   List<Object?> get props => [selectedYear];
 }
+
+final class RequestInterstitialEvent extends StatsEvent {
+  const RequestInterstitialEvent({
+    required this.onAdDismissedFullScreenContent,
+  });
+
+  final VoidCallback onAdDismissedFullScreenContent;
+
+  @override
+  List<Object> get props => [onAdDismissedFullScreenContent];
+}

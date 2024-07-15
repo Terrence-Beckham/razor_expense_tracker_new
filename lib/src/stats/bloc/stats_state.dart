@@ -59,6 +59,7 @@ final class StatsState extends Equatable {
     this.incomeTransactions = const [],
     this.selectedMonth = DateLabel.june,
     this.selectedYear = 2024,
+    this.localSetting = null,
   });
 
   //    int? selectedYear,
@@ -109,6 +110,8 @@ final class StatsState extends Equatable {
   ///This is the calculate total of all of the current income transaction amounts
   final double incomeTransactionTotals;
 
+  final LocalSetting? localSetting;
+
 
   StatsState copyWith({
     List<Transaction> Function()? transactions,
@@ -127,44 +130,49 @@ final class StatsState extends Equatable {
     int Function()? selectedYear,
     double Function()? expenseTransactionTotals,
     double Function()? incomeTransactionTotals,
+
+    LocalSetting? Function()? localSetting,
   }) {
     return StatsState(
-      categories: categories != null ? categories() : this.categories,
-      transactions: transactions != null ? transactions() : this.transactions,
-      expenseTransactionTotals: expenseTransactionTotals != null
-          ? expenseTransactionTotals()
-          : this.expenseTransactionTotals,
-      incomeTransactionTotals: incomeTransactionTotals != null
-          ? incomeTransactionTotals()
-          : this.incomeTransactionTotals,
-      sortedCategories:
-          sortedCategories != null ? sortedCategories() : this.sortedCategories,
-      status: status != null ? status() : this.status,
-      totalAmount: totalAmount != null ? totalAmount() : this.totalAmount,
-      isDisplayExpenses: isDisplayExpenses != null
-          ? isDisplayExpenses()
-          : this.isDisplayExpenses,
-      isDisplayIncome:
-          isDisplayIncome != null ? isDisplayIncome() : this.isDisplayIncome,
-      datePeriodChosen:
-          datePeriodChosen != null ? datePeriodChosen() : this.datePeriodChosen,
-      expenseTransactions: expenseTransactions != null
-          ? expenseTransactions()
-          : this.expenseTransactions,
-      incomeTransactions: incomeTransactions != null
-          ? incomeTransactions()
-          : this.incomeTransactions,
-      selectedMonth:
-          selectedMonth != null ? selectedMonth() : this.selectedMonth,
-      selectedYear: selectedYear != null ? selectedYear() : this.selectedYear,
-      sortedTransactions: sortedTransactions != null
-          ? sortedTransactions()
-          : this.sortedTransactions,
-    );
+        categories: categories != null ? categories() : this.categories,
+        transactions: transactions != null ? transactions() : this.transactions,
+        expenseTransactionTotals: expenseTransactionTotals != null
+            ? expenseTransactionTotals()
+            : this.expenseTransactionTotals,
+        incomeTransactionTotals: incomeTransactionTotals != null
+            ? incomeTransactionTotals()
+            : this.incomeTransactionTotals,
+        sortedCategories:
+        sortedCategories != null ? sortedCategories() : this.sortedCategories,
+        status: status != null ? status() : this.status,
+        totalAmount: totalAmount != null ? totalAmount() : this.totalAmount,
+        isDisplayExpenses: isDisplayExpenses != null
+            ? isDisplayExpenses()
+            : this.isDisplayExpenses,
+        isDisplayIncome:
+        isDisplayIncome != null ? isDisplayIncome() : this.isDisplayIncome,
+        datePeriodChosen:
+        datePeriodChosen != null ? datePeriodChosen() : this.datePeriodChosen,
+        expenseTransactions: expenseTransactions != null
+            ? expenseTransactions()
+            : this.expenseTransactions,
+        incomeTransactions: incomeTransactions != null
+            ? incomeTransactions()
+            : this.incomeTransactions,
+        selectedMonth:
+        selectedMonth != null ? selectedMonth() : this.selectedMonth,
+        selectedYear: selectedYear != null ? selectedYear() : this.selectedYear,
+        sortedTransactions: sortedTransactions != null
+            ? sortedTransactions()
+            : this.sortedTransactions,
+        localSetting:
+        localSetting != null ? localSetting() : this.localSetting);
+
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props =>
+      [
         transactions,
         incomeTransactionTotals,
         expenseTransactionTotals,
@@ -180,5 +188,6 @@ final class StatsState extends Equatable {
         selectedMonth,
         selectedYear,
         totalAmount,
+        localSetting,
       ];
 }

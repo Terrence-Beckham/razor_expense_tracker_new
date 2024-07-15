@@ -22,7 +22,10 @@ class AddTransactionPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AddTransactionBloc>(
-          create: (_) => AddTransactionBloc(context.read<TransactionsRepo>())
+          create: (_) => AddTransactionBloc(
+              settingsRepo: context.read<SettingsRepo>(),
+              adsRepo: context.read<AdsRepo>(),
+              transactionsRepo: context.read<TransactionsRepo>())
             ..add(
               Initial(),
             ),
@@ -34,7 +37,10 @@ class AddTransactionPage extends StatelessWidget {
               context.read<AdsRepo>()),
         ),
         BlocProvider<StatsBloc>(
-          create: (_) => StatsBloc(context.read<TransactionsRepo>()),
+          create: (_) => StatsBloc(
+              settingsRepo: context.read<SettingsRepo>(),
+              adsRepo: context.read<AdsRepo>(),
+              transactionsRepo: context.read<TransactionsRepo>()),
         ),
       ],
       child: AddTransactionView(),
@@ -46,7 +52,6 @@ class AddTransactionView extends StatelessWidget {
   AddTransactionView({
     super.key,
   });
-
   final _logger = Logger();
 
   @override

@@ -19,25 +19,29 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
+        providers: [
         BlocProvider(
-          create: (_) => HomeCubit(),
-          child: HomeView(),
-        ),
-        BlocProvider<TransactionsOverviewBloc>(
-          create: (_) => TransactionsOverviewBloc(
-            context.read<TransactionsRepo>(),
-            context.read<SettingsRepo>(),
-            context.read<AdsRepo>(),
-          ),
-        ),
-        BlocProvider<StatsBloc>(
-          create: (_) => StatsBloc(context.read<TransactionsRepo>()),
-        ),
-      ],
-      child: HomeView(),
+        create: (_)
+    =>
+        HomeCubit()
+    ,
+    child: HomeView(),
+    ),
+    BlocProvider<TransactionsOverviewBloc>(
+    create: (_) => TransactionsOverviewBloc(
+    context.read<TransactionsRepo>(),
+    context.read<SettingsRepo>(),
+    context.read<AdsRepo>(),
+    ),
+    ),
+    BlocProvider<StatsBloc>(
+    create: (_) => StatsBloc(
+    settingsRepo: context.read<SettingsRepo>(),adsRepo: context.read<AdsRepo>(),transactionsRepo: context.read<TransactionsRepo>()
+    ),
+    ),],
+    child: HomeView(),
     );
-  }
+    }
 }
 
 class HomeView extends StatelessWidget {
@@ -140,7 +144,10 @@ class _HomeTabButton extends StatelessWidget {
       onPressed: () => context.read<HomeCubit>().setTab(value),
       iconSize: 32,
       color:
-          groupValue == value ? null : Theme.of(context).colorScheme.secondary,
+      groupValue == value ? null : Theme
+          .of(context)
+          .colorScheme
+          .secondary,
       icon: icon,
     );
   }
