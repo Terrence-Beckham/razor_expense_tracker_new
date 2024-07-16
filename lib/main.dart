@@ -2,6 +2,7 @@ import 'package:ads_client/ads_client.dart';
 import 'package:ads_repo/ads_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:isar/isar.dart';
@@ -17,8 +18,12 @@ import 'package:transactions_repository/transactions_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Bloc.observer =  AppBlocObserver();
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  );
   await EasyLocalization.ensureInitialized();
   await MobileAds.instance.initialize();
+
   print('Mobile Ads Instance: ${MobileAds.instance}');
   final dir = await getApplicationDocumentsDirectory();
 
