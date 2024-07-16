@@ -107,3 +107,19 @@ final class RequestInterstitialEvent extends StatsEvent {
   @override
   List<Object> get props => [onAdDismissedFullScreenContent];
 }
+
+final class IncrementAdCounterEvent extends StatsEvent {
+  const IncrementAdCounterEvent({
+    required this.onAdDismissedFullScreenContent,
+  });
+
+  final VoidCallback onAdDismissedFullScreenContent;
+
+  @override
+  List<Object> get props => [onAdDismissedFullScreenContent];
+}
+
+final class SubscribeToSettingsEvent extends StatsEvent {
+  @override
+  List<Object> get props => [];
+}

@@ -132,7 +132,7 @@ class TransactionsOverviewBloc
         status: () => TransactionsOverviewStatus.success,
       ),
     );
-    _logger.d(
+    _logger.f(
         'This is the settings object from the Db: ${state.localSetting}  and this is its adcount${state.localSetting?.adCounterNumber}');
   }
 

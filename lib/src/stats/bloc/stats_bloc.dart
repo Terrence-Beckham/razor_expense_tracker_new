@@ -32,10 +32,13 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     on<SelectedMonthChanged>(_changeSelectedMonth);
     on<SelectedYearChanged>(_changeSelectedYear);
     on<RequestInterstitialEvent>(_requestInterstitial);
+    on<IncrementAdCounterEvent>(_incrementAdCounter);
+    on<SubscribeToSettingsEvent>(_subscribeToSettings);
 
     ///Initialization Events
     add(const SubscribeToTransactionsEvent());
     add(SubscribeToCategoriesEvent());
+    add(SubscribeToSettingsEvent());
   }
 
   final TransactionsRepo _transactionsRepository;
@@ -249,9 +252,26 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     );
   }
 
+  FutureOr<void> _incrementAdCounter(event, Emitter<StatsState> emit) async {
+    await _settingsRepo.incrementAdCounter();
+    _logger.f(
+        'This is the settings object from the Db: ${state.localSetting} \n and this is its adcount${state.localSetting?.adCounterNumber}');
+  }
+
   FutureOr<void> _requestInterstitial(
       RequestInterstitialEvent event, Emitter<StatsState> emit) async {
     _adsdRepo.getInterstitialAd(
         onAdDismissedFullScreenContent: event.onAdDismissedFullScreenContent);
+  }
+
+  FutureOr<void> _subscribeToSettings(
+      SubscribeToSettingsEvent event, Emitter<StatsState> emit) async {
+    await emit.forEach(
+      _settingsRepo.settingsStream(),
+      onData: (setting) => state.copyWith(
+        localSetting: () => setting,
+        status: () => StatsStatus.success,
+      ),
+    );
   }
 }

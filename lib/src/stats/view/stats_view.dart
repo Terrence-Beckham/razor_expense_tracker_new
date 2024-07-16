@@ -23,8 +23,7 @@ class StatsOverviewPage extends StatelessWidget {
             settingsRepo: context.read<SettingsRepo>(),
             adsRepo: context.read<AdsRepo>(),
             transactionsRepo: context.read<TransactionsRepo>(),
-          )
-
+          ),
         ),
         BlocProvider(
           create: (context) => AdsBloc(
@@ -129,17 +128,6 @@ class StatsSuccessView extends StatelessWidget {
           listener: (context, state) {
             context.read<StatsBloc>()..add(SubscribeToTransactionsEvent());
           },
-        ),  BlocListener<StatsBloc, StatsState>(
-          listenWhen: (previous, current) =>
-          (previous.localSetting?.adCounterNumber !=
-              current.localSetting?.adCounterNumber),
-          listener: (context, state) {
-            context.read<StatsBloc>().add(
-              RequestInterstitialEvent(
-                onAdDismissedFullScreenContent: () => {},
-              ),
-            );
-          },
         ),
       ],
       child: BlocBuilder<StatsBloc, StatsState>(
@@ -185,9 +173,13 @@ class StatsSuccessView extends StatelessWidget {
                               ),
                             ),
                       onPressed: () {
-                        context
-                            .read<StatsBloc>()
-                            .add(ExpenseDisplayRequested());
+                        context.read<StatsBloc>()
+                          ..add(ExpenseDisplayRequested())
+                          ..add(
+                            IncrementAdCounterEvent(
+                              onAdDismissedFullScreenContent: () {},
+                            ),
+                          );
                       },
                       child: Text(
                         context.tr('expenses'),
@@ -216,7 +208,11 @@ class StatsSuccessView extends StatelessWidget {
                               ),
                             ),
                       onPressed: () {
-                        context.read<StatsBloc>().add(IncomeDisplayRequested());
+                        context.read<StatsBloc>()
+                          ..add(IncomeDisplayRequested())
+                          ..add(IncrementAdCounterEvent(
+                            onAdDismissedFullScreenContent: () {},
+                          ));
                       },
                       child: Text(
                         context.tr("income"),
@@ -237,8 +233,14 @@ class StatsSuccessView extends StatelessWidget {
                           style: TextStyle(fontSize: 18),
                         ),
                         onPressed: () {
-                          context.read<StatsBloc>().add(
-                              DatePeriodChosenEvent(DatePeriodChosen.allTime));
+                          context.read<StatsBloc>()
+                            ..add(
+                                DatePeriodChosenEvent(DatePeriodChosen.allTime))
+                            ..add(
+                              IncrementAdCounterEvent(
+                                onAdDismissedFullScreenContent: () {},
+                              ),
+                            );
                         },
                         selectedColor: Colors.green,
                         selected:
@@ -249,8 +251,14 @@ class StatsSuccessView extends StatelessWidget {
                         label: Text(context.tr('yearly'),
                             style: TextStyle(fontSize: 18)),
                         onPressed: () {
-                          context.read<StatsBloc>().add(
-                              DatePeriodChosenEvent(DatePeriodChosen.yearly));
+                          context.read<StatsBloc>()
+                            ..add(
+                                DatePeriodChosenEvent(DatePeriodChosen.yearly))
+                            ..add(
+                              IncrementAdCounterEvent(
+                                onAdDismissedFullScreenContent: () {},
+                              ),
+                            );
                         },
                         selectedColor: Colors.yellow,
                         selected:
@@ -261,8 +269,14 @@ class StatsSuccessView extends StatelessWidget {
                         label: Text(context.tr('monthly'),
                             style: TextStyle(fontSize: 18)),
                         onPressed: () {
-                          context.read<StatsBloc>().add(
-                              DatePeriodChosenEvent(DatePeriodChosen.monthly));
+                          context.read<StatsBloc>()
+                            ..add(
+                                DatePeriodChosenEvent(DatePeriodChosen.monthly))
+                            ..add(
+                              IncrementAdCounterEvent(
+                                onAdDismissedFullScreenContent: () {},
+                              ),
+                            );
                         },
                         selectedColor: Colors.red,
                         selected:
