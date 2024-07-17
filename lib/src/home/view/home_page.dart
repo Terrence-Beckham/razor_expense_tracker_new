@@ -9,6 +9,7 @@ import 'package:razor_expense_tracker_new/src/stats/view/stats_view.dart';
 import 'package:settings_repo/settings_repo.dart';
 import 'package:transactions_repository/transactions_repository.dart';
 
+import '../../settings/views/settings_view.dart';
 import '../../stats/bloc/stats_bloc.dart';
 import '../../transactions_overview/bloc/transactions_overview_bloc.dart';
 import '../../transactions_overview/view/transaction_overview.dart';
@@ -58,7 +59,7 @@ class HomeView extends StatelessWidget {
       child: Scaffold(
         body: IndexedStack(
           index: selectedTab.index,
-          children: const [TransactionsOverviewPage(), StatsOverviewPage()],
+          children: const [TransactionsOverviewPage(), StatsOverviewPage(),  SettingsPage()],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
@@ -115,6 +116,13 @@ class HomeView extends StatelessWidget {
                   value: HomeTab.stats,
                   icon: const Icon(
                     Iconsax.chart_2,
+                    size: 42,
+                  ),
+                ), _HomeTabButton(
+                  groupValue: selectedTab,
+                  value: HomeTab.settings,
+                  icon: Icon(
+                    Iconsax.setting_2,
                     size: 42,
                   ),
                 ),

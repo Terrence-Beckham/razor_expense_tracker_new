@@ -212,7 +212,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                       else
                         const Text(r'$'),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Padding(
                             padding: EdgeInsets.all(8),
@@ -276,7 +276,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
+                          ),SizedBox(width: 50,),
                           Row(
                             children: [
                               Container(

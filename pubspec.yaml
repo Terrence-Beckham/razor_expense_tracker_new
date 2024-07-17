@@ -44,6 +44,9 @@ dependencies:
   string_validator: ^1.1.0
   easy_localization: ^3.0.7
   google_fonts: any
+  isar: any
+  isar_flutter_libs: any
+  flutter_markdown: ^0.7.3
 
 
 
@@ -55,6 +58,7 @@ dev_dependencies:
   mocktail: ^1.0.0
   mockingjay: ^0.5.0
   very_good_analysis: ^5.1.0
+  isar_generator: any
 
 
 
@@ -62,6 +66,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/fonts/
+    - assets/privacy_policy.md
   fonts:
     - family: ComicNeue
       fonts:
