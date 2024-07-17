@@ -47,7 +47,7 @@ class TransactionsOverviewView extends StatelessWidget {
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: Text(
-            'Razor Expense Tracker',
+            'Razor Expense & Budget Tracker',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
