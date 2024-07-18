@@ -8,7 +8,6 @@ class TransactionCategory {
   String? identity;
   String? iconName;
   String? colorName;
-  ///todo don't need codepoint remove!
   int? iconCodePoint;
   int totalAmount = 0;
   int totalExpenseAmount = 0;

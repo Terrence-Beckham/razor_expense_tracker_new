@@ -8,6 +8,8 @@ environment:
   flutter: "^3.19.0"
 
 dependencies:
+  drift: ^2.18.0
+  drift_flutter: ^0.1.0
   flutter:
     sdk: flutter
   isar: any
@@ -20,3 +22,4 @@ dev_dependencies:
   mocktail: ^1.0.3
   very_good_analysis: ^5.1.0
   build_runner: any
+  drift_dev: ^2.18.0

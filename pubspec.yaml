@@ -47,6 +47,8 @@ dependencies:
   isar: any
   isar_flutter_libs: any
   flutter_markdown: ^0.7.3
+  drift: ^2.18.0
+  drift_flutter: ^0.1.0
 
 
 
@@ -59,6 +61,7 @@ dev_dependencies:
   mockingjay: ^0.5.0
   very_good_analysis: ^5.1.0
   isar_generator: any
+  drift_dev: ^2.18.0
 
 
 
