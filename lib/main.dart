@@ -1,5 +1,6 @@
 import 'package:ads_client/ads_client.dart';
 import 'package:ads_repo/ads_repo.dart';
+import 'package:drift_database_api/drift_database_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +27,7 @@ void main() async {
 
   print('Mobile Ads Instance: ${MobileAds.instance}');
   final dir = await getApplicationDocumentsDirectory();
-
+  final database = AppDatabase();
   final isar = await Isar.open(
     [TransactionSchema, StoredCategorySchema, LocalSettingSchema],
     directory: dir.path,
@@ -36,9 +37,10 @@ void main() async {
   final adsClient = AdsClient();
   final adsRepo = AdsRepo(adsClient: adsClient, settingsRepo: settingsRepo);
 
-  final transactionsApi = LocalStorageTransactionsApi(
-    isarDb: isar,
-  );
+  // final transactionsApi = LocalStorageTransactionsApi(
+  //   isarDb: isar,
+  // );
+  final transactionsApi = DriftDatabaseApi(appDatabase: database);
 
   final transactionRepository = TransactionsRepo(
     transactionsApi: transactionsApi,

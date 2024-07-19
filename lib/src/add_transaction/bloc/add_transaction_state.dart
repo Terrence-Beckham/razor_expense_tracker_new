@@ -25,7 +25,7 @@ class AddTransactionState extends Equatable {
   final String transactionAmount;
   final bool isDateChosen;
   final DateTime tempDate;
-  final Transaction tempTransaction;
+  final LocalTransaction tempTransaction;
   final StoredCategory newCustomCategory;
   final bool isAddNewCategoryExpanded;
   final List<Icon> categoryWidgetIcons;
@@ -85,7 +85,7 @@ class AddTransactionState extends Equatable {
     bool Function()? isDateChoosen,
     bool Function()? isColorExpanded,
     DateTime Function()? tempDate,
-    Transaction Function()? tempTransaction,
+    LocalTransaction Function()? tempTransaction,
     bool Function()? isAmountEntered,
     bool Function()? isCategoryValidated,
     AmountValidator Function()? amountValidator,
@@ -168,7 +168,7 @@ class AddTransactionState extends Equatable {
         transactionAmount = '',
         isDateChosen = false,
         tempDate = DateTime.now(),
-        tempTransaction = Transaction(),
+        tempTransaction = LocalTransaction(),
         isAmountValidationFailed = false,
         isCategoryUnselected = false,
         amountValidator = AmountValidator(hasError: false, errorMessage: ''),

@@ -66,10 +66,10 @@ final class StatsState extends Equatable {
   //   }) : selectedYear = selectedYear ?? DateTime.now().year;
   // this.selectedMonth = dateLabelMapper[DateTime.now().month]!,
   ///This is the raw list of transactions from the database
-  final List<Transaction> transactions;
+  final List<LocalTransaction> transactions;
 
   ///This is a list of Transactions that had been filtered by date
-  final List<Transaction> sortedTransactions;
+  final List<LocalTransaction> sortedTransactions;
 
   ///This is a list of categories after the transactions have been sorted and the amounts calculated
   final List<TransactionCategory> sortedCategories;
@@ -114,13 +114,13 @@ final class StatsState extends Equatable {
 
 
   StatsState copyWith({
-    List<Transaction> Function()? transactions,
+    List<LocalTransaction> Function()? transactions,
     StatsStatus Function()? status,
     List<TransactionCategory> Function()? categories,
-    List<Transaction> Function()? sortedTransactions,
+    List<LocalTransaction> Function()? sortedTransactions,
     List<TransactionCategory> Function()? sortedCategories,
-    List<Transaction> Function()? expenseTransactions,
-    List<Transaction> Function()? incomeTransactions,
+    List<LocalTransaction> Function()? expenseTransactions,
+    List<LocalTransaction> Function()? incomeTransactions,
     bool Function()? showTransactions,
     int Function()? totalAmount,
     bool Function()? isDisplayExpenses,

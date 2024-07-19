@@ -379,12 +379,12 @@ class TransactionCategoryCompanion
   }
 }
 
-class $TransactionTable extends Transaction
-    with TableInfo<$TransactionTable, TransactionData> {
+class $LocalTransactionTable extends LocalTransaction
+    with TableInfo<$LocalTransactionTable, LocalTransactionData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TransactionTable(this.attachedDatabase, [this._alias]);
+  $LocalTransactionTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -462,9 +462,10 @@ class $TransactionTable extends Transaction
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'transaction';
+  static const String $name = 'local_transaction';
   @override
-  VerificationContext validateIntegrity(Insertable<TransactionData> instance,
+  VerificationContext validateIntegrity(
+      Insertable<LocalTransactionData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -513,9 +514,9 @@ class $TransactionTable extends Transaction
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalTransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionData(
+    return LocalTransactionData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       amount: attachedDatabase.typeMapping
@@ -536,12 +537,13 @@ class $TransactionTable extends Transaction
   }
 
   @override
-  $TransactionTable createAlias(String alias) {
-    return $TransactionTable(attachedDatabase, alias);
+  $LocalTransactionTable createAlias(String alias) {
+    return $LocalTransactionTable(attachedDatabase, alias);
   }
 }
 
-class TransactionData extends DataClass implements Insertable<TransactionData> {
+class LocalTransactionData extends DataClass
+    implements Insertable<LocalTransactionData> {
   ///Transactions are either expenses or income items class Transaction {
   /// This is the unique identifier for the transaction
   final int id;
@@ -567,7 +569,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
 
   ///This is the category of the transaction
   final int? category;
-  const TransactionData(
+  const LocalTransactionData(
       {required this.id,
       required this.amount,
       this.dateOfTransaction,
@@ -594,8 +596,8 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return map;
   }
 
-  TransactionCompanion toCompanion(bool nullToAbsent) {
-    return TransactionCompanion(
+  LocalTransactionCompanion toCompanion(bool nullToAbsent) {
+    return LocalTransactionCompanion(
       id: Value(id),
       amount: Value(amount),
       dateOfTransaction: dateOfTransaction == null && nullToAbsent
@@ -611,10 +613,10 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     );
   }
 
-  factory TransactionData.fromJson(Map<String, dynamic> json,
+  factory LocalTransactionData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionData(
+    return LocalTransactionData(
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<int>(json['amount']),
       dateOfTransaction:
@@ -641,7 +643,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     };
   }
 
-  TransactionData copyWith(
+  LocalTransactionData copyWith(
           {int? id,
           int? amount,
           Value<DateTime?> dateOfTransaction = const Value.absent(),
@@ -650,7 +652,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
           bool? isExpense,
           bool? isIncome,
           Value<int?> category = const Value.absent()}) =>
-      TransactionData(
+      LocalTransactionData(
         id: id ?? this.id,
         amount: amount ?? this.amount,
         dateOfTransaction: dateOfTransaction.present
@@ -664,7 +666,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
       );
   @override
   String toString() {
-    return (StringBuffer('TransactionData(')
+    return (StringBuffer('LocalTransactionData(')
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('dateOfTransaction: $dateOfTransaction, ')
@@ -683,7 +685,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TransactionData &&
+      (other is LocalTransactionData &&
           other.id == this.id &&
           other.amount == this.amount &&
           other.dateOfTransaction == this.dateOfTransaction &&
@@ -694,7 +696,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
           other.category == this.category);
 }
 
-class TransactionCompanion extends UpdateCompanion<TransactionData> {
+class LocalTransactionCompanion extends UpdateCompanion<LocalTransactionData> {
   final Value<int> id;
   final Value<int> amount;
   final Value<DateTime?> dateOfTransaction;
@@ -703,7 +705,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
   final Value<bool> isExpense;
   final Value<bool> isIncome;
   final Value<int?> category;
-  const TransactionCompanion({
+  const LocalTransactionCompanion({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.dateOfTransaction = const Value.absent(),
@@ -713,7 +715,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
     this.isIncome = const Value.absent(),
     this.category = const Value.absent(),
   });
-  TransactionCompanion.insert({
+  LocalTransactionCompanion.insert({
     this.id = const Value.absent(),
     this.amount = const Value.absent(),
     this.dateOfTransaction = const Value.absent(),
@@ -724,7 +726,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
     this.category = const Value.absent(),
   })  : description = Value(description),
         note = Value(note);
-  static Insertable<TransactionData> custom({
+  static Insertable<LocalTransactionData> custom({
     Expression<int>? id,
     Expression<int>? amount,
     Expression<DateTime>? dateOfTransaction,
@@ -746,7 +748,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
     });
   }
 
-  TransactionCompanion copyWith(
+  LocalTransactionCompanion copyWith(
       {Value<int>? id,
       Value<int>? amount,
       Value<DateTime?>? dateOfTransaction,
@@ -755,7 +757,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
       Value<bool>? isExpense,
       Value<bool>? isIncome,
       Value<int?>? category}) {
-    return TransactionCompanion(
+    return LocalTransactionCompanion(
       id: id ?? this.id,
       amount: amount ?? this.amount,
       dateOfTransaction: dateOfTransaction ?? this.dateOfTransaction,
@@ -799,7 +801,7 @@ class TransactionCompanion extends UpdateCompanion<TransactionData> {
 
   @override
   String toString() {
-    return (StringBuffer('TransactionCompanion(')
+    return (StringBuffer('LocalTransactionCompanion(')
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('dateOfTransaction: $dateOfTransaction, ')
@@ -818,13 +820,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
   late final $TransactionCategoryTable transactionCategory =
       $TransactionCategoryTable(this);
-  late final $TransactionTable transaction = $TransactionTable(this);
+  late final $LocalTransactionTable localTransaction =
+      $LocalTransactionTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [transactionCategory, transaction];
+      [transactionCategory, localTransaction];
 }
 
 typedef $$TransactionCategoryTableInsertCompanionBuilder
@@ -958,16 +961,17 @@ class $$TransactionCategoryTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ComposableFilter transactionRefs(
-      ComposableFilter Function($$TransactionTableFilterComposer f) f) {
-    final $$TransactionTableFilterComposer composer = $state.composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $state.db.transaction,
-        getReferencedColumn: (t) => t.category,
-        builder: (joinBuilder, parentComposers) =>
-            $$TransactionTableFilterComposer(ComposerState($state.db,
-                $state.db.transaction, joinBuilder, parentComposers)));
+  ComposableFilter localTransactionRefs(
+      ComposableFilter Function($$LocalTransactionTableFilterComposer f) f) {
+    final $$LocalTransactionTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $state.db.localTransaction,
+            getReferencedColumn: (t) => t.category,
+            builder: (joinBuilder, parentComposers) =>
+                $$LocalTransactionTableFilterComposer(ComposerState($state.db,
+                    $state.db.localTransaction, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
@@ -1011,8 +1015,8 @@ class $$TransactionCategoryTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$TransactionTableInsertCompanionBuilder = TransactionCompanion
-    Function({
+typedef $$LocalTransactionTableInsertCompanionBuilder
+    = LocalTransactionCompanion Function({
   Value<int> id,
   Value<int> amount,
   Value<DateTime?> dateOfTransaction,
@@ -1022,8 +1026,8 @@ typedef $$TransactionTableInsertCompanionBuilder = TransactionCompanion
   Value<bool> isIncome,
   Value<int?> category,
 });
-typedef $$TransactionTableUpdateCompanionBuilder = TransactionCompanion
-    Function({
+typedef $$LocalTransactionTableUpdateCompanionBuilder
+    = LocalTransactionCompanion Function({
   Value<int> id,
   Value<int> amount,
   Value<DateTime?> dateOfTransaction,
@@ -1034,25 +1038,26 @@ typedef $$TransactionTableUpdateCompanionBuilder = TransactionCompanion
   Value<int?> category,
 });
 
-class $$TransactionTableTableManager extends RootTableManager<
+class $$LocalTransactionTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $TransactionTable,
-    TransactionData,
-    $$TransactionTableFilterComposer,
-    $$TransactionTableOrderingComposer,
-    $$TransactionTableProcessedTableManager,
-    $$TransactionTableInsertCompanionBuilder,
-    $$TransactionTableUpdateCompanionBuilder> {
-  $$TransactionTableTableManager(_$AppDatabase db, $TransactionTable table)
+    $LocalTransactionTable,
+    LocalTransactionData,
+    $$LocalTransactionTableFilterComposer,
+    $$LocalTransactionTableOrderingComposer,
+    $$LocalTransactionTableProcessedTableManager,
+    $$LocalTransactionTableInsertCompanionBuilder,
+    $$LocalTransactionTableUpdateCompanionBuilder> {
+  $$LocalTransactionTableTableManager(
+      _$AppDatabase db, $LocalTransactionTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$TransactionTableFilterComposer(ComposerState(db, table)),
+              $$LocalTransactionTableFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$TransactionTableOrderingComposer(ComposerState(db, table)),
+              $$LocalTransactionTableOrderingComposer(ComposerState(db, table)),
           getChildManagerBuilder: (p) =>
-              $$TransactionTableProcessedTableManager(p),
+              $$LocalTransactionTableProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<int> amount = const Value.absent(),
@@ -1063,7 +1068,7 @@ class $$TransactionTableTableManager extends RootTableManager<
             Value<bool> isIncome = const Value.absent(),
             Value<int?> category = const Value.absent(),
           }) =>
-              TransactionCompanion(
+              LocalTransactionCompanion(
             id: id,
             amount: amount,
             dateOfTransaction: dateOfTransaction,
@@ -1083,7 +1088,7 @@ class $$TransactionTableTableManager extends RootTableManager<
             Value<bool> isIncome = const Value.absent(),
             Value<int?> category = const Value.absent(),
           }) =>
-              TransactionCompanion.insert(
+              LocalTransactionCompanion.insert(
             id: id,
             amount: amount,
             dateOfTransaction: dateOfTransaction,
@@ -1096,21 +1101,22 @@ class $$TransactionTableTableManager extends RootTableManager<
         ));
 }
 
-class $$TransactionTableProcessedTableManager extends ProcessedTableManager<
-    _$AppDatabase,
-    $TransactionTable,
-    TransactionData,
-    $$TransactionTableFilterComposer,
-    $$TransactionTableOrderingComposer,
-    $$TransactionTableProcessedTableManager,
-    $$TransactionTableInsertCompanionBuilder,
-    $$TransactionTableUpdateCompanionBuilder> {
-  $$TransactionTableProcessedTableManager(super.$state);
+class $$LocalTransactionTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $LocalTransactionTable,
+        LocalTransactionData,
+        $$LocalTransactionTableFilterComposer,
+        $$LocalTransactionTableOrderingComposer,
+        $$LocalTransactionTableProcessedTableManager,
+        $$LocalTransactionTableInsertCompanionBuilder,
+        $$LocalTransactionTableUpdateCompanionBuilder> {
+  $$LocalTransactionTableProcessedTableManager(super.$state);
 }
 
-class $$TransactionTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $TransactionTable> {
-  $$TransactionTableFilterComposer(super.$state);
+class $$LocalTransactionTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $LocalTransactionTable> {
+  $$LocalTransactionTableFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1163,9 +1169,9 @@ class $$TransactionTableFilterComposer
   }
 }
 
-class $$TransactionTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $TransactionTable> {
-  $$TransactionTableOrderingComposer(super.$state);
+class $$LocalTransactionTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $LocalTransactionTable> {
+  $$LocalTransactionTableOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -1223,6 +1229,6 @@ class _$AppDatabaseManager {
   _$AppDatabaseManager(this._db);
   $$TransactionCategoryTableTableManager get transactionCategory =>
       $$TransactionCategoryTableTableManager(_db, _db.transactionCategory);
-  $$TransactionTableTableManager get transaction =>
-      $$TransactionTableTableManager(_db, _db.transaction);
+  $$LocalTransactionTableTableManager get localTransaction =>
+      $$LocalTransactionTableTableManager(_db, _db.localTransaction);
 }

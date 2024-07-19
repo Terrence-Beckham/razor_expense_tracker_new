@@ -9,7 +9,7 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 part 'drift_app_database.g.dart';
 
 /// This is the model for the transactions that are made in the app.
-class Transaction extends Table {
+class LocalTransaction extends Table {
   ///Transactions are either expenses or income items class Transaction {
 
   /// This is the unique identifier for the transaction
@@ -47,7 +47,7 @@ class Transaction extends Table {
 
   @override
   String toString() {
-    return 'Transaction{id: $id, ,'
+    return 'LocalTransaction{id: $id, ,'
         ' amount: $amount\n,'
         ' timestamp: $timestamp\n, subCategory: $subCategory\n,'
         ' dateOfTransaction: $dateOfTransaction\n,'
@@ -88,7 +88,7 @@ class TransactionCategory extends Table {
   }
 }
 
-@DriftDatabase(tables: [Transaction, TransactionCategory])
+@DriftDatabase(tables: [LocalTransaction, TransactionCategory])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

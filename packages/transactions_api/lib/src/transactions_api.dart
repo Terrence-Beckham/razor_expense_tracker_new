@@ -1,6 +1,6 @@
 
-import 'package:transactions_api/src/models/stored_category.dart';
-import 'package:transactions_api/src/models/transaction.dart';
+
+import 'database/drift_app_database.dart';
 
 /// {@template transactions_api}
 /// The interface and models for an API providing access to transactions.
@@ -11,16 +11,16 @@ abstract class TransactionsApi {
   const TransactionsApi();
 
   /// Provides a [Stream] of all todos.
-  Stream<List<Transaction>> transactionStream();
+  Stream<List<LocalTransaction>> transactionStream();
 
   ///provides a [Stream] of all categories
-  Stream<List<StoredCategory>> sortedCategorStream();
+  Stream<List<TransactionCategory>> sortedCategorStream();
 
   /// Saves a [transaction].
-  /// If a [Transaction] with the same id already exists, it will be replaced.
+  /// If a [LocalTransaction] with the same id already exists, it will be replaced.
 
   Future<void> saveTransaction(
-    Transaction transaction,
+    LocalTransaction transaction,
   );
 
   ///Queries transactions and adds them to the stream
@@ -33,14 +33,17 @@ abstract class TransactionsApi {
   /// If no `transaction` with the given id exists, a
   /// [TransactionNotFoundException] error is
   /// thrown.
-  Future<void> deleteTransaction(Transaction transaction);
+  Future<void> deleteTransaction(LocalTransaction transaction);
 
   /// Adds a new [StoredCategory] to the database
-  Future<void> addCustomCategory(StoredCategory category);
+  Future<void> addCustomCategory(TransactionCategory category);
 
   /// Closes the client and frees up any resources.
   Future<void> close();
-}
+///
+  Future<void>loadStoredCategories();
 
-/// Error thrown when a [Transaction] with a given id is not found.
+  Future<void> init();
+}
+/// Error thrown when a [LocalTransaction] with a given id is not found.
 class TransactionNotFoundException implements Exception {}

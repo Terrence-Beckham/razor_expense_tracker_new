@@ -12,16 +12,16 @@ class TransactionsRepo {
   final TransactionsApi _transactionsApi;
 
   /// Provides a [Stream] of all transactions.
-  Stream<List<Transaction>> transactionStream() =>
+  Stream<List<LocalTransaction>> transactionStream() =>
       _transactionsApi.transactionStream();
 
   ///provides a [Stream] of all categories
-  Stream<List<StoredCategory>> sortedCategoryStream() =>
+  Stream<List<TransactionCategory>> sortedCategoryStream() =>
       _transactionsApi.sortedCategorStream();
 
-  ///Saves a [Transaction] to a [TransactionCategory]
+  ///Saves a [LocalTransaction] to a [TransactionCategory]
   Future<void> saveTransaction(
-    Transaction transaction,
+    LocalTransaction transaction,
   ) =>
       _transactionsApi.saveTransaction(transaction );
 
@@ -29,11 +29,11 @@ class TransactionsRepo {
   ///
   /// If no `transaction` with the given id exists, a [TransactionNotFoundException] error
   /// thrown.
-  Future<void> deleteTransaction(Transaction transaction) =>
+  Future<void> deleteTransaction(LocalTransaction transaction) =>
       _transactionsApi.deleteTransaction(transaction);
 
   /// Adds a new [StoredCategory] to the database
-  Future<void> addCustomCategory(StoredCategory category) =>
+  Future<void> addCustomCategory(TransactionCategory category) =>
       _transactionsApi.addCustomCategory(category);
 
   ///Query transactions

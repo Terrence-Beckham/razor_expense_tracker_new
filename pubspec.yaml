@@ -33,6 +33,8 @@ dependencies:
     path: packages/settings_api
   local_settings_api:
     path: packages/local_settings_api
+  drift_database_api:
+    path: packages/drift_database_api
   logger: ^2.2.0
   material_symbols_icons: ^4.2719.3
 #  google_mobile_ads: ^5.1.0

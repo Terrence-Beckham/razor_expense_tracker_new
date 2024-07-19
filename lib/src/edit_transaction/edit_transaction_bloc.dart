@@ -15,7 +15,7 @@ class EditTransactionBloc
     extends Bloc<EditTransactionEvent, EditTransactionState> {
   EditTransactionBloc(
       {required TransactionsRepo transactionsRepository,
-      required Transaction transaction,
+      required LocalTransaction transaction,
       required SettingsRepo settingsRepo,
       required AdsRepo adsRepo})
       : _logger = Logger(),
