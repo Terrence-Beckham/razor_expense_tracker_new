@@ -14,7 +14,7 @@ import 'package:transactions_repository/transactions_repository.dart';
 class EditTransactionPage extends StatelessWidget {
   const EditTransactionPage({super.key, required this.transaction});
 
-  final LocalTransaction transaction;
+  final Transaction transaction;
 
   @override
   Widget build(BuildContext context) {

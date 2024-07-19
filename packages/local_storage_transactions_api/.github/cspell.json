@@ -16,6 +16,6 @@
   ],
   "useGitignore": true,
   "words": [
-    "drift_database_api"
+    "local_storage_transactions_api"
   ]
 }

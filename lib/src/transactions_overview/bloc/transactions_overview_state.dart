@@ -14,20 +14,20 @@ final class TransactionsOverviewState extends Equatable {
   });
 
   final TransactionsOverviewStatus status;
-  final List<LocalTransaction> transactions;
+  final List<Transaction> transactions;
   final int incomeTotals;
   final int expenseTotals;
   final int balance;
-  final LocalTransaction? deletedTransaction;
+  final Transaction? deletedTransaction;
   final LocalSetting? localSetting;
 
   TransactionsOverviewState copyWith({
     TransactionsOverviewStatus Function()? status,
-    List<LocalTransaction> Function()? transactions,
+    List<Transaction> Function()? transactions,
     int Function()? incomeTotals,
     int Function()? expenseTotals,
     int Function()? balance,
-    LocalTransaction? Function()? deletedTransaction,
+    Transaction? Function()? deletedTransaction,
     LocalSetting? Function()? localSetting,
   }) {
     return TransactionsOverviewState(

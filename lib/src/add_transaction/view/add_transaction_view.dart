@@ -469,7 +469,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..colorName = state.tempCategory?.colorName
                           ..iconName = state.tempCategory?.iconName;
 
-                        final newTransaction = LocalTransaction()
+                        final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
                           ..dateOfTransaction = state.tempDate
@@ -491,7 +491,7 @@ class AddTransactionSuccessView extends StatelessWidget {
                           ..name = state.tempCategory?.name
                           ..colorName = state.tempCategory?.colorName
                           ..iconName = state.tempCategory?.iconName;
-                        final newTransaction = LocalTransaction()
+                        final newTransaction = Transaction()
                           ..timestamp = DateTime.now()
                           ..amount = int.parse(state.transactionAmount)
                           ..dateOfTransaction = state.tempDate

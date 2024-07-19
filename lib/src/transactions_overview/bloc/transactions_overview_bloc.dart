@@ -44,7 +44,7 @@ class TransactionsOverviewBloc
   ) async {
     state.copyWith(status: () => TransactionsOverviewStatus.loading);
     _logger.d("It should be loading now.");
-    await emit.forEach<List<LocalTransaction>>(
+    await emit.forEach<List<Transaction>>(
       _transactionsRepo.transactionStream(),
       onData: (transactions) {
         final reversedTransactions = transactions.reversed.toList();
@@ -59,7 +59,7 @@ class TransactionsOverviewBloc
     );
   }
 
-  int calculateTotalExpenses(List<LocalTransaction> transactions) {
+  int calculateTotalExpenses(List<Transaction> transactions) {
     var expenseTotal = 0;
     for (final transaction in transactions) {
       if (transaction.isExpense) {
@@ -69,7 +69,7 @@ class TransactionsOverviewBloc
     return expenseTotal;
   }
 
-  int calculateTotalIncome(List<LocalTransaction> transactions) {
+  int calculateTotalIncome(List<Transaction> transactions) {
     var incomeTotal = 0;
     for (final transaction in transactions) {
       if (transaction.isIncome) {
@@ -79,7 +79,7 @@ class TransactionsOverviewBloc
     return incomeTotal;
   }
 
-  int calculateTotalBalance(List<LocalTransaction> transactions) {
+  int calculateTotalBalance(List<Transaction> transactions) {
     var balance = 0;
     for (final transaction in transactions) {
       if (transaction.isIncome) {

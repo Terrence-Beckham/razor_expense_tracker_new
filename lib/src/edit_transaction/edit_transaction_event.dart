@@ -28,7 +28,7 @@ final class IsCategoryExpandedUpdated extends EditTransactionEvent {
 final class UpdateTransactionAmount extends EditTransactionEvent {
   UpdateTransactionAmount(this.transaction, this.amount);
 
-  final LocalTransaction transaction;
+  final Transaction transaction;
   final int amount;
 
   @override
@@ -53,7 +53,7 @@ final class TransactionDateUpdated extends EditTransactionEvent {
   List<Object?> get props => [dateOfTransaction];
 }
 final class TransactionUpdateRequested extends EditTransactionEvent{
-  final LocalTransaction updatedTransaction;
+  final Transaction updatedTransaction;
 
   TransactionUpdateRequested(this.updatedTransaction);
   @override

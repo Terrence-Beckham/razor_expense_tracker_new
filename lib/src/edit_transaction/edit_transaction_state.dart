@@ -14,7 +14,7 @@ final class EditTransactionState extends Equatable {
   }) : tempDate = transaction.dateOfTransaction;
 
   final EditTransactionStatus status;
-  final LocalTransaction transaction;
+  final Transaction transaction;
   final bool isCategorySelected;
   final bool isCategoryExpanded;
   final List<StoredCategory> categories;
@@ -35,7 +35,7 @@ final class EditTransactionState extends Equatable {
 
   EditTransactionState copyWith(
       {EditTransactionStatus Function()? status,
-      LocalTransaction Function()? transaction,
+      Transaction Function()? transaction,
       bool Function()? isCategorySelected,
       bool Function()? isCategoryExpanded,
       List<StoredCategory> Function()? categories,

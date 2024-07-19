@@ -55,7 +55,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
         status: () => StatsStatus.loading,
       ),
     );
-    await emit.forEach<List<LocalTransaction>>(
+    await emit.forEach<List<Transaction>>(
         _transactionsRepository.transactionStream(), onData: (transactions) {
       ///todo I have to query the transactions that I need here
       final sortedTransactions = _transactionsByDate(
@@ -81,7 +81,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   }
 
   ///This method filters transactions by date
-  List<LocalTransaction> _transactionsByDate(List<LocalTransaction> transactions,
+  List<Transaction> _transactionsByDate(List<Transaction> transactions,
       int year, int month, DatePeriodChosen dateRange) {
     final transactionsByDate = transactions.where((element) {
       switch (dateRange) {
@@ -100,7 +100,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
 
   ///This method calculates the total amount of all transactions
   List<TransactionCategory> _calculateTransactionAmountsPerCategory(
-      List<LocalTransaction> transactions) {
+      List<Transaction> transactions) {
     final pieChartCategories = <TransactionCategory>[];
     for (final transaction in transactions) {
       final category = transaction.category;
@@ -206,7 +206,7 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     );
   }
 
-  (double, double) _calculateTotalAmounts(List<LocalTransaction> transactions) {
+  (double, double) _calculateTotalAmounts(List<Transaction> transactions) {
     var expenseTotal = 0.0;
     var incomeTotal = 0.0;
     for (final transaction in transactions) {

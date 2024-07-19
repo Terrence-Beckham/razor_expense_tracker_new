@@ -17,7 +17,7 @@ final class Initial extends AddTransactionEvent {
 final class AddTransaction extends AddTransactionEvent {
   const AddTransaction(this.transaction);
 
-  final LocalTransaction transaction;
+  final Transaction transaction;
 
   @override
   List<Object> get props => [transaction];
@@ -167,7 +167,7 @@ final class UpdateTempDate extends AddTransactionEvent {
 final class UpdateTempTransaction extends AddTransactionEvent {
   const UpdateTempTransaction(this.tempTransaction);
 
-  final LocalTransaction tempTransaction;
+  final Transaction tempTransaction;
 
   @override
   List<Object> get props => [tempTransaction];
@@ -197,7 +197,7 @@ final class UpdateCategories extends AddTransactionEvent {
 final class SaveTransactionToCategory extends AddTransactionEvent {
   const SaveTransactionToCategory(this.transaction, this.categoryId);
 
-  final LocalTransaction transaction;
+  final Transaction transaction;
   final int categoryId;
 
   @override

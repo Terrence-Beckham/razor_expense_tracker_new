@@ -1,5 +1,5 @@
-name: drift_database_api
-description: A Very Good Project created by Very Good CLI.
+name: local_storage_transactions_api
+description: A Flutter implementation of the TransactionsApi that uses local storage.
 version: 0.1.0+1
 publish_to: none
 
@@ -10,15 +10,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  logger: ^2.4.0
-  material_symbols: ^0.0.0
-  material_symbols_icons: ^4.2771.0
-  rxdart: ^0.28.0
+  isar: ^3.1.0+1
+  meta: ^1.11.0
+  rxdart: ^0.27.5
   transactions_api:
     path: ../transactions_api
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.3
   very_good_analysis: ^5.1.0
+  material_symbols_icons: any
+  logger: ^2.3.0
