@@ -8,6 +8,7 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'drift_app_database.g.dart';
 
+@DataClassName('LocalTransaction')
 /// This is the model for the transactions that are made in the app.
 class LocalTransaction extends Table {
   ///Transactions are either expenses or income items class Transaction {
@@ -59,6 +60,7 @@ class LocalTransaction extends Table {
   }
 }
 
+@DataClassName('TransactionCategory')
 class TransactionCategory extends Table {
   IntColumn get id => integer().autoIncrement()();
 

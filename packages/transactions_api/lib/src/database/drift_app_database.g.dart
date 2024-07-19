@@ -4,7 +4,7 @@ part of 'drift_app_database.dart';
 
 // ignore_for_file: type=lint
 class $TransactionCategoryTable extends TransactionCategory
-    with TableInfo<$TransactionCategoryTable, TransactionCategoryData> {
+    with TableInfo<$TransactionCategoryTable, TransactionCategory> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -76,7 +76,7 @@ class $TransactionCategoryTable extends TransactionCategory
   static const String $name = 'transaction_category';
   @override
   VerificationContext validateIntegrity(
-      Insertable<TransactionCategoryData> instance,
+      Insertable<TransactionCategory> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -125,10 +125,9 @@ class $TransactionCategoryTable extends TransactionCategory
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TransactionCategoryData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  TransactionCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TransactionCategoryData(
+    return TransactionCategory(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -152,8 +151,8 @@ class $TransactionCategoryTable extends TransactionCategory
   }
 }
 
-class TransactionCategoryData extends DataClass
-    implements Insertable<TransactionCategoryData> {
+class TransactionCategory extends DataClass
+    implements Insertable<TransactionCategory> {
   final int id;
   final String name;
   final String iconName;
@@ -161,7 +160,7 @@ class TransactionCategoryData extends DataClass
   final int totalAmount;
   final int totalExpenseAmount;
   final int totalIncomeAmount;
-  const TransactionCategoryData(
+  const TransactionCategory(
       {required this.id,
       required this.name,
       required this.iconName,
@@ -194,10 +193,10 @@ class TransactionCategoryData extends DataClass
     );
   }
 
-  factory TransactionCategoryData.fromJson(Map<String, dynamic> json,
+  factory TransactionCategory.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TransactionCategoryData(
+    return TransactionCategory(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       iconName: serializer.fromJson<String>(json['iconName']),
@@ -221,7 +220,7 @@ class TransactionCategoryData extends DataClass
     };
   }
 
-  TransactionCategoryData copyWith(
+  TransactionCategory copyWith(
           {int? id,
           String? name,
           String? iconName,
@@ -229,7 +228,7 @@ class TransactionCategoryData extends DataClass
           int? totalAmount,
           int? totalExpenseAmount,
           int? totalIncomeAmount}) =>
-      TransactionCategoryData(
+      TransactionCategory(
         id: id ?? this.id,
         name: name ?? this.name,
         iconName: iconName ?? this.iconName,
@@ -240,7 +239,7 @@ class TransactionCategoryData extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('TransactionCategoryData(')
+    return (StringBuffer('TransactionCategory(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('iconName: $iconName, ')
@@ -258,7 +257,7 @@ class TransactionCategoryData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TransactionCategoryData &&
+      (other is TransactionCategory &&
           other.id == this.id &&
           other.name == this.name &&
           other.iconName == this.iconName &&
@@ -269,7 +268,7 @@ class TransactionCategoryData extends DataClass
 }
 
 class TransactionCategoryCompanion
-    extends UpdateCompanion<TransactionCategoryData> {
+    extends UpdateCompanion<TransactionCategory> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> iconName;
@@ -297,7 +296,7 @@ class TransactionCategoryCompanion
   })  : name = Value(name),
         iconName = Value(iconName),
         colorName = Value(colorName);
-  static Insertable<TransactionCategoryData> custom({
+  static Insertable<TransactionCategory> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? iconName,
@@ -380,7 +379,7 @@ class TransactionCategoryCompanion
 }
 
 class $LocalTransactionTable extends LocalTransaction
-    with TableInfo<$LocalTransactionTable, LocalTransactionData> {
+    with TableInfo<$LocalTransactionTable, LocalTransaction> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -464,8 +463,7 @@ class $LocalTransactionTable extends LocalTransaction
   String get actualTableName => $name;
   static const String $name = 'local_transaction';
   @override
-  VerificationContext validateIntegrity(
-      Insertable<LocalTransactionData> instance,
+  VerificationContext validateIntegrity(Insertable<LocalTransaction> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -514,9 +512,9 @@ class $LocalTransactionTable extends LocalTransaction
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  LocalTransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  LocalTransaction map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return LocalTransactionData(
+    return LocalTransaction(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       amount: attachedDatabase.typeMapping
@@ -542,8 +540,8 @@ class $LocalTransactionTable extends LocalTransaction
   }
 }
 
-class LocalTransactionData extends DataClass
-    implements Insertable<LocalTransactionData> {
+class LocalTransaction extends DataClass
+    implements Insertable<LocalTransaction> {
   ///Transactions are either expenses or income items class Transaction {
   /// This is the unique identifier for the transaction
   final int id;
@@ -569,7 +567,7 @@ class LocalTransactionData extends DataClass
 
   ///This is the category of the transaction
   final int? category;
-  const LocalTransactionData(
+  const LocalTransaction(
       {required this.id,
       required this.amount,
       this.dateOfTransaction,
@@ -613,10 +611,10 @@ class LocalTransactionData extends DataClass
     );
   }
 
-  factory LocalTransactionData.fromJson(Map<String, dynamic> json,
+  factory LocalTransaction.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return LocalTransactionData(
+    return LocalTransaction(
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<int>(json['amount']),
       dateOfTransaction:
@@ -643,7 +641,7 @@ class LocalTransactionData extends DataClass
     };
   }
 
-  LocalTransactionData copyWith(
+  LocalTransaction copyWith(
           {int? id,
           int? amount,
           Value<DateTime?> dateOfTransaction = const Value.absent(),
@@ -652,7 +650,7 @@ class LocalTransactionData extends DataClass
           bool? isExpense,
           bool? isIncome,
           Value<int?> category = const Value.absent()}) =>
-      LocalTransactionData(
+      LocalTransaction(
         id: id ?? this.id,
         amount: amount ?? this.amount,
         dateOfTransaction: dateOfTransaction.present
@@ -666,7 +664,7 @@ class LocalTransactionData extends DataClass
       );
   @override
   String toString() {
-    return (StringBuffer('LocalTransactionData(')
+    return (StringBuffer('LocalTransaction(')
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('dateOfTransaction: $dateOfTransaction, ')
@@ -685,7 +683,7 @@ class LocalTransactionData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is LocalTransactionData &&
+      (other is LocalTransaction &&
           other.id == this.id &&
           other.amount == this.amount &&
           other.dateOfTransaction == this.dateOfTransaction &&
@@ -696,7 +694,7 @@ class LocalTransactionData extends DataClass
           other.category == this.category);
 }
 
-class LocalTransactionCompanion extends UpdateCompanion<LocalTransactionData> {
+class LocalTransactionCompanion extends UpdateCompanion<LocalTransaction> {
   final Value<int> id;
   final Value<int> amount;
   final Value<DateTime?> dateOfTransaction;
@@ -726,7 +724,7 @@ class LocalTransactionCompanion extends UpdateCompanion<LocalTransactionData> {
     this.category = const Value.absent(),
   })  : description = Value(description),
         note = Value(note);
-  static Insertable<LocalTransactionData> custom({
+  static Insertable<LocalTransaction> custom({
     Expression<int>? id,
     Expression<int>? amount,
     Expression<DateTime>? dateOfTransaction,
@@ -854,7 +852,7 @@ typedef $$TransactionCategoryTableUpdateCompanionBuilder
 class $$TransactionCategoryTableTableManager extends RootTableManager<
     _$AppDatabase,
     $TransactionCategoryTable,
-    TransactionCategoryData,
+    TransactionCategory,
     $$TransactionCategoryTableFilterComposer,
     $$TransactionCategoryTableOrderingComposer,
     $$TransactionCategoryTableProcessedTableManager,
@@ -914,7 +912,7 @@ class $$TransactionCategoryTableProcessedTableManager
     extends ProcessedTableManager<
         _$AppDatabase,
         $TransactionCategoryTable,
-        TransactionCategoryData,
+        TransactionCategory,
         $$TransactionCategoryTableFilterComposer,
         $$TransactionCategoryTableOrderingComposer,
         $$TransactionCategoryTableProcessedTableManager,
@@ -1041,7 +1039,7 @@ typedef $$LocalTransactionTableUpdateCompanionBuilder
 class $$LocalTransactionTableTableManager extends RootTableManager<
     _$AppDatabase,
     $LocalTransactionTable,
-    LocalTransactionData,
+    LocalTransaction,
     $$LocalTransactionTableFilterComposer,
     $$LocalTransactionTableOrderingComposer,
     $$LocalTransactionTableProcessedTableManager,
@@ -1105,7 +1103,7 @@ class $$LocalTransactionTableProcessedTableManager
     extends ProcessedTableManager<
         _$AppDatabase,
         $LocalTransactionTable,
-        LocalTransactionData,
+        LocalTransaction,
         $$LocalTransactionTableFilterComposer,
         $$LocalTransactionTableOrderingComposer,
         $$LocalTransactionTableProcessedTableManager,

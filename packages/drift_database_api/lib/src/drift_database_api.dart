@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart';
 import 'package:drift_database_api/src/widgets/konstants.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,25 +20,24 @@ class DriftDatabaseApi extends TransactionsApi {
   final AppDatabase _appDatabase;
   final Logger _logger;
   late final _transactionStreamController =
-  BehaviorSubject<List<LocalTransaction>>.seeded(const []);
+      BehaviorSubject<List<LocalTransaction>>.seeded(const []);
   late final _storedCategoryStreamController =
-  BehaviorSubject<List<TransactionCategory>>.seeded(const []);
+      BehaviorSubject<List<TransactionCategory>>.seeded(const []);
 
   @override
   Future<void> init() async {
     await loadStoredCategories();
-
   }
 
-  Future<List<TransactionCategory>> getCategories() async{
+  Future<List<TransactionCategory>> getCategories() async {
     final categories =
-    await _appDatabase.select(_appDatabase.transactionCategory).get();
+        _appDatabase.select(_appDatabase.transactionCategory).get();
     return categories;
-
   }
+
   @override
   Future<void> loadStoredCategories() async {
- final categories = await getCategories();
+    final categories = await getCategories();
 
     if (categories.isEmpty) {
       final categories = defaultCategory;
@@ -95,6 +93,4 @@ class DriftDatabaseApi extends TransactionsApi {
     // TODO: implement transactionStream
     throw UnimplementedError();
   }
-
-
 }
