@@ -56,9 +56,37 @@ class TransactionsOverviewView extends StatelessWidget {
             switch (state.status) {
               case TransactionsOverviewStatus.initial:
                 return const Center(child: Text('Initial View'));
-              case TransactionsOverviewStatus.loading:
-                return const Center(
-                  child: CircularProgressIndicator(),
+              case TransactionsOverviewStatus.empty:
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height / 2),
+                      Text(
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24, ),textAlign: TextAlign.center,
+                          ' Click on the button to add a transaction'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.arrow_downward_outlined,
+                            size: 75,
+                            color: Colors.green,
+                          ),   SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                          ),
+                          Icon(
+                            Icons.arrow_downward_outlined,
+                            size: 75,
+                            color: Colors.green,
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height/ 6,)
+
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               case TransactionsOverviewStatus.success:
                 return const ExpenseOverviewSuccessView();
@@ -205,7 +233,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                   ' ' +
                                   r'£',
                           style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.grey[700],
                             fontSize: 34,
                           ),
                         )
@@ -250,9 +278,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                     Text(
                                       context.tr('income'),
                                       style: TextStyle(
-                                        fontSize: 18,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
+                                          fontSize: 24,
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       locale.languageCode == 'en'
@@ -268,7 +296,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                               ' ' +
                                               r'£',
                                       style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
+                                        color: Colors.grey[700],
                                         fontSize: 24,
                                       ),
                                     ),
@@ -276,7 +304,10 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),SizedBox(width: 50,),
+                          ),
+                          SizedBox(
+                            width: 50,
+                          ),
                           Row(
                             children: [
                               Container(
@@ -312,9 +343,9 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                     Text(
                                       context.tr('expenses'),
                                       style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 18,
-                                      ),
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       locale.languageCode == 'en'
@@ -331,7 +362,7 @@ class ExpenseOverviewSuccessView extends StatelessWidget {
                                               ' ' +
                                               r'£',
                                       style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
+                                        color: Colors.grey[700],
                                         fontSize: 24,
                                       ),
                                     ),

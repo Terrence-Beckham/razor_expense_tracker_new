@@ -32,6 +32,8 @@ class EditTransactionBloc
     on<TransactionAmountError>(_showTransactionAmountErrorMessage);
     on<TransactionDateUpdated>(_updateTransactionDate);
     on<TransactionUpdateRequested>(_updateTransaction);
+
+    add(InitialDataEvent());
   }
 
   final TransactionsRepo _transactionsRepository;
@@ -43,7 +45,7 @@ class EditTransactionBloc
       InitialDataEvent event, Emitter<EditTransactionState> emit) async {
     await emit.forEach<List<StoredCategory>>(
         _transactionsRepository.sortedCategoryStream(), onData: (categories) {
-      // _logger.d('These are the categories in $categories');
+      _logger.d('These are the categories in $categories');
       return state.copyWith(
         status: () => EditTransactionStatus.success,
         categories: () => categories,

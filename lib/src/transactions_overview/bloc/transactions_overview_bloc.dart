@@ -42,14 +42,17 @@ class TransactionsOverviewBloc
     InitialDataEvent event,
     Emitter<TransactionsOverviewState> emit,
   ) async {
-    state.copyWith(status: () => TransactionsOverviewStatus.loading);
+    state.copyWith(status: () => TransactionsOverviewStatus.empty);
     _logger.d("It should be loading now.");
     await emit.forEach<List<Transaction>>(
       _transactionsRepo.transactionStream(),
       onData: (transactions) {
         final reversedTransactions = transactions.reversed.toList();
+
         return state.copyWith(
-          status: () => TransactionsOverviewStatus.success,
+          status: reversedTransactions.isEmpty
+              ? () => TransactionsOverviewStatus.empty
+              : () => TransactionsOverviewStatus.success,
           transactions: () => reversedTransactions,
           incomeTotals: () => calculateTotalIncome(transactions),
           expenseTotals: () => calculateTotalExpenses(transactions),
@@ -118,7 +121,7 @@ class TransactionsOverviewBloc
 
   FutureOr<void> _requestTransactions(TransactionsRequestedEvent event,
       Emitter<TransactionsOverviewState> emit) {
-    state.copyWith(status: () => TransactionsOverviewStatus.loading);
+    state.copyWith(status: () => TransactionsOverviewStatus.empty);
 
     _transactionsRepo.getTransactions();
   }

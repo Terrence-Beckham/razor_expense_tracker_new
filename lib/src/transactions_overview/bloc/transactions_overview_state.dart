@@ -1,6 +1,6 @@
 part of 'transactions_overview_bloc.dart';
 
-enum TransactionsOverviewStatus { initial, loading, success, failure }
+enum TransactionsOverviewStatus { initial, empty, success, failure }
 
 final class TransactionsOverviewState extends Equatable {
   const TransactionsOverviewState({

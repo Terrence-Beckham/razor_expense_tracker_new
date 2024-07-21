@@ -145,8 +145,13 @@ final education = StoredCategory()
   ..name = 'Education'
   ..iconName = 'education'
   ..colorName = 'deep_purple_accent';
-
+final salary = StoredCategory()
+  ..name = 'Salary'
+  ..iconName = 'salary'
+  ..colorName = 'green_accent';
 const myIcons = <String, IconData>{
+
+  'salary':Symbols.money_rounded,
   'exercise': Symbols.exercise,
   'styler': Symbols.styler,
   'subscriptions': Symbols.subscriptions,
@@ -179,11 +184,12 @@ const myIcons = <String, IconData>{
   'medications': Symbols.medication_liquid,
   'householdItems': Symbols.flatware,
   'householdSupplies': Symbols.household_supplies,
-  'cleaningSupplies': Symbols.cleaning_bucket,
+  'cleaningSupplies': Icons.clean_hands,
   'tools': Symbols.handyman,
 };
 
 final defaultCategory = <StoredCategory>[
+  salary,
   gymMembership, //exercise
   salon, //styler
   subscriptions, //subscriptions

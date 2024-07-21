@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:razor_expense_tracker_new/src/settings/widgets/privacy_policy_dialog.dart';
@@ -14,7 +15,7 @@ class PrivacyPolicy extends StatelessWidget {
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          text: 'Privacy Policy',
+          text: context.tr('Read'),
           style: Theme.of(context).textTheme.bodyLarge,
           recognizer: TapGestureRecognizer()
             ..onTap = () {

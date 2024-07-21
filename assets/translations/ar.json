@@ -271,8 +271,22 @@
   "@december": {
     "description": "عرض شهر ديسمبر"
   },
-  "gym": "gym",
+
+  "gym": "صالة رياضية",
   "@gym": {
-    "description": "This is the Gym category"
+    "وصف": "هذه فئة صالة رياضية"
+  },
+  "specialOcasion": "مناسبة خاصة",
+  "@specialOcasion": {
+    "وصف": "هذه فئة مناسبة خاصة"
+  },
+  "salary": "راتب",
+  "@salary": {
+    "وصف": "هذه فئة راتب"
+  },
+
+  "tools": "أدوات",
+  "@tools": {
+    "وصف": "هذه فئة الأدوات"
   }
 }

@@ -229,7 +229,7 @@ class EditTransactionSuccessView extends StatelessWidget {
                           ),
                         ),
                         width: double.infinity,
-                        height: 300,
+                        height: 250,
                         child: Column(
                           children: [
                             AnimatedContainer(

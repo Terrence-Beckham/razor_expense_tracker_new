@@ -52,6 +52,7 @@ class AddTransactionView extends StatelessWidget {
   AddTransactionView({
     super.key,
   });
+
   final _logger = Logger();
 
   @override
@@ -350,7 +351,9 @@ class AddTransactionSuccessView extends StatelessWidget {
                                       .toString()],
                                 ),
                                 label: Text(
-                                  state.categories[index].name.toString(),
+                                  context.tr(
+                                    state.categories[index].name.toString().toLowerCase(),
+                                  ),
                                   style: const TextStyle(color: Colors.black87),
                                 ),
                                 onPressed: () {

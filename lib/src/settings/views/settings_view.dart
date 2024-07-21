@@ -18,7 +18,13 @@ class SettingsPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
-            PrivacyPolicy(),
+              ListTile(
+                  leading: Text(
+                    'Privacy Policy',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
+                  trailing:
+                      OutlinedButton(onPressed: () {}, child: PrivacyPolicy())),
             ],
           ),
         ),

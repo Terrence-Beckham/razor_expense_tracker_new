@@ -4,6 +4,10 @@
   "@transactions": {
     "description": "A list of all selected transactions"
   },
+  "salary": "salary",
+  "@salary": {
+    "description": "This is a salary category"
+  },
   "transactionDeleted": "Transaction Deleted",
   "@transactionDeleted": {
     "description": "The transaction was deleted"
@@ -19,10 +23,6 @@
   "expenses": "Expenses",
   "@expenses": {
     "description": "This is the total amount of all of the expense transactions"
-  },
-  "income": "Income",
-  "@income": {
-    "description": "This is the total amount of all of the expense transactions "
   },
   "income": "Income",
   "@income": {
@@ -279,6 +279,14 @@
   "gym": "gym",
   "@gym": {
     "description": "This is the Gym category"
+  },
+  "specialOcasion": "SpecialOcasion",
+  "@specialOcasion": {
+    "description": "This is a special ocassion category"
+  },
+  "tools": "Tools",
+  "@tools": {
+    "description": "This is the tools category"
   }
 }
 
