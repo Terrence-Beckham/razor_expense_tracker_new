@@ -7,7 +7,7 @@ sealed class AddTransactionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class Initial extends AddTransactionEvent {
+ class Initial extends AddTransactionEvent {
   const Initial();
 
   @override

@@ -260,7 +260,11 @@ class EditTransactionSuccessView extends StatelessWidget {
                                           .toString()],
                                     ),
                                     label: Text(
-                                      state.categories[index].name.toString(),
+                                      context.tr(
+                                        state.categories[index].name
+                                            .toString()
+                                            .toLowerCase(),
+                                      ),
                                       style: const TextStyle(
                                           color: Colors.black87),
                                     ),

@@ -63,9 +63,13 @@ class TransactionsOverviewView extends StatelessWidget {
                     children: [
                       SizedBox(height: MediaQuery.of(context).size.height / 2),
                       Text(
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24, ),textAlign: TextAlign.center,
-                          ' Click on the button to add a transaction'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                        textAlign: TextAlign.center,
+                        context.tr('emptyTransaction'),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -73,7 +77,8 @@ class TransactionsOverviewView extends StatelessWidget {
                             Icons.arrow_downward_outlined,
                             size: 75,
                             color: Colors.green,
-                          ),   SizedBox(
+                          ),
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 2,
                           ),
                           Icon(
@@ -81,8 +86,9 @@ class TransactionsOverviewView extends StatelessWidget {
                             size: 75,
                             color: Colors.green,
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height/ 6,)
-
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 6,
+                          )
                         ],
                       ),
                     ],

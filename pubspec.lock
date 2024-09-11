@@ -313,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
+  flutter_onboarding_slider:
+    dependency: "direct main"
+    description:
+      name: flutter_onboarding_slider
+      sha256: "70d6b7c8d469abb31f66fd80c61915d7ff9c05d2c9001ec7db659702e7bc4f9d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.11"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -375,10 +383,10 @@ packages:
     dependency: transitive
     description:
       name: graphs
-      sha256: aedc5a15e78fc65a6e23bcd927f24c64dd995062bcd1ca6eda65a3cff92a4d19
+      sha256: "741bbf84165310a68ff28fe9e727332eef1407342fca52759cb21ad8177bb8d0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   http:
     dependency: transitive
     description:
@@ -549,10 +557,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_symbols_icons
-      sha256: "6102193e0c451426e9bb5e6cbc8533609e464bb2afa7fce42d9d79790e012beb"
+      sha256: "37f88057af06224cd99242bd9b5ceda8c1ebddfff67bd5e8432521910a3d4598"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2768.0"
+    version: "4.2771.0"
   meta:
     dependency: transitive
     description:
@@ -771,10 +779,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_platform_interface
-      sha256: "22e2ecac9419b4246d7c22bfbbda589e3acf5c0351137d87dd2939d984d37c3b"
+      sha256: "034650b71e73629ca08a0bd789fd1d83cc63c2d1e405946f7cef7bc37432f93a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.4.0"
   shared_preferences_web:
     dependency: transitive
     description:
@@ -990,10 +998,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: ceb2625f0c24ade6ef6778d1de0b2e44f2db71fded235eb52295247feba8c5cf
+      sha256: "95d8027db36a0e52caf55680f91e33ea6aa12a3ce608c90b06f4e429a21067ac"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.3"
+    version: "6.3.5"
   url_launcher_ios:
     dependency: transitive
     description:

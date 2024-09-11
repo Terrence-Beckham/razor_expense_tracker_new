@@ -1,6 +1,6 @@
 name: razor_expense_tracker_new
 description: "An AI powered Expense Tracker"
-version: 1.0.0+5
+version: 1.0.0+6
 publish_to: 'none'
 
 
@@ -47,6 +47,7 @@ dependencies:
   isar: any
   isar_flutter_libs: any
   flutter_markdown: ^0.7.3
+  flutter_onboarding_slider: ^1.0.11
 
 
 

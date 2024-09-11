@@ -287,6 +287,10 @@
   "tools": "Tools",
   "@tools": {
     "description": "This is the tools category"
+  },
+  "emptyTransaction": "Click on the button to add a transaction",
+  "@emptyTransaction": {
+    "description": "The list of transactions is empty add a transaction to continue"
   }
 }
 

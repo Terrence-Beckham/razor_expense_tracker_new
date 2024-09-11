@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:ads_repo/ads_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

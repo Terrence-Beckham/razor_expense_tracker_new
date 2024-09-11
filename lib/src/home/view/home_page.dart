@@ -64,7 +64,7 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: FloatingActionButton(
           // shape: const CircleBorder(),
-          backgroundColor: Colors.grey[800],
+          backgroundColor: Colors.lightGreen,
           elevation: 10,
           onPressed: () {
             Navigator.of(context).push(
@@ -75,7 +75,7 @@ class HomeView extends StatelessWidget {
           },
           key: const Key('homeView_addTransaction_floatingActionButton'),
           child: Icon(
-            Iconsax.card_add,
+            Iconsax.add,
             color: Colors.white,
             size: 32,
           ),
