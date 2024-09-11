@@ -140,7 +140,7 @@ class StatsSuccessView extends StatelessWidget {
               title: Text(
                 context.tr('analytics'),
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
@@ -183,7 +183,7 @@ class StatsSuccessView extends StatelessWidget {
                       },
                       child: Text(
                         context.tr('expenses'),
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 18),
                       ),
                     ),
                     OutlinedButton(
@@ -216,7 +216,7 @@ class StatsSuccessView extends StatelessWidget {
                       },
                       child: Text(
                         context.tr("income"),
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 18),
                       ),
                     ),
                   ],
@@ -230,7 +230,7 @@ class StatsSuccessView extends StatelessWidget {
                         elevation: 6,
                         label: Text(
                           context.tr('allTime'),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 14),
                         ),
                         onPressed: () {
                           context.read<StatsBloc>()
@@ -249,7 +249,7 @@ class StatsSuccessView extends StatelessWidget {
                       InputChip(
                         elevation: 6,
                         label: Text(context.tr('yearly'),
-                            style: TextStyle(fontSize: 18)),
+                            style: TextStyle(fontSize: 14)),
                         onPressed: () {
                           context.read<StatsBloc>()
                             ..add(
@@ -267,7 +267,7 @@ class StatsSuccessView extends StatelessWidget {
                       InputChip(
                         elevation: 6,
                         label: Text(context.tr('monthly'),
-                            style: TextStyle(fontSize: 18)),
+                            style: TextStyle(fontSize: 14)),
                         onPressed: () {
                           context.read<StatsBloc>()
                             ..add(
@@ -306,7 +306,7 @@ class StatsSuccessView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.width / 1.8,
+                  height: MediaQuery.of(context).size.width / 2,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -318,7 +318,7 @@ class StatsSuccessView extends StatelessWidget {
                             Text(
                               context.tr('expenses'),
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -329,7 +329,7 @@ class StatsSuccessView extends StatelessWidget {
                                   locale),
                               // state.expenseTransactionTotals.toStringAsFixed(1),
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 16,
                               ),
                             ),
                           ],
@@ -342,7 +342,7 @@ class StatsSuccessView extends StatelessWidget {
                             Text(
                               context.tr('income'),
                               style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Text(
                               translateDigits(
@@ -350,7 +350,7 @@ class StatsSuccessView extends StatelessWidget {
                                       .toStringAsFixed(1),
                                   locale),
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                               ),
                             ),
                           ],
